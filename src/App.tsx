@@ -1,14 +1,18 @@
-import React, { StrictMode } from "react";
+import React, { useContext } from "react";
 import Router from "./Routes/Routes";
+import { InititalContextProvider, StateContext } from "./store/store";
 import "./App.css";
 
 function App() {
+  const { state } = useContext(StateContext);
   return (
-    <div className="App">
-      <StrictMode>
+    <InititalContextProvider>
+      <div
+        className="App"
+      >
         <Router />
-      </StrictMode>
-    </div>
+      </div>
+    </InititalContextProvider>
   );
 }
 

@@ -1,0 +1,21 @@
+.home-page {
+    .main {
+        margin: 5px;
+        .posts {
+        //   width: 100%;
+          // border: 2px solid black;
+          margin: 20px 10px;
+          border-radius: 5px;
+          background: #242526;
+          color: whitesmoke;
+          padding: 15px;
+        }
+        .post-body {
+          padding: 5px;
+        }
+        .post-tags {
+          padding-top: 5px;
+          border-top: 1px solid white;
+        }
+    }
+}
