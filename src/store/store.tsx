@@ -18,7 +18,6 @@ type InititalContextProviderProps = {
 };
 
 export const StateContext = createContext(InitialStore);
-// export const AuthContext = createContext(null); later for auth context
 
 export const InititalContextProvider = ({
   children,

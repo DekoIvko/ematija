@@ -1,17 +1,21 @@
-import React, { useContext } from "react";
+import React from "react";
 import Router from "./Routes/Routes";
-import { InititalContextProvider, StateContext } from "./store/store";
+import { BrowserRouter } from "react-router-dom";
+import { InititalContextProvider } from "./store/store";
+// import { AuthProvider } from "./hooks/AuthProvider";
+
 import "./App.css";
 
 function App() {
-  const { state } = useContext(StateContext);
   return (
     <InititalContextProvider>
-      <div
-        className="App"
-      >
-        <Router />
+      {/* <AuthProvider> */}
+      <div className="App">
+        <BrowserRouter>
+          <Router />
+        </BrowserRouter>
       </div>
+      {/* </AuthProvider> */}
     </InititalContextProvider>
   );
 }

@@ -1,0 +1,29 @@
+.profile-page {
+  .profile-info {
+    background: #242526;
+    .profile-name-edit {
+      .profile-picture-name {
+        left: 0;
+      }
+      img {
+        width: 150px;
+        height: 150px;
+        border-radius: 30%;
+        overflow: hidden;
+      }
+    }
+  }
+  .personal-info {
+    // padding: 20px;
+    .personal-info-body {
+      border-radius: 2%;
+      background: #242526;
+      .info-data {
+          .info-details {
+            background: #3a3b3c;
+            border-radius: 5%;
+        }
+      }
+    }
+  }
+}

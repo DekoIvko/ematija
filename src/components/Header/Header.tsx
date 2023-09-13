@@ -1,19 +1,25 @@
-import React, { useState, useContext } from "react";
+import React, { useContext } from "react";
 import mkFlag from "../../imgs/MKFlag.png";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import FacebookLogin from "react-facebook-login";
 import { StateContext } from "../../store/store";
 
 import "./Header.scss";
 
 const Header = () => {
-  const [logedUser, setLogedUser] = useState<any>();
+  const usenavigate = useNavigate();
   const { state, dispatch } = useContext(StateContext);
+
   const responseFacebook = (response: any) => {
-    setLogedUser(response);
     dispatch({ type: "setFacebookUser", payload: response });
   };
 
+  const onLogOut = () => {
+    localStorage.removeItem("ematija-user");
+    usenavigate("/login");
+  };
+
+  console.log(state);
   return (
     <header
       className="header"
@@ -22,30 +28,20 @@ const Header = () => {
         color: state?.appTheme === "dark" ? "whitesmoke" : "#242526",
       }}
     >
-      <div className="container d-flex align-items-center">
+      <div className="container-fluid d-flex align-items-center">
         <div className="header-context d-flex flex-row align-items-center">
           <div className="company-logo">
-            <a href="/feed" className="logo">
+            <a href="/home" className="logo">
               <img src={mkFlag} alt="Macedonian flag" />
             </a>
-            <button
-              type="button"
-              onClick={() => {
-                dispatch({ type: "setAppTheme", payload: "light" });
-                dispatch({ type: "setCounter", payload: state?.counter + 1 });
-              }}
-            >
-              Click me
-            </button>
           </div>
           <div className="login-facebook">
-            {logedUser ? (
+            {state?.facebookUser.id ? (
               <>
                 <img
-                  src={state?.facebookUser?.picture?.data.url}
+                  src={state?.facebookUser?.picture?.data?.url || ""}
                   alt="Facebook profile"
                 />
-                <p>{state?.facebookUser?.name}</p>
               </>
             ) : (
               <FacebookLogin
@@ -61,7 +57,7 @@ const Header = () => {
         <nav className="navigate-icons d-flex justify-content-center">
           <ul className="list-group list-group-flush d-flex flex-row">
             <li className="list-group-item">
-              <Link to="/feed">
+              <Link to="/home">
                 <div className="d-flex flex-column">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -96,6 +92,11 @@ const Header = () => {
             </li>
           </ul>
         </nav>
+        <div>
+          <button type="button" onClick={onLogOut}>
+            Log out
+          </button>
+        </div>
       </div>
     </header>
   );

@@ -1,21 +1,50 @@
 .home-page {
-    .main {
-        margin: 5px;
-        .posts {
-        //   width: 100%;
-          // border: 2px solid black;
-          margin: 20px 10px;
-          border-radius: 5px;
-          background: #242526;
-          color: whitesmoke;
-          padding: 15px;
-        }
-        .post-body {
-          padding: 5px;
-        }
-        .post-tags {
-          padding-top: 5px;
-          border-top: 1px solid white;
-        }
+  .main {
+    margin: 5px;
+    max-width: 50rem;
+    .posts {
+      margin: 20px 10px;
+      border-radius: 5px;
+      background: #242526;
+      color: whitesmoke;
+      padding: 15px;
     }
+    .post-body {
+      padding: 5px;
+    }
+    .post-tags {
+      padding-top: 5px;
+      border-top: 1px solid white;
+    }
+  }
+  .navigation {
+    min-width: 20rem;
+    margin: 5px;
+    padding: 10px;
+    font-size: larger;
+    .navigation-bar {
+      margin-top: 5px;
+      .list-group-item {
+        padding: 10px 6px;
+        background: transparent;
+        border: none;
+        a {
+          text-decoration: none;
+        }
+        span {
+          padding: 5px 0;
+        }
+      }
+      .list-group-item:hover {
+        cursor: pointer;
+        background-color: #3a3b3c;
+        border-radius: 2%;
+      }
+    }
+    .profile-name {
+      img {
+        border-radius: 35%;
+      }
+    }
+  }
 }

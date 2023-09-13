@@ -1,22 +1,23 @@
-import Axios from 'axios';
+import Axios from "axios";
+import { appConfig } from "../appConfig";
 
-const axios = Axios.create({})
+const axios = Axios.create({
+  baseURL: appConfig.baseApiURL,
+});
 
-const authorizationToken = localStorage.getItem('token');
+axios.interceptors.request.use((config: any) => {
+  const user = localStorage.getItem("ematija-user");
+  if (user) {
+    config.headers.Authorization = `Bearer ${user}`;
+  }
+  return config;
+});
 
-if (authorizationToken !== undefined && authorizationToken !== null) {
-  axios.defaults.headers.common[
-    'Authorization'
-  ] = `Bearer ${authorizationToken}`;
-} else {
-  axios.defaults.headers.common['Authorization'] = null;
-}
-
-axios.defaults.headers.post['Content-Type'] = 'application/json';
-axios.defaults.headers.post['Access-Control-Allow-Origin'] = '*';
-axios.defaults.headers.post['Access-Control-Allow-Headers'] =
-  'Origin, X-Requested-With, Content-Type, Accept';
-axios.defaults.headers.post['Access-Control-Allow-Methods'] =
-  'POST, PUT, DELETE, GET, OPTIONS';
+axios.defaults.headers.post["Content-Type"] = "application/json";
+axios.defaults.headers.post["Access-Control-Allow-Origin"] = "*";
+axios.defaults.headers.post["Access-Control-Allow-Headers"] =
+  "Origin, X-Requested-With, Content-Type, Accept";
+axios.defaults.headers.post["Access-Control-Allow-Methods"] =
+  "POST, PUT, DELETE, GET, OPTIONS";
 
 export default axios;

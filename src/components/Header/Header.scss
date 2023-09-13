@@ -1,36 +1,51 @@
 .header {
-    padding: 2px 0px;
-    color: whitesmoke;
+  padding: 2px 0px;
+  color: whitesmoke;
+  .header-context {
     .company-logo {
-        img {
-            border-radius: 40%;
-            width: 70%;
-            float: left;
-        }
-        width: max-content;
+      img {
+        border-radius: 40%;
+        width: 70%;
+        float: left;
+      }
+      width: max-content;
     }
-    .navigate-icons {
-        width: 100%;
-        .list-group-item {
-            background: transparent;
-            span {
-                font-size: 12px;
-            }
-        }
+    .login-facebook {
+      img {
+        border-radius: 40%;
+      }
     }
-    .fb-button {
-        width: 165px;
-        height:35px;  
-        border-radius: 4px;
-        background: #3b5998;
-        color:white;
-        border:0px transparent;  
-        text-align: center;
-        display: inline-block;
-    
-        &:hover{
-            background: #3b5998;
-            opacity: 0.6;
-        }
+  }
+  .navigate-icons {
+    width: 100%;
+    .list-group-item {
+      background: transparent;
+      a {
+        text-decoration: none;
+      }
+      span {
+        font-size: 12px;
+      }
     }
+    .list-group-item:hover {
+      cursor: pointer;
+      background-color: #3a3b3c;
+      border-radius: 2%;
+    }
+  }
+  .fb-button {
+    width: 165px;
+    height: 35px;
+    border-radius: 4px;
+    background: #3b5998;
+    color: white;
+    border: 0px transparent;
+    text-align: center;
+    display: inline-block;
+
+    &:hover {
+      background: #3b5998;
+      opacity: 0.6;
+    }
+  }
 }
