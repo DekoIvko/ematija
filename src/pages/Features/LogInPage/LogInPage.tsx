@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import { StateContext } from "../../../store/store";
 import AuthService from "../../../services/AuthService";
 import { useNavigate } from "react-router";
@@ -8,10 +8,17 @@ const LogInPage = () => {
   const { dispatch } = useContext(StateContext);
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const inputUsername = useRef<HTMLInputElement>(null);
   const [errorMsg, setErrorMsg] = useState({
     usernameError: false,
     passwordError: false,
   });
+
+  useEffect(() => {
+    if (inputUsername.current) {
+      inputUsername.current.focus();
+    }
+  }, [inputUsername]);
 
   const loginDummyUser = async () => {
     const authUser = await AuthService({
@@ -68,6 +75,7 @@ const LogInPage = () => {
               <div className="form-group d-flex flex-column">
                 <label htmlFor="username"></label>
                 <input
+                  ref={inputUsername}
                   className="form-control"
                   type="text"
                   placeholder="Please enter your username"

@@ -1,0 +1,43 @@
+.home-feed {
+  .posts {
+    margin: 20px 10px;
+    border-radius: 5px;
+    background: #242526;
+    color: whitesmoke;
+    padding: 15px;
+  }
+  .post-header {
+    img {
+        max-width: 30px;
+        max-height: 30px;
+    }
+  }
+  .post-body {
+    padding: 5px;
+  }
+  .post-tags {
+    padding-top: 5px;
+    border-top: 1px solid white;
+    span {
+        border-radius: 10px;
+        background: #343a40;
+        padding: 5px;
+    }
+  }
+  .comments {
+    margin-top: 1rem;
+    overflow-x: hidden;
+    overflow-y: scroll;
+    max-height: 200px;
+    .comment-user-details {
+      text-transform: capitalize;
+      width: fit-content;
+    }
+    .comment-body {
+      background: #3a3b3c;
+      border-radius: 20px;
+      width: fit-content;
+      margin-left: 2rem;
+    }
+  }
+}

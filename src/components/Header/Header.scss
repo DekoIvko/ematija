@@ -5,7 +5,7 @@
     .company-logo {
       img {
         border-radius: 40%;
-        width: 70%;
+        width: 60%;
         float: left;
       }
       width: max-content;
@@ -20,8 +20,13 @@
     width: 100%;
     .list-group-item {
       background: transparent;
+      border: none;
       a {
         text-decoration: none;
+        color: whitesmoke;
+      }
+      a.active {
+        color: #2374e1;
       }
       span {
         font-size: 12px;

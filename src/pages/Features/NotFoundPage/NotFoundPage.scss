@@ -1,0 +1,11 @@
+.unauthorized-container {
+  display: flex;
+  align-items: center;
+  .img-not-found {
+    width: fit-content;
+    position: absolute;
+    height: fit-content;
+    top: 15%;
+    left: 20%;
+  }
+}

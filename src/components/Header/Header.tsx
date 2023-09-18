@@ -1,6 +1,6 @@
 import React, { useContext } from "react";
 import mkFlag from "../../imgs/MKFlag.png";
-import { Link, useNavigate } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import FacebookLogin from "react-facebook-login";
 import { StateContext } from "../../store/store";
 
@@ -19,7 +19,7 @@ const Header = () => {
     usenavigate("/login");
   };
 
-  console.log(state);
+  // console.log(state);
   return (
     <header
       className="header"
@@ -57,7 +57,16 @@ const Header = () => {
         <nav className="navigate-icons d-flex justify-content-center">
           <ul className="list-group list-group-flush d-flex flex-row">
             <li className="list-group-item">
-              <Link to="/home">
+              <NavLink
+                to="/home"
+                className={({ isActive, isPending }) =>
+                  isPending
+                    ? "top-link-itm pending"
+                    : isActive
+                    ? "top-link-itm active"
+                    : ""
+                }
+              >
                 <div className="d-flex flex-column">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -71,10 +80,19 @@ const Header = () => {
                   </svg>
                   <span>Home</span>
                 </div>
-              </Link>
+              </NavLink>
             </li>
             <li className="list-group-item">
-              <Link to="/profile" className="top-link-itm">
+              <NavLink
+                to="/profile"
+                className={({ isActive, isPending }) =>
+                  isPending
+                    ? "top-link-itm pending"
+                    : isActive
+                    ? "top-link-itm active"
+                    : ""
+                }
+              >
                 <div className="d-flex flex-column">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -88,12 +106,17 @@ const Header = () => {
                   </svg>
                   <span>Profile</span>
                 </div>
-              </Link>
+              </NavLink>
             </li>
           </ul>
         </nav>
         <div>
-          <button type="button" onClick={onLogOut}>
+          <button
+            type="button"
+            className="btn btn-link"
+            style={{ width: "max-content", textDecoration: "none" }}
+            onClick={onLogOut}
+          >
             Log out
           </button>
         </div>

@@ -1,0 +1,15 @@
+#under-construction {
+  #animate {
+    transform-origin: 185px 40px;
+    animation: clock-pendulum 4s cubic-bezier(0.455, 0.03, 0.515, 0.955)
+      infinite alternate-reverse;
+    @keyframes clock-pendulum {
+      0% {
+        transform: rotate(10deg);
+      }
+      100% {
+        transform: rotate(-20deg);
+      }
+    }
+  }
+}

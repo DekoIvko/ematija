@@ -1,12 +1,18 @@
 import React, { useContext, useEffect } from "react";
 import { Routes, Route, useNavigate } from "react-router-dom";
-import Header from "../components/Header/Header";
+import { Header } from "../components/index";
 import HomePage from "../pages/HomePage/HomePage";
-import ProfilePage from "../pages/ProfilePage/ProfilePage";
-import LogInPage from "../pages/Features/LogInPage/LogInPage";
-// import  AuthProvidere  from "../hooks/AuthProvider";
-import NotFoundPage from "../pages/Features/NotFoundPage";
 import { StateContext } from "../store/store";
+
+const LazyProfilePage = React.lazy(
+  () => import("../pages/ProfilePage/ProfilePage")
+);
+const LazyLoginPage = React.lazy(
+  () => import("../pages/Features/LogInPage/LogInPage")
+);
+const LazyNotFoundPage = React.lazy(
+  () => import("../pages/Features/NotFoundPage/NotFoundPage")
+);
 
 const Router = () => {
   const usenavigation = useNavigate();
@@ -20,19 +26,17 @@ const Router = () => {
       const parserUser = JSON.parse(checkUser);
       dispatch({ type: "setLogedUser", payload: parserUser });
     }
-  }, [usenavigation]);
+  }, []);
 
   return (
     <div>
       <Header />
       <Routes>
-        <Route path="/login" element={<LogInPage />} />
-        {/* <AuthProvidere > */}
-
+        <Route path="/" element={<HomePage />} />
         <Route path="/home" element={<HomePage />} />
-        <Route path="/profile" element={<ProfilePage />} />
-        <Route path="*" element={<NotFoundPage />} />
-        {/* </AuthProvidere> */}
+        <Route path="/login" element={<LazyLoginPage />} />
+        <Route path="/profile" element={<LazyProfilePage />} />
+        <Route path="*" element={<LazyNotFoundPage />} />
       </Routes>
     </div>
   );
