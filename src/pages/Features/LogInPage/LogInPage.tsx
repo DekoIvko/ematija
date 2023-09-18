@@ -25,6 +25,7 @@ const LogInPage = () => {
       username: "atuny0",
       password: "9uQFF1Lh",
     });
+
     dispatch({ type: "setLogedUser", payload: authUser });
     localStorage.setItem("ematija-user", JSON.stringify(authUser));
     usenavigate("/home");

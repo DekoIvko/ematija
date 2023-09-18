@@ -1,23 +1,16 @@
 import React, { useCallback, useEffect, useState } from "react";
-import { GetQuotesService } from "../../../services/GetQuotes";
+import { GetQuotesService } from "../../../services/GetQuotesService";
 import { IQuotes } from "../../../interfaces/IQuotes";
 import { Pagination } from "../../../components";
 
 import "./Quotes.scss";
 
-const Quotes = () => {
-  const [quotes, setQuotes] = useState<IQuotes[]>();
+interface IProps {
+  quotes: IQuotes[];
+}
+
+const Quotes = ({ quotes }: IProps) => {
   const [currentPage, setCurrentPage] = useState(1);
-
-  const getAllQuotes = useCallback(async () => {
-    const allQuotes: IQuotes[] = await GetQuotesService();
-    console.log(allQuotes);
-    setQuotes(allQuotes);
-  }, []);
-
-  useEffect(() => {
-    getAllQuotes();
-  }, []);
 
   return (
     <div className="quotes d-flex flex-column">

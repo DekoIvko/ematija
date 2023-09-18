@@ -12,10 +12,11 @@ import RenderPropsCounter from "../../../hooks/RenderPropsCounter";
 import "./NavigationMenu.scss";
 interface IProps {
   state: IInitialStore;
-  setNavItem: any
+  setNavItem: any;
 }
 
 export const NavigationMenu = ({ state, setNavItem }: IProps) => {
+  console.log(state);
   return (
     <div className="navigation-menu">
       {" "}
@@ -29,10 +30,10 @@ export const NavigationMenu = ({ state, setNavItem }: IProps) => {
       </div>
       <div className="navigation-bar d-flex">
         <ul className="list-group d-flex flex-column gap-2 w-100">
-        <li className="list-group-item">
+          <li className="list-group-item">
             <NavLink
               to="/"
-              onClick={() => setNavItem('feed')}
+              onClick={() => setNavItem("feed")}
               className={({ isActive, isPending }) =>
                 isPending
                   ? "top-link-item pending"
@@ -40,12 +41,14 @@ export const NavigationMenu = ({ state, setNavItem }: IProps) => {
                   ? "top-link-item active"
                   : ""
               }
-            >Feed</NavLink>
+            >
+              Feed
+            </NavLink>
           </li>
           <li className="list-group-item">
             <NavLink
               to="/"
-              onClick={() => setNavItem('quotes')}
+              onClick={() => setNavItem("quotes")}
               className={({ isActive, isPending }) =>
                 isPending
                   ? "top-link-item pending"
@@ -53,7 +56,24 @@ export const NavigationMenu = ({ state, setNavItem }: IProps) => {
                   ? "top-link-item active"
                   : ""
               }
-            >Quotes</NavLink>
+            >
+              Quotes
+            </NavLink>
+          </li>
+          <li className="list-group-item">
+            <NavLink
+              to="/"
+              onClick={() => setNavItem("todos")}
+              className={({ isActive, isPending }) =>
+                isPending
+                  ? "top-link-item pending"
+                  : isActive
+                  ? "top-link-item active"
+                  : ""
+              }
+            >
+              Todos
+            </NavLink>
           </li>
           <li className="list-group-item">
             <NavLink to="" className="links  nav-link">
