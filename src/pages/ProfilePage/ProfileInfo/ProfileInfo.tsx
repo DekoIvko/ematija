@@ -1,11 +1,10 @@
-import React from "react";
 import { IUserDetails } from "../../../interfaces/IUserDetails";
 
 interface IProps {
-    userDetails: IUserDetails
+  userDetails: IUserDetails;
 }
 
-const ProfileInfo = ({userDetails}: IProps) => {
+const ProfileInfo = ({ userDetails }: IProps) => {
   return (
     <div>
       {" "}

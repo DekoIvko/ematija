@@ -1,22 +1,22 @@
 import React from "react";
 import Router from "./Routes/Routes";
 import { BrowserRouter } from "react-router-dom";
-import { InititalContextProvider } from "./store/store";
-// import { AuthProvider } from "./hooks/AuthProvider";
+import AuthProvider from "./hooks/AuthProvider";
+import { InitialContextProvider } from "./store/store";
 
 import "./App.css";
 
 function App() {
   return (
-    <InititalContextProvider>
-      {/* <AuthProvider> */}
-      <div className="App">
+    <div className="App">
+      <InitialContextProvider>
         <BrowserRouter>
-          <Router />
+          <AuthProvider>
+            <Router />
+          </AuthProvider>
         </BrowserRouter>
-      </div>
-      {/* </AuthProvider> */}
-    </InititalContextProvider>
+      </InitialContextProvider>
+    </div>
   );
 }
 

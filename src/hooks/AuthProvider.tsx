@@ -1,27 +1,31 @@
-import React, { useEffect, useState } from "react";
-import { createContext } from "vm";
-import AuthService from "../services/AuthService";
+import { ReactNode, useContext, useEffect, useState } from "react";
+import { useNavigate } from "react-router";
+import { IStateContext, StateContext } from "../store/store";
+import { parseJsonString } from "../utils/helpers";
+import LogInPage from "../pages/Features/LogInPage/LogInPage";
 
-type InititalContextProviderProps = {
-  children: React.ReactNode;
-};
+interface IProps {
+  children: ReactNode;
+}
 
-const AuthContext = createContext();
+const AuthProvider = ({ children }: IProps) => {
+  const navigation = useNavigate();
+  const { dispatch } = useContext<IStateContext>(StateContext);
+  const [isLoggedIn, setIsLoggedIn] = useState<boolean>(true);
 
-export const AuthProvider = ({ children }: InititalContextProviderProps) => {
-  const [isAuth, setIsAuth] = useState(false);
   useEffect(() => {
-    async function funfunfunction() {
-      const authData = await AuthService({
-        username: "kminchelle",
-        password: "0lelplR",
-      });
-      console.log(authData);
-      setIsAuth(authData);
+    const checkUser = localStorage.getItem("ematija-user");
+    if (!checkUser) {
+      setIsLoggedIn(false);
+      navigation("login");
+    } else {
+      setIsLoggedIn(true);
+      const parserUser = parseJsonString(checkUser);
+      dispatch({ type: "setLoggedUser", payload: parserUser });
     }
-
-    funfunfunction();
   }, []);
 
-  return <AuthContext.Provider value={isAuth}>{children}</AuthContext.Provider>;
+  return <>{isLoggedIn ? children : <LogInPage />}</>;
 };
+
+export default AuthProvider;

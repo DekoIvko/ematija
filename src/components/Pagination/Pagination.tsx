@@ -1,5 +1,3 @@
-import React from "react";
-
 import "./Pagination.scss";
 
 interface IProps {

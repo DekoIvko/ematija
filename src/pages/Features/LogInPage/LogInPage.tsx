@@ -1,11 +1,11 @@
 import React, { useContext, useEffect, useRef, useState } from "react";
-import { StateContext } from "../../../store/store";
+import { IStateContext, StateContext } from "../../../store/store";
 import AuthService from "../../../services/AuthService";
 import { useNavigate } from "react-router";
 
 const LogInPage = () => {
-  const usenavigate = useNavigate();
-  const { dispatch } = useContext(StateContext);
+  const navigate = useNavigate();
+  const { dispatch } = useContext<IStateContext>(StateContext);
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const inputUsername = useRef<HTMLInputElement>(null);
@@ -26,9 +26,10 @@ const LogInPage = () => {
       password: "9uQFF1Lh",
     });
 
-    dispatch({ type: "setLogedUser", payload: authUser });
+    dispatch({ type: "setLoggedUser", payload: authUser });
     localStorage.setItem("ematija-user", JSON.stringify(authUser));
-    usenavigate("/home");
+    navigate("/home");
+    window.location.reload();
   };
 
   const onSubmitBtn = async (e: any) => {
@@ -38,9 +39,9 @@ const LogInPage = () => {
         username: username,
         password: password,
       });
-      dispatch({ type: "setLogedUser", payload: authUser });
+      dispatch({ type: "setLoggedUser", payload: authUser });
       localStorage.setItem("ematija-user", JSON.stringify(authUser));
-      usenavigate("/home");
+      navigate("/home");
     }
   };
 

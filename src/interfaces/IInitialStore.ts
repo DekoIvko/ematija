@@ -1,13 +1,13 @@
 import { IFacebookUser } from "./IFacebookUser";
-import { ILogedUser } from "./ILogedUser";
+import { ILoggedUser } from "./ILoggedUser";
 
 export interface IInitialStore {
-    facebookUser: IFacebookUser;
-    logedUser: ILogedUser,
-    appTheme: string;
-    activeNavItem: string;
-    counter: number;
-    error: boolean,
-    errorMessage: string,
-    loader: boolean,
+  facebookUser: IFacebookUser;
+  loggedUser: ILoggedUser;
+  appTheme: string;
+  activeNavItem: string;
+  counter: number;
+  error: boolean;
+  errorMessage: string;
+  loader: boolean;
 }

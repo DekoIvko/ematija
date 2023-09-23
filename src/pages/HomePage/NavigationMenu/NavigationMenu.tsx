@@ -1,4 +1,3 @@
-import React from "react";
 import { NavLink } from "react-router-dom";
 import { IInitialStore } from "../../../interfaces/IInitialStore";
 import MaleCounter from "./PractisingHOC/MaleCounter";
@@ -16,24 +15,22 @@ interface IProps {
 }
 
 export const NavigationMenu = ({ state, setNavItem }: IProps) => {
-  console.log(state);
   return (
     <div className="navigation-menu">
       {" "}
       <div className="profile-name d-flex align-items-center">
         <img
-          src={state?.logedUser?.image}
+          src={state?.loggedUser?.image}
           alt="Facebook profile"
           style={{ maxWidth: "50px", maxHeight: "50px" }}
         />
-        <p className="m-0 p-2">{`${state?.logedUser?.firstName} ${state?.logedUser?.lastName}`}</p>
+        <p className="m-0 p-2">{`${state?.loggedUser?.firstName} ${state?.loggedUser?.lastName}`}</p>
       </div>
       <div className="navigation-bar d-flex">
         <ul className="list-group d-flex flex-column gap-2 w-100">
-          <li className="list-group-item">
+          <li className="list-group-item" onClick={() => setNavItem("feed")}>
             <NavLink
               to="/"
-              onClick={() => setNavItem("feed")}
               className={({ isActive, isPending }) =>
                 isPending
                   ? "top-link-item pending"
@@ -45,10 +42,9 @@ export const NavigationMenu = ({ state, setNavItem }: IProps) => {
               Feed
             </NavLink>
           </li>
-          <li className="list-group-item">
+          <li className="list-group-item" onClick={() => setNavItem("quotes")}>
             <NavLink
               to="/"
-              onClick={() => setNavItem("quotes")}
               className={({ isActive, isPending }) =>
                 isPending
                   ? "top-link-item pending"
@@ -60,10 +56,9 @@ export const NavigationMenu = ({ state, setNavItem }: IProps) => {
               Quotes
             </NavLink>
           </li>
-          <li className="list-group-item">
+          <li className="list-group-item" onClick={() => setNavItem("todos")}>
             <NavLink
               to="/"
-              onClick={() => setNavItem("todos")}
               className={({ isActive, isPending }) =>
                 isPending
                   ? "top-link-item pending"

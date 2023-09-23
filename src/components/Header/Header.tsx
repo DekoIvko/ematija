@@ -1,13 +1,12 @@
 import React, { useContext } from "react";
 import mkFlag from "../../imgs/MKFlag.png";
-import { NavLink, useNavigate } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 import FacebookLogin from "react-facebook-login";
 import { StateContext } from "../../store/store";
 
 import "./Header.scss";
 
 const Header = () => {
-  const usenavigate = useNavigate();
   const { state, dispatch } = useContext(StateContext);
 
   const responseFacebook = (response: any) => {
@@ -16,10 +15,9 @@ const Header = () => {
 
   const onLogOut = () => {
     localStorage.removeItem("ematija-user");
-    usenavigate("/login");
+    window.location.reload();
   };
 
-  // console.log(state);
   return (
     <header
       className="header"

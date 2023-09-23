@@ -5,5 +5,11 @@ export interface ITodos {
   id: number;
   todo: string;
   userId: number;
-  user: IUserDetails
+  user: IUserDetails;
+}
+
+export interface IAddTodo {
+  todo: string;
+  completed: boolean;
+  userId: number;
 }

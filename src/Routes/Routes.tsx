@@ -1,8 +1,7 @@
-import React, { useContext, useEffect } from "react";
-import { Routes, Route, useNavigate } from "react-router-dom";
+import React, { Suspense } from "react";
+import { Routes, Route } from "react-router-dom";
 import { Header } from "../components/index";
 import HomePage from "../pages/HomePage/HomePage";
-import { StateContext } from "../store/store";
 
 const LazyProfilePage = React.lazy(
   () => import("../pages/ProfilePage/ProfilePage")
@@ -15,28 +14,36 @@ const LazyNotFoundPage = React.lazy(
 );
 
 const Router = () => {
-  const usenavigation = useNavigate();
-  const { dispatch } = useContext(StateContext);
-
-  useEffect(() => {
-    const checkUser = localStorage.getItem("ematija-user");
-    if (!checkUser) {
-      usenavigation("login");
-    } else {
-      const parserUser = JSON.parse(checkUser);
-      dispatch({ type: "setLogedUser", payload: parserUser });
-    }
-  }, []);
-
   return (
     <div>
       <Header />
       <Routes>
         <Route path="/" element={<HomePage />} />
         <Route path="/home" element={<HomePage />} />
-        <Route path="/login" element={<LazyLoginPage />} />
-        <Route path="/profile" element={<LazyProfilePage />} />
-        <Route path="*" element={<LazyNotFoundPage />} />
+        <Route
+          path="/login"
+          element={
+            <Suspense>
+              <LazyLoginPage />
+            </Suspense>
+          }
+        />
+        <Route
+          path="/profile"
+          element={
+            <Suspense>
+              <LazyProfilePage />
+            </Suspense>
+          }
+        />
+        <Route
+          path="*"
+          element={
+            <Suspense>
+              <LazyNotFoundPage />
+            </Suspense>
+          }
+        />
       </Routes>
     </div>
   );

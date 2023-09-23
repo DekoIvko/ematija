@@ -1,20 +1,45 @@
-import React, { useCallback, useEffect, useState } from "react";
-import { GetQuotesService } from "../../../services/GetQuotesService";
+import { useCallback, useEffect, useState } from "react";
+import { AxiosResponse } from "axios";
+import { GetQuotesService } from "../../../services/QuotesService";
 import { IQuotes } from "../../../interfaces/IQuotes";
-import { Pagination } from "../../../components";
+import { Loader, Pagination, StatusMessage } from "../../../components";
 
 import "./Quotes.scss";
 
-interface IProps {
-  quotes: IQuotes[];
-}
-
-const Quotes = ({ quotes }: IProps) => {
+const Quotes = () => {
+  const [quotes, setQuotes] = useState<IQuotes[]>();
   const [currentPage, setCurrentPage] = useState(1);
+  const [loading, setLoading] = useState<boolean>(false);
+  const [error, setError] = useState<Error>();
+
+  const getAllPosts = useCallback(async () => {
+    setLoading(true);
+    try {
+      const { status, data }: AxiosResponse = await GetQuotesService();
+
+      if (status === 200) {
+        setQuotes(data.quotes);
+      } else {
+        setError(data?.message);
+      }
+    } catch (error: any) {
+      setError(error.message);
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    getAllPosts();
+  }, []);
 
   return (
     <div className="quotes d-flex flex-column">
-      {quotes ? (
+      {loading && !error && <Loader />}
+      {!loading && error && (
+        <StatusMessage status="error" message={error.message} />
+      )}
+      {!loading && !error && quotes ? (
         <>
           {quotes
             .slice(currentPage, currentPage + 10)

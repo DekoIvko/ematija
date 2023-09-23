@@ -1,65 +1,43 @@
-import React, { useCallback, useContext, useEffect, useState } from "react";
-import { StateContext } from "../../store/store";
-import { GetSingleUserService } from "../../services/GetUsersService";
+import { useCallback, useContext, useEffect, useState } from "react";
+import { AxiosResponse } from "axios";
+import { IStateContext, StateContext } from "../../store/store";
+import { GetSingleUserService } from "../../services/UsersService";
 import { IUserDetails } from "../../interfaces/IUserDetails";
-import { GetUserPostsService } from "../../services/GetPostsService";
-import { IPosts } from "../../interfaces/IPosts";
 import UserDetails from "./UserDetails/UserDetails";
 import ProfileInfo from "./ProfileInfo/ProfileInfo";
-import HomeFeed from "../HomePage/HomeFeed/HomeFeed";
+import HomeFeed from "../HomePage/Feed/Feed";
 import { Loader, StatusMessage } from "../../components/index";
 
 import "./ProfilePage.scss";
 
 const ProfilePage = () => {
-  const { state, dispatch } = useContext(StateContext);
+  const { state } = useContext<IStateContext>(StateContext);
   const [userDetails, setUserDetails] = useState<IUserDetails>();
-  const [userPosts, setUserPosts] = useState<IPosts[]>();
+  const [error, setError] = useState<Error>();
+  const [loading, setLoading] = useState<boolean>(false);
 
   const getUserDetails = useCallback(async (userId: string) => {
-    dispatch({ type: "setLoader", payload: true });
+    setLoading(true);
     try {
-      return await GetSingleUserService(userId);
-    } catch (error: any) {
-      dispatch({ type: "setError", payload: true });
-      dispatch({ type: "setErrorMessage", payload: error.message });
-    }
-  }, []);
+      const { status, data }: AxiosResponse = await GetSingleUserService(
+        userId
+      );
 
-  const getUserPosts = useCallback(async (userId: string) => {
-    dispatch({ type: "setLoader", payload: true });
-    try {
-      return await GetUserPostsService(userId);
+      if (status === 200) {
+        setUserDetails(data);
+      } else {
+        setError(data?.message);
+      }
     } catch (error: any) {
-      dispatch({ type: "setError", payload: true });
-      dispatch({ type: "setErrorMessage", payload: error.message });
+      setError(error.message);
+    } finally {
+      setLoading(false);
     }
   }, []);
 
   useEffect(() => {
-    async function asyncFunction() {
-      let userD: any;
-      await getUserDetails(state?.logedUser?.id)
-        .then((res) => {
-          userD = res;
-          setUserDetails(res);
-          return res;
-        })
-        .then((ress: any) => {
-          return getUserPosts(ress.id);
-        })
-        .then((resss) => {
-          resss?.forEach((element: any) => {
-            element.user = userD;
-          });
-          setUserPosts((prevObj) => (prevObj = resss));
-        })
-        .finally(() => {
-          dispatch({ type: "setLoader", payload: false });
-        });
-    }
-    asyncFunction();
-  }, [state.logedUser]);
+    getUserDetails(state?.loggedUser?.id.toString());
+  }, [state.loggedUser]);
 
   return (
     <div
@@ -69,11 +47,11 @@ const ProfilePage = () => {
         color: state?.appTheme === "dark" ? "whitesmoke" : "#242526",
       }}
     >
-      {state?.error && !state.loader && (
-        <StatusMessage status="error" message={state?.errorMessage} />
+      {error && !loading && (
+        <StatusMessage status="error" message={error.message} />
       )}
-      {!state?.error && state.loader && <Loader />}
-      {!state?.error && !state.loader && (
+      {!error && loading && <Loader />}
+      {!error && !loading && (
         <>
           <div className="profile-info d-flex flex-column w-100">
             {userDetails && <ProfileInfo userDetails={userDetails} />}
@@ -83,7 +61,7 @@ const ProfilePage = () => {
               {userDetails && <UserDetails userDetails={userDetails} />}
             </div>
             <div className="profile-feed d-flex flex-column">
-              {userPosts && <HomeFeed allPosts={userPosts} />}
+              <HomeFeed feedType="profile-page" userData={userDetails} />
             </div>
           </div>
         </>

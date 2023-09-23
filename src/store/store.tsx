@@ -1,27 +1,22 @@
-import {
-  Dispatch,
-  SetStateAction,
-  createContext,
-  useReducer,
-} from "react";
+import { Dispatch, SetStateAction, createContext, useReducer } from "react";
 import InitialStore from "./InitialStore";
 import { IInitialStore } from "../interfaces/IInitialStore";
-import { reducer } from "./reducers";
+import { IActions, reducer } from "./reducers";
 
 export interface IStateContext {
   state: IInitialStore;
-  disptach: Dispatch<SetStateAction<IInitialStore>>;
+  dispatch: Dispatch<SetStateAction<IActions>>;
 }
 
-type InititalContextProviderProps = {
+type InitialContextProviderProps = {
   children: React.ReactNode;
 };
 
 export const StateContext = createContext(InitialStore);
 
-export const InititalContextProvider = ({
+export const InitialContextProvider = ({
   children,
-}: InititalContextProviderProps) => {
+}: InitialContextProviderProps) => {
   const [state, dispatch] = useReducer(reducer, InitialStore);
   return (
     <StateContext.Provider value={{ state, dispatch }}>

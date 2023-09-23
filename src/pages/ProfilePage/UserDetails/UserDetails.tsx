@@ -1,15 +1,10 @@
-import React, { useEffect } from "react";
 import { IUserDetails } from "../../../interfaces/IUserDetails";
 
 interface IProps {
-    userDetails: IUserDetails
+  userDetails: IUserDetails;
 }
 
-const UserDetails = ({userDetails}: IProps) => {
-    useEffect(() => {
-console.log(userDetails)
-    }, [userDetails])
-    
+const UserDetails = ({ userDetails }: IProps) => {
   return (
     <div>
       {" "}

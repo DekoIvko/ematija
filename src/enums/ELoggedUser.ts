@@ -1,4 +1,4 @@
-export enum ELogedUser {
+export enum ELoggedUser {
   id = 0,
   username = "",
   email = "",
