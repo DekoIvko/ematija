@@ -4,7 +4,7 @@ import { NavigationMenu } from "./NavigationMenu/NavigationMenu";
 
 import { Loader, StatusMessage } from "../../components/index";
 
-import HomeFeed from "./Feed/Feed";
+import Feed from "./Feed/Feed";
 import Quotes from "./Quotes/Quotes";
 import Todos from "./Todos/Todos";
 
@@ -36,7 +36,7 @@ const HomePage = () => {
           </div>
           {state?.activeNavItem === "feed" && (
             <div className="main d-flex flex-column align-self-center">
-              <HomeFeed feedType="home-page" />
+              <Feed feedType="home-page" />
             </div>
           )}
           {state?.activeNavItem === "quotes" && (

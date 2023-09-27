@@ -8,42 +8,49 @@ import {
   CreateTodosService,
   GetTodosService,
 } from "../../../services/TodosService";
+import withCommentsLogic from "../../../hooks/withCommentsLogic";
+import { useFetchGet } from "../../../hooks/useFetchGet";
+import { appConfig } from "../../../appConfig";
 import "./Todos.scss";
 
-const Todos = () => {
-  const { state, dispatch } = useContext<IStateContext>(StateContext);
+const Todos = ({ onClickComments }: any) => {
+  const { state } = useContext<IStateContext>(StateContext);
   const [todos, setTodos] = useState<ITodos[]>();
   const [currentPage, setCurrentPage] = useState(1);
-  const [loading, setLoading] = useState<boolean>(false);
-  const [error, setError] = useState<Error>();
+  const { loading, apiError, apiData } = useFetchGet(
+    `${appConfig?.baseApiURL}/todos?limit=300`
+  );
+  // const [loading, setLoading] = useState<boolean>(false);
+  // const [error, setError] = useState<Error>();
   const [newTodo, setNewTodo] = useState<string>("");
   const [newTodoCompleted, setNewTodoCompleted] = useState<boolean>(false);
   const [showTodoCreateInputs, setShowTodoCreateInputs] =
     useState<boolean>(false);
 
-  const getAllPosts = useCallback(async () => {
-    setLoading(true);
-    try {
-      const { status, data }: AxiosResponse = await GetTodosService();
-      if (status === 200) {
-        const myTodos = data?.todos.filter(
-          (todo: ITodos) => todo.userId === state?.loggedUser?.id
-        );
+  // const getAllPosts = useCallback(async () => {
+  //   setLoading(true);
+  //   try {
+  //     const { status, data }: AxiosResponse = await GetTodosService();
+  //     if (status === 200) {
+  //       const myTodos = data?.todos.filter(
+  //         (todo: ITodos) => todo.userId === state?.loggedUser?.id
+  //       );
 
-        setTodos(myTodos);
-      } else {
-        setError(data.message);
-      }
-    } catch (error: any) {
-      setError(error.message);
-    } finally {
-      setLoading(false);
-    }
-  }, []);
+  //       setTodos(myTodos);
+  //     } else {
+  //       setError(data.message);
+  //     }
+  //   } catch (error: any) {
+  //     setError(error.message);
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // }, []);
 
   useEffect(() => {
-    getAllPosts();
-  }, []);
+    // getAllPosts();
+    setTodos(apiData?.todos);
+  }, [apiData]);
 
   const createTodo = async () => {
     const todo: IAddTodo = {
@@ -55,11 +62,11 @@ const Todos = () => {
     const { status, data }: AxiosResponse = await CreateTodosService(todo);
 
     if (status === 200) {
-      setTodos((prevArr) => [...prevArr!, data]);
+      // setTodos((prevArr) => [...prevArr!, data]);
       setShowTodoCreateInputs((prevVal) => (prevVal = !prevVal));
       setNewTodo("");
     } else {
-      setError(data?.message);
+      // setError(data?.message);
     }
   };
 
@@ -122,11 +129,11 @@ const Todos = () => {
           </div>
         </div>
       )}
-      {loading && !error && <Loader />}
-      {!loading && error && (
-        <StatusMessage status="error" message={error.message} />
+      {loading && !apiError && <Loader />}
+      {!loading && apiError && (
+        <StatusMessage status="error" message={apiError.message} />
       )}
-      {!loading && !error && todos ? (
+      {!loading && !apiError && todos ? (
         <>
           {todos
             ?.slice(currentPage, currentPage + 10)
@@ -135,6 +142,7 @@ const Todos = () => {
                 <div
                   className="todos-item d-flex flex-column gap-2"
                   key={item?.id + "_" + index}
+                  onClick={(e) => onClickComments(e)}
                 >
                   <div className="todo-text d-flex p-3">{item?.todo}</div>
                   <div className="todo-completed">
@@ -155,4 +163,4 @@ const Todos = () => {
   );
 };
 
-export default Todos;
+export default withCommentsLogic(Todos);

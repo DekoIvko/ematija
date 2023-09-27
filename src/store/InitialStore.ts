@@ -4,8 +4,8 @@ import { ELoggedUser } from "../enums/ELoggedUser";
 
 const InitialStore: any = {
   // need to find solution about not any type
-  facebookUser: EFacebookUser,
-  loggedUser: ELoggedUser,
+  facebookUser: {} as EFacebookUser,
+  loggedUser: {} as ELoggedUser,
   appTheme: "dark",
   activeNavItem: "feed",
   counter: 0,

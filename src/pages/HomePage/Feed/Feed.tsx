@@ -19,15 +19,17 @@ import { GetUsersService } from "../../../services/UsersService";
 import { IUserDetails } from "../../../interfaces/IUserDetails";
 import "./Feed.scss";
 import AddComments from "./AddComments/AddComments";
+import Comments from "./Comments/Comments";
 
 interface IProps {
   feedType: string;
   userData?: any;
 }
 
-const HomeFeed = ({ feedType, userData }: IProps) => {
+const Feed = ({ feedType, userData }: IProps) => {
   const { state } = useContext<IStateContext>(StateContext);
   const [allPosts, setAllPosts] = useState<IPosts[]>();
+  const [comments, setComments] = useState<IComments[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [newComment, setNewComment] = useState("");
   const [loadingPosts, setLoadingPosts] = useState<boolean>(false);
@@ -57,7 +59,7 @@ const HomeFeed = ({ feedType, userData }: IProps) => {
           }
           return post;
         });
-
+        setComments(allComments?.data?.comments);
         setAllPosts(data.posts);
       } else {
         setError(data.message);
@@ -67,7 +69,7 @@ const HomeFeed = ({ feedType, userData }: IProps) => {
     } finally {
       setLoadingPosts(false);
     }
-  }, []);
+  }, [allPosts]);
 
   const getUserPosts = useCallback(async () => {
     setLoadingPosts(true);
@@ -97,7 +99,7 @@ const HomeFeed = ({ feedType, userData }: IProps) => {
     } finally {
       setLoadingPosts(false);
     }
-  }, []);
+  }, [allPosts]);
 
   useEffect(() => {
     if (feedType === "home-page") {
@@ -136,7 +138,7 @@ const HomeFeed = ({ feedType, userData }: IProps) => {
           if (item.id === post.id) {
             item.comments.push({
               body: newComment,
-              id: 341,
+              id: comments?.length + 1,
               postId: post.id,
               user: {
                 id: state?.loggedUser?.id,
@@ -192,22 +194,7 @@ const HomeFeed = ({ feedType, userData }: IProps) => {
                     })}
                   </div>
                   <div className="comments d-flex flex-column">
-                    {item?.comments
-                      ? item?.comments.map(
-                          (comment: IComments, index: number) => {
-                            return (
-                              <div key={comment.id + "_" + index}>
-                                <div className="comment-user-details p-1">
-                                  {comment?.user?.username}
-                                </div>
-                                <div className="comment-body p-3 m-1">
-                                  {comment?.body}
-                                </div>
-                              </div>
-                            );
-                          }
-                        )
-                      : null}
+                    <Comments comments={item?.comments} />
                   </div>
                   <div className="add-comment d-flex flex-column">
                     <div className="d-flex w-100 justify-content-center">
@@ -255,4 +242,4 @@ const HomeFeed = ({ feedType, userData }: IProps) => {
   );
 };
 
-export default HomeFeed;
+export default Feed;

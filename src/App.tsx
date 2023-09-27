@@ -3,19 +3,26 @@ import Router from "./Routes/Routes";
 import { BrowserRouter } from "react-router-dom";
 import AuthProvider from "./hooks/AuthProvider";
 import { InitialContextProvider } from "./store/store";
+import { ErrorBoundary } from "react-error-boundary";
+import ErrorFallback from "./components/ErrorFallback/ErrorFallback";
 
 import "./App.css";
 
 function App() {
   return (
     <div className="App">
-      <InitialContextProvider>
-        <BrowserRouter>
-          <AuthProvider>
-            <Router />
-          </AuthProvider>
-        </BrowserRouter>
-      </InitialContextProvider>
+      <ErrorBoundary
+        FallbackComponent={ErrorFallback}
+        onReset={() => window.location.reload()}
+      >
+        <InitialContextProvider>
+          <BrowserRouter>
+            <AuthProvider>
+              <Router />
+            </AuthProvider>
+          </BrowserRouter>
+        </InitialContextProvider>
+      </ErrorBoundary>
     </div>
   );
 }

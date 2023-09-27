@@ -5,7 +5,7 @@ import { GetSingleUserService } from "../../services/UsersService";
 import { IUserDetails } from "../../interfaces/IUserDetails";
 import UserDetails from "./UserDetails/UserDetails";
 import ProfileInfo from "./ProfileInfo/ProfileInfo";
-import HomeFeed from "../HomePage/Feed/Feed";
+import Feed from "../HomePage/Feed/Feed";
 import { Loader, StatusMessage } from "../../components/index";
 
 import "./ProfilePage.scss";
@@ -16,24 +16,27 @@ const ProfilePage = () => {
   const [error, setError] = useState<Error>();
   const [loading, setLoading] = useState<boolean>(false);
 
-  const getUserDetails = useCallback(async (userId: string) => {
-    setLoading(true);
-    try {
-      const { status, data }: AxiosResponse = await GetSingleUserService(
-        userId
-      );
+  const getUserDetails = useCallback(
+    async (userId: string) => {
+      setLoading(true);
+      try {
+        const { status, data }: AxiosResponse = await GetSingleUserService(
+          userId
+        );
 
-      if (status === 200) {
-        setUserDetails(data);
-      } else {
-        setError(data?.message);
+        if (status === 200) {
+          setUserDetails(data);
+        } else {
+          setError(data?.message);
+        }
+      } catch (error: any) {
+        setError(error.message);
+      } finally {
+        setLoading(false);
       }
-    } catch (error: any) {
-      setError(error.message);
-    } finally {
-      setLoading(false);
-    }
-  }, []);
+    },
+    [userDetails]
+  );
 
   useEffect(() => {
     getUserDetails(state?.loggedUser?.id.toString());
@@ -61,7 +64,7 @@ const ProfilePage = () => {
               {userDetails && <UserDetails userDetails={userDetails} />}
             </div>
             <div className="profile-feed d-flex flex-column">
-              <HomeFeed feedType="profile-page" userData={userDetails} />
+              <Feed feedType="profile-page" userData={userDetails} />
             </div>
           </div>
         </>

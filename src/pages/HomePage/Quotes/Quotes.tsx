@@ -5,8 +5,9 @@ import { IQuotes } from "../../../interfaces/IQuotes";
 import { Loader, Pagination, StatusMessage } from "../../../components";
 
 import "./Quotes.scss";
+import withCommentsLogic from "../../../hooks/withCommentsLogic";
 
-const Quotes = () => {
+const Quotes = ({ onClickComments }: any) => {
   const [quotes, setQuotes] = useState<IQuotes[]>();
   const [currentPage, setCurrentPage] = useState(1);
   const [loading, setLoading] = useState<boolean>(false);
@@ -48,6 +49,7 @@ const Quotes = () => {
                 <div
                   className="quotes-item d-flex flex-column gap-2"
                   key={item?.id + "_" + index}
+                  onClick={(e) => onClickComments(e)}
                 >
                   <div className="quote-text d-flex p-3">{item?.quote}</div>
                   <div className="quote-author">
@@ -68,4 +70,4 @@ const Quotes = () => {
   );
 };
 
-export default Quotes;
+export default withCommentsLogic(Quotes);

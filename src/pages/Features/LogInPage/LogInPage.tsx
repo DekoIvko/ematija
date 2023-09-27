@@ -42,6 +42,7 @@ const LogInPage = () => {
       dispatch({ type: "setLoggedUser", payload: authUser });
       localStorage.setItem("ematija-user", JSON.stringify(authUser));
       navigate("/home");
+      window.location.reload();
     }
   };
 

@@ -1,12 +1,5 @@
 import { NavLink } from "react-router-dom";
 import { IInitialStore } from "../../../interfaces/IInitialStore";
-import MaleCounter from "./PractisingHOC/MaleCounter";
-import FemaleCounter from "./PractisingHOC/FemaleCounter";
-import OtherCounter from "./PractisingHOC/OtherCounter";
-import DogCounter from "./PractisingRenderProps/DogCounter";
-import CatCounter from "./PractisingRenderProps/CatCounter";
-import MouseCounter from "./PractisingRenderProps/MouseCounter";
-import RenderPropsCounter from "../../../hooks/RenderPropsCounter";
 
 import "./NavigationMenu.scss";
 interface IProps {
@@ -68,60 +61,6 @@ export const NavigationMenu = ({ state, setNavItem }: IProps) => {
               }
             >
               Todos
-            </NavLink>
-          </li>
-          <li className="list-group-item">
-            <NavLink to="" className="links  nav-link">
-              <MaleCounter description="Im a male" />
-            </NavLink>
-          </li>
-          <li className="list-group-item">
-            <NavLink to="" className="links d-flex nav-link">
-              <FemaleCounter description="Im a female" />
-            </NavLink>
-          </li>
-          <li className="list-group-item">
-            <NavLink to="" className="links  nav-link">
-              <OtherCounter description="Im a other" />
-            </NavLink>
-          </li>
-          <li className="list-group-item">
-            <NavLink to="" className="links nav-link">
-              <RenderPropsCounter
-                render={(counter: number, onClickButtonCounter: any) => (
-                  <DogCounter
-                    description="Im a dog"
-                    counter={counter}
-                    onClickButtonCounter={onClickButtonCounter}
-                  />
-                )}
-              />
-            </NavLink>
-          </li>
-          <li className="list-group-item">
-            <NavLink to="" className="links nav-link">
-              <RenderPropsCounter
-                render={(counter: number, onClickButtonCounter: any) => (
-                  <CatCounter
-                    description="Im a cat"
-                    counter={counter}
-                    onClickButtonCounter={onClickButtonCounter}
-                  />
-                )}
-              />
-            </NavLink>
-          </li>
-          <li className="list-group-item">
-            <NavLink to="" className="links nav-link">
-              <RenderPropsCounter
-                render={(counter: number, onClickButtonCounter: any) => (
-                  <MouseCounter
-                    description="Im a mouse"
-                    counter={counter}
-                    onClickButtonCounter={onClickButtonCounter}
-                  />
-                )}
-              />
             </NavLink>
           </li>
         </ul>
