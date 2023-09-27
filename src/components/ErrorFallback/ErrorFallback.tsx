@@ -1,6 +1,7 @@
 "use client";
 
 const ErrorFallback = ({ error, resetErrorBoundary }: any) => {
+  console.log(error);
   return (
     <div role="alert">
       <p>Something went wrong:</p>

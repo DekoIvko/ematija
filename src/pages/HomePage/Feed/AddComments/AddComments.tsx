@@ -2,25 +2,16 @@ import { IPosts } from "../../../../interfaces/IPosts";
 
 interface IProps {
   item: IPosts;
-  newComment: string;
+  newComment: any;
   onAddComment: Function;
-  setNewComment: Function;
+  setNewComment?: Function;
 }
 
-const AddComments = ({
-  item,
-  newComment,
-  onAddComment,
-  setNewComment,
-}: IProps) => {
+const AddComments = ({ item, newComment, onAddComment }: IProps) => {
   return (
     <>
       <div className="input-group add-comment-input d-flex">
-        <textarea
-          className="form-control"
-          value={newComment}
-          onChange={(e) => setNewComment(e.target.value)}
-        ></textarea>
+        <textarea className="form-control" ref={newComment}></textarea>
         <button
           className="btn btn-secondary"
           onClick={() => onAddComment(item)}

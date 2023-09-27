@@ -1,4 +1,4 @@
-import { useCallback, useContext, useEffect, useState } from "react";
+import { useCallback, useContext, useEffect, useRef, useState } from "react";
 import { Loader, Pagination, StatusMessage } from "../../../components";
 import { IStateContext, StateContext } from "../../../store/store";
 import { AxiosResponse } from "axios";
@@ -17,9 +17,9 @@ import {
 } from "../../../services/PostsService";
 import { GetUsersService } from "../../../services/UsersService";
 import { IUserDetails } from "../../../interfaces/IUserDetails";
-import "./Feed.scss";
 import AddComments from "./AddComments/AddComments";
 import Comments from "./Comments/Comments";
+import "./Feed.scss";
 
 interface IProps {
   feedType: string;
@@ -27,11 +27,10 @@ interface IProps {
 }
 
 const Feed = ({ feedType, userData }: IProps) => {
+  let inputAddComment = useRef<any>("");
   const { state } = useContext<IStateContext>(StateContext);
   const [allPosts, setAllPosts] = useState<IPosts[]>();
-  const [comments, setComments] = useState<IComments[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
-  const [newComment, setNewComment] = useState("");
   const [loadingPosts, setLoadingPosts] = useState<boolean>(false);
   const [error, setError] = useState<Error>();
   const [errorAddComment, setErrorAddComment] = useState<Error>();
@@ -53,13 +52,16 @@ const Feed = ({ feedType, userData }: IProps) => {
             (comment: IComments) => post.id === comment.postId
           );
           if (user) {
-            post.user = user;
-            post.comments = comments;
-            post.showCommentSection = false;
+            return {
+              ...post,
+              user: user,
+              comments: comments,
+              showCommentSection: false,
+            };
+          } else {
+            return post;
           }
-          return post;
         });
-        setComments(allComments?.data?.comments);
         setAllPosts(data.posts);
       } else {
         setError(data.message);
@@ -84,10 +86,12 @@ const Feed = ({ feedType, userData }: IProps) => {
           const comments = allComments?.data?.comments.filter(
             (comment: IComments) => post.id === comment.postId
           );
-          post.user = userData;
-          post.comments = comments;
-          post.showCommentSection = false;
-          return post;
+          return {
+            ...post,
+            user: userData,
+            comments: comments,
+            showCommentSection: false,
+          };
         });
 
         setAllPosts(data.posts);
@@ -112,11 +116,10 @@ const Feed = ({ feedType, userData }: IProps) => {
   const onShowCommentSection = (post: IPosts) => {
     const showCommentSect = allPosts?.map((item) => {
       if (item.id === post.id) {
-        item.showCommentSection = !item.showCommentSection;
+        return { ...item, showCommentSection: !item.showCommentSection };
       }
       return item;
     });
-    setNewComment("");
     setAllPosts!(showCommentSect);
   };
 
@@ -124,7 +127,7 @@ const Feed = ({ feedType, userData }: IProps) => {
     setLoadingAddComment(true);
     try {
       const paramComment: IParamComment = {
-        body: newComment,
+        body: inputAddComment.current?.value,
         postId: post.id,
         userId: post?.user.id,
       };
@@ -137,12 +140,12 @@ const Feed = ({ feedType, userData }: IProps) => {
         const showCommentSect = allPosts?.map((item) => {
           if (item.id === post.id) {
             item.comments.push({
-              body: newComment,
-              id: comments?.length + 1,
-              postId: post.id,
+              body: data.body,
+              id: item?.comments?.length + 1,
+              postId: data.postId,
               user: {
-                id: state?.loggedUser?.id,
-                username: state?.loggedUser?.username,
+                id: data.user.id,
+                username: data.user.username,
               },
             });
           }
@@ -152,10 +155,10 @@ const Feed = ({ feedType, userData }: IProps) => {
       } else {
         setErrorAddComment(data?.message);
       }
-      onShowCommentSection(post);
     } catch (error: any) {
       setErrorAddComment(error.message);
     } finally {
+      onShowCommentSection(post);
       setLoadingAddComment(false);
     }
   };
@@ -219,9 +222,8 @@ const Feed = ({ feedType, userData }: IProps) => {
                         {!errorAddComment && !loadingAddComment && (
                           <AddComments
                             item={item}
-                            newComment={newComment}
+                            newComment={inputAddComment}
                             onAddComment={onAddComment}
-                            setNewComment={setNewComment}
                           />
                         )}
                       </>
