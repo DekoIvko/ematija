@@ -15,7 +15,6 @@ function StatusMessage({
   align,
   className,
 }: IProps) {
-  console.log(message);
   function getAlignmentCss() {
     switch (align) {
       case "left":
