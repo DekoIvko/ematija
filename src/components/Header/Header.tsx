@@ -1,8 +1,9 @@
-import React, { useContext } from "react";
+import { useContext } from "react";
 import mkFlag from "../../imgs/MKFlag.png";
 import { NavLink } from "react-router-dom";
 import FacebookLogin from "react-facebook-login";
 import { StateContext } from "../../store/store";
+import { EHeaderNavItems } from "../../enums/EHeaderNavItems";
 
 import "./Header.scss";
 
@@ -56,7 +57,7 @@ const Header = () => {
           <ul className="list-group list-group-flush d-flex flex-row">
             <li className="list-group-item">
               <NavLink
-                to="/home"
+                to={EHeaderNavItems.home}
                 className={({ isActive, isPending }) =>
                   isPending
                     ? "top-link-itm pending"
@@ -82,7 +83,7 @@ const Header = () => {
             </li>
             <li className="list-group-item">
               <NavLink
-                to="/profile"
+                to={EHeaderNavItems.profile}
                 className={({ isActive, isPending }) =>
                   isPending
                     ? "top-link-itm pending"

@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useState } from "react";
 
 import { AxiosResponse } from "axios";
 import {
@@ -7,13 +7,14 @@ import {
 } from "../../../services/UsersService";
 import { Loader, StatusMessage } from "../../../components";
 import { IUserDetails } from "../../../interfaces/IUserDetails";
+import useDebounceEffect from "../../../hooks/useDebounceEffect";
 import "./Messenger.scss";
 
 const Messenger = () => {
   const [users, setUsers] = useState<IUserDetails[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<Error>();
-  const inputSearch = useRef<HTMLInputElement>(null);
+  const [inputSearch, setInputSearch] = useState("");
 
   const getAllUsers = useCallback(async () => {
     setLoading(true);
@@ -32,31 +33,34 @@ const Messenger = () => {
     }
   }, [users]);
 
-  useEffect(() => {
-    getAllUsers();
-  }, []);
-
   const getUserOnSearch = async () => {
     setLoading(true);
     try {
-      const { data, status }: AxiosResponse = await GetUsersSearchService(
-        inputSearch.current?.value.toString()!
-      );
-
-      if (status === 200) {
-        if (inputSearch.current?.value) {
+      if (inputSearch.length > 0) {
+        const { data, status }: AxiosResponse = await GetUsersSearchService(
+          inputSearch
+        );
+        if (status === 200) {
           setUsers(data?.users);
         } else {
-          getAllUsers();
+          setError(data.message);
         }
       } else {
-        setError(data.message);
+        getAllUsers();
       }
     } catch (error: any) {
       setError(error);
     } finally {
       setLoading(false);
     }
+  };
+
+  useDebounceEffect(() => {
+    getUserOnSearch();
+  }, [inputSearch]);
+
+  const searchInputHandler = (e: string) => {
+    setInputSearch(e);
   };
 
   const onMessengerUser = () => {
@@ -70,7 +74,12 @@ const Messenger = () => {
         <h3>Contacts</h3>
       </div>
       <div className="messenger-user-search d-flex flex-column p-2">
-        <input ref={inputSearch} onChange={getUserOnSearch} type="text" />
+        <input
+          // ref={test}
+          onChange={(e) => searchInputHandler(e.target.value)}
+          type="text"
+          className="form-control"
+        />
       </div>
       <div className="messenger-body d-flex flex-column">
         {loading && !error && <Loader />}

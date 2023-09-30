@@ -7,6 +7,8 @@ const axios = Axios.create({
   baseURL: appConfig.baseApiURL,
 });
 
+const CancelToken = Axios.CancelToken.source(); // let it for now
+
 axios.interceptors.request.use((config: any) => {
   const user = localStorage.getItem("ematija-user");
   const userObj: ILoggedUser = parseJsonString(user!);

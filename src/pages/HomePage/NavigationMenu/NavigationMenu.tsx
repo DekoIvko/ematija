@@ -1,5 +1,6 @@
 import { NavLink } from "react-router-dom";
 import { IInitialStore } from "../../../interfaces/IInitialStore";
+import { ENavigationItems } from "../../../enums/ENavigationItems";
 
 import "./NavigationMenu.scss";
 interface IProps {
@@ -21,7 +22,10 @@ export const NavigationMenu = ({ state, setNavItem }: IProps) => {
       </div>
       <div className="navigation-bar d-flex">
         <ul className="list-group d-flex flex-column gap-2 w-100">
-          <li className="list-group-item" onClick={() => setNavItem("feed")}>
+          <li
+            className="list-group-item"
+            onClick={() => setNavItem(ENavigationItems.feed)}
+          >
             <NavLink
               to="/"
               className={({ isActive, isPending }) =>
@@ -35,7 +39,10 @@ export const NavigationMenu = ({ state, setNavItem }: IProps) => {
               Feed
             </NavLink>
           </li>
-          <li className="list-group-item" onClick={() => setNavItem("quotes")}>
+          <li
+            className="list-group-item"
+            onClick={() => setNavItem(ENavigationItems.quotes)}
+          >
             <NavLink
               to="/"
               className={({ isActive, isPending }) =>
@@ -49,7 +56,10 @@ export const NavigationMenu = ({ state, setNavItem }: IProps) => {
               Quotes
             </NavLink>
           </li>
-          <li className="list-group-item" onClick={() => setNavItem("todos")}>
+          <li
+            className="list-group-item"
+            onClick={() => setNavItem(ENavigationItems.todos)}
+          >
             <NavLink
               to="/"
               className={({ isActive, isPending }) =>
@@ -61,6 +71,23 @@ export const NavigationMenu = ({ state, setNavItem }: IProps) => {
               }
             >
               Todos
+            </NavLink>
+          </li>
+          <li
+            className="list-group-item"
+            onClick={() => setNavItem(ENavigationItems.products)}
+          >
+            <NavLink
+              to="/"
+              className={({ isActive, isPending }) =>
+                isPending
+                  ? "top-link-item pending"
+                  : isActive
+                  ? "top-link-item active"
+                  : ""
+              }
+            >
+              Products
             </NavLink>
           </li>
         </ul>

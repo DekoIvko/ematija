@@ -1,5 +1,7 @@
 import { useContext } from "react";
 import { IStateContext, StateContext } from "../../store/store";
+import { INavigationItems } from "../../interfaces/INavigationItems";
+import { ENavigationItems } from "../../enums/ENavigationItems";
 import { NavigationMenu } from "./NavigationMenu/NavigationMenu";
 import Messenger from "./Messenger/Messenger";
 
@@ -14,7 +16,7 @@ import "./HomePage.scss";
 const HomePage = () => {
   const { state, dispatch } = useContext<IStateContext>(StateContext);
 
-  const setNavItem = (navItem: string) => {
+  const setNavItem = (navItem: INavigationItems) => {
     dispatch({ type: "setNavItem", payload: navItem });
   };
 
@@ -35,17 +37,22 @@ const HomePage = () => {
           <div className="navigation d-flex flex-column column align-self-start bd-highlight flex-grow-1">
             <NavigationMenu state={state} setNavItem={setNavItem} />
           </div>
-          {state?.activeNavItem === "feed" ? (
+          {state?.activeNavItem === ENavigationItems.feed ? (
             <div className="main d-flex flex-column align-self-center ">
               <Feed feedType="home-page" />
             </div>
           ) : null}
-          {state?.activeNavItem === "quotes" ? (
+          {state?.activeNavItem === ENavigationItems.quotes ? (
             <div className="main d-flex flex-column align-self-center ">
               <Quotes />
             </div>
           ) : null}
-          {state?.activeNavItem === "todos" ? (
+          {state?.activeNavItem === ENavigationItems.todos ? (
+            <div className="main d-flex flex-column align-self-center ">
+              <Todos />
+            </div>
+          ) : null}
+          {state?.activeNavItem === ENavigationItems.products ? (
             <div className="main d-flex flex-column align-self-center ">
               <Todos />
             </div>

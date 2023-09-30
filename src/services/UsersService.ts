@@ -1,4 +1,3 @@
-import { AxiosResponse } from "axios";
 import { appConfig } from "../appConfig";
 import { newAbortSignal } from "../utils/helpers";
 
