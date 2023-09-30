@@ -40,28 +40,26 @@ const Feed = ({ feedType, userData }: IProps) => {
     setLoadingPosts(true);
     try {
       const { status, data }: AxiosResponse = await GetPostsService();
-      const allUsers: AxiosResponse = await GetUsersService();
-      const allComments: AxiosResponse = await GetAllCommentsService();
+      const { status: statusUsers, data: dataUsers }: AxiosResponse =
+        await GetUsersService();
+      const { status: statusComments, data: dataComments }: AxiosResponse =
+        await GetAllCommentsService();
 
-      if (status === 200) {
+      if (status === 200 && statusUsers === 200 && statusComments === 200) {
         data?.posts.forEach((post: IPosts) => {
-          const user = allUsers?.data?.users.find(
+          const user = dataUsers?.users.find(
             (user: IUserDetails) => post?.userId === user.id
           );
-          const comments = allComments?.data?.comments.filter(
+          const comments = dataComments?.comments.filter(
             (comment: IComments) => post.id === comment.postId
           );
-          if (user) {
-            return {
-              ...post,
-              user: user,
-              comments: comments,
-              showCommentSection: false,
-            };
-          } else {
-            return post;
-          }
+
+          post.comments = comments || {};
+          post.user = user || {};
+          post.showCommentSection = false;
+          return post;
         });
+
         setAllPosts(data.posts);
       } else {
         setError(data.message);
