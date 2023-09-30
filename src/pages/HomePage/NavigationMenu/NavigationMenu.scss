@@ -1,8 +1,9 @@
 .navigation-menu {
-  min-width: 18rem;
+  min-width: fit-content;
   margin: 5px;
   padding: 10px;
   font-size: larger;
+  height: 100vh;
   .navigation-bar {
     margin-top: 5px;
     .list-group-item {

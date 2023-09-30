@@ -1,10 +1,8 @@
 .home-page {
   .navigation {
-    max-width: fit-content;
+    min-width: fit-content;
   }
   .main {
-    margin: 5px;
-    width: inherit;
     height: auto;
   }
 }

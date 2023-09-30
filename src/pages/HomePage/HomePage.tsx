@@ -1,6 +1,7 @@
 import { useContext } from "react";
 import { IStateContext, StateContext } from "../../store/store";
 import { NavigationMenu } from "./NavigationMenu/NavigationMenu";
+import Messenger from "./Messenger/Messenger";
 
 import { Loader, StatusMessage } from "../../components/index";
 
@@ -31,24 +32,27 @@ const HomePage = () => {
       {!state?.error && state?.loader && <Loader />}
       {!state?.error && !state?.loader && (
         <>
-          <div className="navigation d-flex flex-column align-self-start bd-highlight flex-grow-1">
+          <div className="navigation d-flex flex-column column align-self-start bd-highlight flex-grow-1">
             <NavigationMenu state={state} setNavItem={setNavItem} />
           </div>
-          {state?.activeNavItem === "feed" && (
-            <div className="main d-flex flex-column align-self-center">
+          {state?.activeNavItem === "feed" ? (
+            <div className="main d-flex flex-column align-self-center ">
               <Feed feedType="home-page" />
             </div>
-          )}
-          {state?.activeNavItem === "quotes" && (
-            <div className="main d-flex flex-column align-self-center">
+          ) : null}
+          {state?.activeNavItem === "quotes" ? (
+            <div className="main d-flex flex-column align-self-center ">
               <Quotes />
             </div>
-          )}
-          {state?.activeNavItem === "todos" && (
-            <div className="main d-flex flex-column align-self-center">
+          ) : null}
+          {state?.activeNavItem === "todos" ? (
+            <div className="main d-flex flex-column align-self-center ">
               <Todos />
             </div>
-          )}
+          ) : null}
+          <div className="navigation d-flex flex-column flex-grow-1 ">
+            <Messenger />
+          </div>
         </>
       )}
     </div>

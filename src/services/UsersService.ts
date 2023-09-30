@@ -23,3 +23,16 @@ export const GetSingleUserService = async (userId: string) => {
     return error;
   }
 };
+
+export const GetUsersSearchService = async (userSearch: string) => {
+  try {
+    return await axios.get(
+      `${appConfig.baseApiURL}/users/search?q=${userSearch}`,
+      {
+        signal: newAbortSignal(2000),
+      }
+    );
+  } catch (error: any) {
+    return error;
+  }
+};

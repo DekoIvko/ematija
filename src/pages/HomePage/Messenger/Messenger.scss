@@ -1,0 +1,16 @@
+.messenger {
+  min-width: fit-content;
+  margin-top: 1rem;
+  .messenger-user-search {
+  }
+  .messenger-list {
+    overflow-y: scroll;
+    overflow-x: hidden;
+    max-height: 78vh;
+    .messenger-user-div:hover {
+      cursor: pointer;
+      background-color: #6c757d;
+      border-radius: 15px;
+    }
+  }
+}

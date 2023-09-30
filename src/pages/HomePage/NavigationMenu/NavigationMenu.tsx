@@ -17,7 +17,7 @@ export const NavigationMenu = ({ state, setNavItem }: IProps) => {
           alt="Facebook profile"
           style={{ maxWidth: "50px", maxHeight: "50px" }}
         />
-        <p className="m-0 p-2">{`${state?.loggedUser?.firstName} ${state?.loggedUser?.lastName}`}</p>
+        <div className="m-0 p-2">{`${state?.loggedUser?.firstName} ${state?.loggedUser?.lastName}`}</div>
       </div>
       <div className="navigation-bar d-flex">
         <ul className="list-group d-flex flex-column gap-2 w-100">

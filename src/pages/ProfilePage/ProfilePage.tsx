@@ -64,7 +64,9 @@ const ProfilePage = () => {
               {userDetails && <UserDetails userDetails={userDetails} />}
             </div>
             <div className="profile-feed d-flex flex-column">
-              <Feed feedType="profile-page" userData={userDetails} />
+              {userDetails && (
+                <Feed feedType="profile-page" userData={userDetails} />
+              )}
             </div>
           </div>
         </>
