@@ -27,6 +27,7 @@ interface IProps {
 }
 
 const Feed = ({ feedType, userData }: IProps) => {
+  console.log("Components Feed");
   let inputAddComment = useRef<any>("");
   const { state } = useContext<IStateContext>(StateContext);
   const [allPosts, setAllPosts] = useState<IPosts[]>();

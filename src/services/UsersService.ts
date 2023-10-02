@@ -26,7 +26,7 @@ export const GetSingleUserService = async (userId: string) => {
 export const GetUsersSearchService = async (userSearch: string) => {
   try {
     return await axios.get(
-      `${appConfig.baseApiURL}/users/search?q=${userSearch}`,
+      `${appConfig.baseApiURL}/users/search?limit=100&q=${userSearch}`,
       {
         signal: newAbortSignal(2000),
       }

@@ -10,10 +10,12 @@ import { Loader, StatusMessage } from "../../components/index";
 import Feed from "./Feed/Feed";
 import Quotes from "./Quotes/Quotes";
 import Todos from "./Todos/Todos";
+import Products from "./Products/Products";
 
 import "./HomePage.scss";
 
 const HomePage = () => {
+  console.log("Components HomePage");
   const { state, dispatch } = useContext<IStateContext>(StateContext);
 
   const setNavItem = (navItem: INavigationItems) => {
@@ -54,7 +56,7 @@ const HomePage = () => {
           ) : null}
           {state?.activeNavItem === ENavigationItems.products ? (
             <div className="main d-flex flex-column align-self-center ">
-              <Todos />
+              <Products />
             </div>
           ) : null}
           <div className="navigation d-flex flex-column flex-grow-1 ">

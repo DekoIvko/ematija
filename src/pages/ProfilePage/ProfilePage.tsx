@@ -11,6 +11,7 @@ import { Loader, StatusMessage } from "../../components/index";
 import "./ProfilePage.scss";
 
 const ProfilePage = () => {
+  console.log("Components ProfilePage");
   const { state } = useContext<IStateContext>(StateContext);
   const [userDetails, setUserDetails] = useState<IUserDetails>();
   const [error, setError] = useState<Error>();

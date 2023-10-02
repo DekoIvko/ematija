@@ -9,8 +9,9 @@ interface IProps {
 }
 
 export const NavigationMenu = ({ state, setNavItem }: IProps) => {
+  console.log("Component NavigationMenu");
   return (
-    <div className="navigation-menu">
+    <div className="container navigation-menu">
       {" "}
       <div className="profile-name d-flex align-items-center">
         <img

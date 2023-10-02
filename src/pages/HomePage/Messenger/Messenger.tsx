@@ -1,52 +1,29 @@
-import { useCallback, useState } from "react";
+import { useState } from "react";
 
 import { AxiosResponse } from "axios";
-import {
-  GetUsersSearchService,
-  GetUsersService,
-} from "../../../services/UsersService";
+import { GetUsersSearchService } from "../../../services/UsersService";
 import { Loader, StatusMessage } from "../../../components";
 import { IUserDetails } from "../../../interfaces/IUserDetails";
 import useDebounceEffect from "../../../hooks/useDebounceEffect";
 import "./Messenger.scss";
 
 const Messenger = () => {
+  console.log("Component Messenger");
   const [users, setUsers] = useState<IUserDetails[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<Error>();
   const [inputSearch, setInputSearch] = useState("");
 
-  const getAllUsers = useCallback(async () => {
+  const getUserOnSearch = async () => {
     setLoading(true);
     try {
-      const { data, status }: AxiosResponse = await GetUsersService();
-
+      const { data, status }: AxiosResponse = await GetUsersSearchService(
+        inputSearch
+      );
       if (status === 200) {
         setUsers(data?.users);
       } else {
         setError(data.message);
-      }
-    } catch (error: any) {
-      setError(error);
-    } finally {
-      setLoading(false);
-    }
-  }, [users]);
-
-  const getUserOnSearch = async () => {
-    setLoading(true);
-    try {
-      if (inputSearch.length > 0) {
-        const { data, status }: AxiosResponse = await GetUsersSearchService(
-          inputSearch
-        );
-        if (status === 200) {
-          setUsers(data?.users);
-        } else {
-          setError(data.message);
-        }
-      } else {
-        getAllUsers();
       }
     } catch (error: any) {
       setError(error);
@@ -69,7 +46,10 @@ const Messenger = () => {
   };
 
   return (
-    <div className="messenger d-flex flex-column " data-bs-spy="scroll">
+    <div
+      className="messenger container d-flex flex-column "
+      data-bs-spy="scroll"
+    >
       <div className="messenger-title">
         <h3>Contacts</h3>
       </div>
