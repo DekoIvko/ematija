@@ -1,3 +1,5 @@
+@import "../../../styles/variables";
+
 .messenger {
   min-width: fit-content;
   margin-top: 1rem;
@@ -9,7 +11,7 @@
     max-height: 78vh;
     .messenger-user-div:hover {
       cursor: pointer;
-      background-color: #6c757d;
+      background-color: $light-dark1;
       border-radius: 15px;
     }
   }

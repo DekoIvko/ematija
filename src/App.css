@@ -1,4 +1,5 @@
 .App {
   /* background: #18191a; */
-  font-family: 'Noto Sans', sans-serif;
+  box-sizing: border-box;
+  font-family: "Noto Sans", sans-serif;
 }

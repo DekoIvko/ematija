@@ -6,7 +6,7 @@ import { Loader, StatusMessage } from "../../../components";
 import { IUserDetails } from "../../../interfaces/IUserDetails";
 import useDebounceEffect from "../../../hooks/useDebounceEffect";
 import "./Messenger.scss";
-
+// react query refetch while typing
 const Messenger = () => {
   console.log("Component Messenger");
   const [users, setUsers] = useState<IUserDetails[]>([]);

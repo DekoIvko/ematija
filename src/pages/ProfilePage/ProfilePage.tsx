@@ -1,8 +1,8 @@
-import { useCallback, useContext, useEffect, useState } from "react";
-import { AxiosResponse } from "axios";
+import { useContext } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { IStateContext, StateContext } from "../../store/store";
 import { GetSingleUserService } from "../../services/UsersService";
-import { IUserDetails } from "../../interfaces/IUserDetails";
+// import { IUserDetails } from "../../interfaces/IUserDetails";
 import UserDetails from "./UserDetails/UserDetails";
 import ProfileInfo from "./ProfileInfo/ProfileInfo";
 import Feed from "../HomePage/Feed/Feed";
@@ -13,35 +13,20 @@ import "./ProfilePage.scss";
 const ProfilePage = () => {
   console.log("Components ProfilePage");
   const { state } = useContext<IStateContext>(StateContext);
-  const [userDetails, setUserDetails] = useState<IUserDetails>();
-  const [error, setError] = useState<Error>();
-  const [loading, setLoading] = useState<boolean>(false);
 
-  const getUserDetails = useCallback(
-    async (userId: string) => {
-      setLoading(true);
-      try {
-        const { status, data }: AxiosResponse = await GetSingleUserService(
-          userId
-        );
-
-        if (status === 200) {
-          setUserDetails(data);
-        } else {
-          setError(data?.message);
-        }
-      } catch (error: any) {
-        setError(error.message);
-      } finally {
-        setLoading(false);
-      }
+  const {
+    data: userDetails,
+    isSuccess,
+    isError,
+    error,
+    isLoading,
+  } = useQuery({
+    queryKey: ["user-details"],
+    queryFn: () => GetSingleUserService(state?.loggedUser?.id.toString()),
+    select(data) {
+      return data.data;
     },
-    [userDetails]
-  );
-
-  useEffect(() => {
-    getUserDetails(state?.loggedUser?.id.toString());
-  }, [state.loggedUser]);
+  });
 
   return (
     <div
@@ -51,23 +36,21 @@ const ProfilePage = () => {
         color: state?.appTheme === "dark" ? "whitesmoke" : "#242526",
       }}
     >
-      {error && !loading && (
+      {isError && error instanceof Error && !isLoading && (
         <StatusMessage status="error" message={error.message} />
       )}
-      {!error && loading && <Loader />}
-      {!error && !loading && (
+      {!isError && isLoading && <Loader />}
+      {!isError && !isLoading && (
         <>
           <div className="profile-info d-flex flex-column w-100">
-            {userDetails && <ProfileInfo userDetails={userDetails} />}
+            {isSuccess && <ProfileInfo userDetails={userDetails} />}
           </div>
           <div className="personal-info d-flex flex-row w-100 p-4">
             <div className="personal-info-body d-flex flex-column p-3">
-              {userDetails && <UserDetails userDetails={userDetails} />}
+              {isSuccess && <UserDetails userDetails={userDetails} />}
             </div>
             <div className="profile-feed d-flex flex-column">
-              {userDetails && (
-                <Feed feedType="profile-page" userData={userDetails} />
-              )}
+              {isSuccess && <Feed feedType="profile-page" />}
             </div>
           </div>
         </>

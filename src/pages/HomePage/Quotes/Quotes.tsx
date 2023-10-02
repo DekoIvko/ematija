@@ -1,48 +1,39 @@
-import { useCallback, useEffect, useState } from "react";
-import { AxiosResponse } from "axios";
+import { useState } from "react";
 import { GetQuotesService } from "../../../services/QuotesService";
 import { IQuotes } from "../../../interfaces/IQuotes";
 import { Loader, Pagination, StatusMessage } from "../../../components";
+import withCommentsLogic from "../../../hooks/withCommentsLogic";
+import { useQuery } from "@tanstack/react-query";
 
 import "./Quotes.scss";
-import withCommentsLogic from "../../../hooks/withCommentsLogic";
 
 const Quotes = ({ onClickComments }: any) => {
-  const [quotes, setQuotes] = useState<IQuotes[]>();
   const [currentPage, setCurrentPage] = useState(1);
-  const [loading, setLoading] = useState<boolean>(false);
-  const [error, setError] = useState<Error>();
 
-  const getAllPosts = useCallback(async () => {
-    setLoading(true);
-    try {
-      const { status, data }: AxiosResponse = await GetQuotesService();
+  const { data, isSuccess, isError, error, isLoading, isFetching } = useQuery({
+    queryKey: ["quotes"],
+    queryFn: GetQuotesService,
+    select(data) {
+      return data.data;
+    },
+  });
 
-      if (status === 200) {
-        setQuotes(data.quotes);
-      } else {
-        setError(data?.message);
-      }
-    } catch (error: any) {
-      setError(error.message);
-    } finally {
-      setLoading(false);
-    }
-  }, []);
-
-  useEffect(() => {
-    getAllPosts();
-  }, []);
+  if (isSuccess) {
+    console.log(data);
+  }
+  if (isLoading) {
+    return <Loader />;
+  }
+  if (isError && error instanceof Error) {
+    console.log(error);
+    return <StatusMessage status="error" message={error?.message || ""} />;
+  }
 
   return (
     <div className="quotes d-flex flex-column">
-      {loading && !error && <Loader />}
-      {!loading && error && (
-        <StatusMessage status="error" message={error.message} />
-      )}
-      {!loading && !error && quotes ? (
+      {data?.quotes ? (
         <>
-          {quotes
+          {data?.quotes
             .slice(currentPage, currentPage + 10)
             .map((item: IQuotes, index: number) => {
               return (
@@ -60,7 +51,7 @@ const Quotes = ({ onClickComments }: any) => {
             })}
           <Pagination
             currentPage={currentPage}
-            total={quotes?.length}
+            total={data?.quotes?.length}
             limit={10}
             onPageChange={(page: any) => setCurrentPage(page)}
           />

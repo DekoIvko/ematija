@@ -1,6 +1,8 @@
+@import "../../styles/variables";
+
 .profile-page {
   .profile-info {
-    background: #242526;
+    background: $dark-background;
     .profile-name-edit {
       .profile-picture-name {
         left: 0;
@@ -14,14 +16,13 @@
     }
   }
   .personal-info {
-    // padding: 20px;
     .personal-info-body {
       border-radius: 2%;
-      background: #242526;
+      background: $dark-background;
       .info-data {
-          .info-details {
-            background: #3a3b3c;
-            border-radius: 5%;
+        .info-details {
+          background: $light-dark;
+          border-radius: 5%;
         }
       }
     }

@@ -11,6 +11,7 @@ import { appConfig } from "../../../appConfig";
 import AddTodo from "./AddTodo/AddTodo";
 import "./Todos.scss";
 
+// example with CUSTOM HOOK FETCH DATA ------->>
 const Todos = ({ onClickComments }: any) => {
   const { state } = useContext<IStateContext>(StateContext);
   const [todos, setTodos] = useState<ITodos[]>();
@@ -18,6 +19,7 @@ const Todos = ({ onClickComments }: any) => {
   const [loadingNewTodo, setLoadingNewTodo] = useState<boolean>(false);
   const [currentPage, setCurrentPage] = useState(1);
   const { loading, apiError, apiData } = useFetchGet(
+    // custom hook
     `${appConfig?.baseApiURL}/todos/user/${state?.loggedUser?.id}`
   );
   const [newTodo, setNewTodo] = useState<string>("");

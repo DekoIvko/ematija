@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { GetProductsService } from "../../../services/ProductsServices";
 import { Loader, StatusMessage } from "../../../components";
 
@@ -6,40 +6,31 @@ import "./Products.scss";
 
 const Products = () => {
   console.log("Component Products");
-  const [products, setProducts] = useState<[]>([]);
-  const [loading, setLoading] = useState<boolean>(false);
-  const [error, setError] = useState<Error>();
 
-  const getAllProducts = useCallback(async () => {
-    setLoading(true);
-    try {
-      const { data, status } = await GetProductsService();
+  const { data, isSuccess, isError, error, isLoading, isFetching } = useQuery({
+    queryKey: ["products"],
+    queryFn: GetProductsService,
+    select(data) {
+      return data.data;
+    },
+  });
 
-      if (status === 200) {
-        setProducts(data?.products);
-      } else {
-        setError(data.message);
-      }
-    } catch (error: any) {
-      setError(error);
-    } finally {
-      setLoading(false);
-    }
-  }, [products]);
-
-  useEffect(() => {
-    getAllProducts();
-  }, []);
+  if (isSuccess) {
+    console.log(data);
+  }
+  if (isLoading) {
+    return <Loader />;
+  }
+  if (isError && error instanceof Error) {
+    console.log(error);
+    return <StatusMessage status="error" message={error?.message || ""} />;
+  }
 
   return (
     <div className="container-fluid products d-flex">
-      {loading && !error && <Loader />}
-      {!loading && error && (
-        <StatusMessage status="error" message={error?.message} />
-      )}
       <div className="row">
-        {products
-          ? products.map((item: any, index: number) => {
+        {data.products
+          ? data?.products.map((item: any, index: number) => {
               return (
                 <div key={`${item.id}_${index}`} className="col-sm">
                   {item?.title}

@@ -1,6 +1,8 @@
+@import "../../styles/variables";
+
 .header {
   padding: 2px 0px;
-  color: whitesmoke;
+  color: $light;
   .header-context {
     .company-logo {
       img {
@@ -23,10 +25,10 @@
       border: none;
       a {
         text-decoration: none;
-        color: whitesmoke;
+        color: $light;
       }
       a.active {
-        color: #2374e1;
+        color: $blue;
       }
       span {
         font-size: 12px;
@@ -34,7 +36,7 @@
     }
     .list-group-item:hover {
       cursor: pointer;
-      background-color: #3a3b3c;
+      background-color: $light-dark;
       border-radius: 2%;
     }
   }
@@ -42,14 +44,14 @@
     width: 165px;
     height: 35px;
     border-radius: 4px;
-    background: #3b5998;
+    background: $light-blue;
     color: white;
     border: 0px transparent;
     text-align: center;
     display: inline-block;
 
     &:hover {
-      background: #3b5998;
+      background: $light-blue;
       opacity: 0.6;
     }
   }

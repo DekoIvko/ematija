@@ -1,3 +1,5 @@
+@import "../../styles/variables";
+
 .status-message-body {
   position: absolute;
   top: 50%;
@@ -11,9 +13,9 @@
     margin: 1rem 0rem;
   }
   .errorMsg {
-    color: red;
+    color: $red;
   }
   .successMsg {
-    color: green;
+    color: $dark-green;
   }
 }
