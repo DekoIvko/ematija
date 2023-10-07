@@ -30,16 +30,24 @@ const Feed = ({ feedType }: IProps) => {
         queryKey: ["posts", 1],
         queryFn: GetPostsService,
         enabled: feedType === "home-page",
+        refetchOnWindowFocus: false,
       },
       {
         queryKey: ["comments", 2],
         queryFn: GetAllCommentsService,
+        refetchOnWindowFocus: false,
       },
-      { queryKey: ["users", 3], queryFn: GetUsersService, staleTime: Infinity },
+      {
+        queryKey: ["users", 3],
+        queryFn: GetUsersService,
+        staleTime: Infinity,
+        refetchOnWindowFocus: false,
+      },
       {
         queryKey: ["posts-user", 4],
         queryFn: () => GetUserPostsService(state?.loggedUser?.id.toString()),
         enabled: feedType === "profile-page",
+        refetchOnWindowFocus: false,
       },
     ],
   });

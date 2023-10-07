@@ -1,10 +1,11 @@
+import React from "react";
 import { IComments } from "../../../../interfaces/IComments";
 
 interface IProps {
   comments: IComments[];
 }
 
-const Comments = ({ comments }: IProps) => {
+const Comments = React.memo(({ comments }: IProps) => {
   return (
     <>
       {" "}
@@ -22,6 +23,6 @@ const Comments = ({ comments }: IProps) => {
         : null}
     </>
   );
-};
+});
 
 export default Comments;

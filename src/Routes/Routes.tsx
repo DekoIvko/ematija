@@ -1,7 +1,12 @@
 import React, { Suspense } from "react";
-import { Routes, Route } from "react-router-dom";
-import { Header } from "../components/index";
+import {
+  Route,
+  createBrowserRouter,
+  createRoutesFromElements,
+  RouterProvider,
+} from "react-router-dom";
 import HomePage from "../pages/HomePage/HomePage";
+import RootLayout from "../layouts/RootLayout";
 
 const LazyProfilePage = React.lazy(
   () => import("../pages/ProfilePage/ProfilePage")
@@ -13,39 +18,45 @@ const LazyNotFoundPage = React.lazy(
   () => import("../pages/Features/NotFoundPage/NotFoundPage")
 );
 
+const router = createBrowserRouter(
+  createRoutesFromElements(
+    <Route path="/" element={<RootLayout />}>
+      <Route path="home" element={<HomePage />} />
+      <Route
+        path="/login"
+        element={
+          <Suspense>
+            <LazyLoginPage />
+          </Suspense>
+        }
+      />
+      <Route
+        path="/profile"
+        element={
+          <Suspense>
+            <LazyProfilePage />
+          </Suspense>
+        }
+      />
+      <Route
+        path="*"
+        element={
+          <Suspense>
+            <LazyNotFoundPage />
+          </Suspense>
+        }
+      />
+    </Route>
+  )
+);
+
 const Router = () => {
   return (
-    <div>
-      <Header />
-      <Routes>
-        <Route path="/" element={<HomePage />} />
-        <Route path="/home" element={<HomePage />} />
-        <Route
-          path="/login"
-          element={
-            <Suspense>
-              <LazyLoginPage />
-            </Suspense>
-          }
-        />
-        <Route
-          path="/profile"
-          element={
-            <Suspense>
-              <LazyProfilePage />
-            </Suspense>
-          }
-        />
-        <Route
-          path="*"
-          element={
-            <Suspense>
-              <LazyNotFoundPage />
-            </Suspense>
-          }
-        />
-      </Routes>
-    </div>
+    <>
+      <main className="main">
+        <RouterProvider router={router} />
+      </main>
+    </>
   );
 };
 

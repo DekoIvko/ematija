@@ -36,32 +36,50 @@ const HomePage = () => {
       {!state?.error && state?.loader && <Loader />}
       {!state?.error && !state?.loader && (
         <>
-          <div className="navigation d-flex flex-column column align-self-start bd-highlight flex-grow-1">
+          <aside
+            id="navigation-menu"
+            className="navigation d-flex flex-column column align-self-start bd-highlight flex-grow-1"
+          >
             <NavigationMenu state={state} setNavItem={setNavItem} />
-          </div>
+          </aside>
           {state?.activeNavItem === ENavigationItems.feed ? (
-            <div className="main d-flex flex-column align-self-center ">
+            <section
+              id="feed-section"
+              className="section-page d-flex flex-column align-self-center "
+            >
               <Feed feedType="home-page" />
-            </div>
+            </section>
           ) : null}
           {state?.activeNavItem === ENavigationItems.quotes ? (
-            <div className="main d-flex flex-column align-self-center ">
+            <section
+              id="quotes-section"
+              className="section-page d-flex flex-column align-self-center "
+            >
               <Quotes />
-            </div>
+            </section>
           ) : null}
           {state?.activeNavItem === ENavigationItems.todos ? (
-            <div className="main d-flex flex-column align-self-center ">
+            <section
+              id="todos-section"
+              className="section-page d-flex flex-column align-self-center "
+            >
               <Todos />
-            </div>
+            </section>
           ) : null}
           {state?.activeNavItem === ENavigationItems.products ? (
-            <div className="main d-flex flex-column align-self-center ">
+            <section
+              id="products-section"
+              className="section-page d-flex flex-column align-self-center "
+            >
               <Products />
-            </div>
+            </section>
           ) : null}
-          <div className="navigation d-flex flex-column flex-grow-1 ">
+          <section
+            id="messenger-users"
+            className="navigation d-flex flex-column flex-grow-1 "
+          >
             <Messenger />
-          </div>
+          </section>
         </>
       )}
     </div>

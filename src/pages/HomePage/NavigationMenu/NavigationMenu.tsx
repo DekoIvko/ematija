@@ -21,7 +21,7 @@ export const NavigationMenu = ({ state, setNavItem }: IProps) => {
         />
         <div className="m-0 p-2">{`${state?.loggedUser?.firstName} ${state?.loggedUser?.lastName}`}</div>
       </div>
-      <div className="navigation-bar d-flex">
+      <nav className="navigation-bar d-flex">
         <ul className="list-group d-flex flex-column gap-2 w-100">
           <li
             className="list-group-item"
@@ -92,7 +92,7 @@ export const NavigationMenu = ({ state, setNavItem }: IProps) => {
             </NavLink>
           </li>
         </ul>
-      </div>
+      </nav>
     </div>
   );
 };

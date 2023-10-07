@@ -1,69 +1,127 @@
-import React, { useRef, useState } from "react";
+import React, { useState } from "react";
 import { IPosts } from "../../../../interfaces/IPosts";
 import Comments from "../Comments/Comments";
 import { Loader, Pagination, StatusMessage } from "../../../../components";
 import AddComments from "../AddComments/AddComments";
-import { AxiosResponse } from "axios";
 import { AddCommentService } from "../../../../services/CommentsService";
 import { IParamComment } from "../../../../interfaces/IParamComment";
+import { QueryCache, useMutation, useQueryClient } from "@tanstack/react-query";
 
 // implement add comment with react query with useMutation and setQueryData
 const Posts = ({ posts }: any) => {
+  console.log("Components Posts");
   const [currentPage, setCurrentPage] = useState(1);
-  let inputAddComment = useRef<any>("");
-  const [errorAddComment, setErrorAddComment] = useState<Error>();
-  const [loadingAddComment, setLoadingAddComment] = useState<boolean>(false);
+  const [showCommentSectionPost, setShowCommentSectionPost] = useState(false);
+  const queryClient = useQueryClient();
 
-  const onShowCommentSection = (post: IPosts) => {
+  const {
+    mutate: addComment,
+    data,
+    isSuccess,
+    isError,
+    error,
+    isLoading,
+  } = useMutation((param: any) => {
+    return AddCommentService(param);
+  });
+
+  if (isSuccess) {
+    console.log(data);
+  }
+
+  // const [editTodo] = useMutation(edit, {
+  //   onMutate: (edited) => {
+  //     const previousTodos = queryCache.getQueryData('todos') as Todo[]
+  //     const updatedTodos = [...previousTodos]
+  //     const index = updatedTodos.findIndex((todo) => todo.id === edited.id)
+
+  //     if (index !== -1) {
+  //       updatedTodos[index] = {
+  //         ...updatedTodos[index],
+  //         ...edited.body,
+  //       }
+  //       queryCache.setQueryData('todos', updatedTodos)
+  //     }
+
+  //     return () => queryCache.setQueryData('todos', previousTodos)
+  //   },
+  // })
+  const onShowCommentSection = (
+    e: React.MouseEvent<HTMLButtonElement>,
+    post: IPosts
+  ) => {
+    e.preventDefault();
+
     const showCommentSect = posts?.map((item: any) => {
       if (item.id === post.id) {
         return { ...item, showCommentSection: !item.showCommentSection };
       }
       return item;
     });
+    return showCommentSect;
+    // console.log(posts);
+    // console.log(showCommentSect);
     // setAllPosts!(showCommentSect);
   };
+  useMutation(data, {
+    // mutationFn: onShowCommentSection,
+    onMutate: (post: any) => {
+      const previousTodos = queryClient.getQueryData(["posts"]);
 
-  const onAddComment = async (post: IPosts) => {
-    setLoadingAddComment(true);
+      queryClient.setQueryData(["posts"], (item: any) => [...item, post]);
+
+      // Return a context object with the snapshotted value
+      return { previousTodos };
+    },
+  });
+
+  const onAddComment = async (post: IPosts, newComment: string) => {
     try {
       const paramComment: IParamComment = {
-        body: inputAddComment.current?.value,
+        body: newComment,
         postId: post.id,
         userId: post?.user.id,
       };
+      console.log(newComment);
 
-      const { status, data }: AxiosResponse = await AddCommentService(
-        paramComment
-      );
-
-      if (status === 200) {
-        const showCommentSect = posts?.map((item: any) => {
-          if (item.id === post.id) {
-            item.comments.push({
-              body: data.body,
-              id: item?.comments?.length + 1,
-              postId: data.postId,
-              user: {
-                id: data.user.id,
-                username: data.user.username,
-              },
-            });
-          }
-          return item;
-        });
-        // setAllPosts!(showCommentSect);
-      } else {
-        setErrorAddComment(data?.message);
-      }
-    } catch (error: any) {
-      setErrorAddComment(error.message);
-    } finally {
-      onShowCommentSection(post);
-      setLoadingAddComment(false);
+      addComment(paramComment);
+    } catch (error) {
+      console.log(error);
     }
+    // setLoadingAddComment(true);
+    // try {
+
+    //   const { status, data }: AxiosResponse = await AddCommentService(
+    //     paramComment
+    //   );
+
+    //   if (status === 200) {
+    //     const showCommentSect = posts?.map((item: any) => {
+    //       if (item.id === post.id) {
+    //         item.comments.push({
+    //           body: data.body,
+    //           id: item?.comments?.length + 1,
+    //           postId: data.postId,
+    //           user: {
+    //             id: data.user.id,
+    //             username: data.user.username,
+    //           },
+    //         });
+    //       }
+    //       return item;
+    //     });
+    //     // setAllPosts!(showCommentSect);
+    //   } else {
+    //     setErrorAddComment(data?.message);
+    //   }
+    // } catch (error: any) {
+    //   setErrorAddComment(error.message);
+    // } finally {
+    //   //   onShowCommentSection(post);
+    //   setLoadingAddComment(false);
+    // }
   };
-  console.log("posts posts", posts);
+  //   console.log("posts posts", posts);
   return (
     <>
       {posts
@@ -101,27 +159,26 @@ const Posts = ({ posts }: any) => {
                         type="button"
                         className="btn btn-link text-decoration-none"
                         style={{ color: "#b0b3b8" }}
-                        onClick={() => onShowCommentSection(item)}
+                        onClick={(e) => onShowCommentSection(e, item)}
                       >
                         Add comment
                       </button>
                     </div>
                     {item?.showCommentSection && (
                       <>
-                        {!errorAddComment && loadingAddComment && <Loader />}
-                        {errorAddComment && !loadingAddComment && (
+                        {!isError && isLoading && <Loader />}
+                        {isError && !isLoading && error instanceof Error && (
                           <StatusMessage
                             status="error"
-                            message={errorAddComment.message}
+                            message={error.message}
                           />
                         )}
-                        {!errorAddComment && !loadingAddComment && (
+                        {
                           <AddComments
                             item={item}
-                            newComment={inputAddComment}
                             onAddComment={onAddComment}
                           />
-                        )}
+                        }
                       </>
                     )}
                   </div>

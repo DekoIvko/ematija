@@ -1,20 +1,23 @@
+import { useRef } from "react";
 import { IPosts } from "../../../../interfaces/IPosts";
 
 interface IProps {
   item: IPosts;
-  newComment: any;
   onAddComment: Function;
   setNewComment?: Function;
 }
 
-const AddComments = ({ item, newComment, onAddComment }: IProps) => {
+const AddComments = ({ item, onAddComment }: IProps) => {
+  console.log("Component AddComments");
+  let newComment = useRef<HTMLInputElement>(null);
+
   return (
     <>
       <div className="input-group add-comment-input d-flex">
-        <textarea className="form-control" ref={newComment}></textarea>
+        <input className="form-control" ref={newComment} />
         <button
           className="btn btn-secondary"
-          onClick={() => onAddComment(item)}
+          onClick={() => onAddComment(item, newComment.current?.value)}
         >
           Add
         </button>
