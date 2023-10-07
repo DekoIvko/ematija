@@ -7,9 +7,13 @@ import {
 } from "react-router-dom";
 import HomePage from "../pages/HomePage/HomePage";
 import RootLayout from "../layouts/RootLayout";
+import { EHeaderNavItems } from "../enums/EHeaderNavItems";
 
 const LazyProfilePage = React.lazy(
   () => import("../pages/ProfilePage/ProfilePage")
+);
+const LazyProductsPage = React.lazy(
+  () => import("../pages/ProductsPage/ProductsPage")
 );
 const LazyLoginPage = React.lazy(
   () => import("../pages/Features/LogInPage/LogInPage")
@@ -23,7 +27,7 @@ const router = createBrowserRouter(
     <Route path="/" element={<RootLayout />}>
       <Route path="home" element={<HomePage />} />
       <Route
-        path="/login"
+        path={EHeaderNavItems.login}
         element={
           <Suspense>
             <LazyLoginPage />
@@ -31,10 +35,18 @@ const router = createBrowserRouter(
         }
       />
       <Route
-        path="/profile"
+        path={EHeaderNavItems.profile}
         element={
           <Suspense>
             <LazyProfilePage />
+          </Suspense>
+        }
+      />
+      <Route
+        path={EHeaderNavItems.products}
+        element={
+          <Suspense>
+            <LazyProductsPage />
           </Suspense>
         }
       />

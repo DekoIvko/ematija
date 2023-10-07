@@ -10,7 +10,7 @@ import { Loader, StatusMessage } from "../../components/index";
 import Feed from "./Feed/Feed";
 import Quotes from "./Quotes/Quotes";
 import Todos from "./Todos/Todos";
-import Products from "./Products/Products";
+import Products from "../ProductsPage/ProductsPage";
 
 import "./HomePage.scss";
 
@@ -64,14 +64,6 @@ const HomePage = () => {
               className="section-page d-flex flex-column align-self-center "
             >
               <Todos />
-            </section>
-          ) : null}
-          {state?.activeNavItem === ENavigationItems.products ? (
-            <section
-              id="products-section"
-              className="section-page d-flex flex-column align-self-center "
-            >
-              <Products />
             </section>
           ) : null}
           <section

@@ -74,23 +74,6 @@ export const NavigationMenu = ({ state, setNavItem }: IProps) => {
               Todos
             </NavLink>
           </li>
-          <li
-            className="list-group-item"
-            onClick={() => setNavItem(ENavigationItems.products)}
-          >
-            <NavLink
-              to="/"
-              className={({ isActive, isPending }) =>
-                isPending
-                  ? "top-link-item pending"
-                  : isActive
-                  ? "top-link-item active"
-                  : ""
-              }
-            >
-              Products
-            </NavLink>
-          </li>
         </ul>
       </nav>
     </div>
