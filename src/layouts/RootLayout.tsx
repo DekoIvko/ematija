@@ -14,7 +14,7 @@ const RootLayout = () => {
           onReset={() => window.location.reload()}
         >
           <AuthProvider>
-            <Outlet />
+            <Outlet /> {/* render all pages here */}
           </AuthProvider>
         </ErrorBoundary>
       </main>

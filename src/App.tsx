@@ -1,4 +1,4 @@
-import Router from "./Routes/Routes";
+import Routes from "./Routes/Routes";
 import { InitialContextProvider } from "./store/store";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
@@ -9,7 +9,7 @@ function App() {
   return (
     <InitialContextProvider>
       <QueryClientProvider client={queryClient}>
-        <Router />
+        <Routes />
       </QueryClientProvider>
     </InitialContextProvider>
   );

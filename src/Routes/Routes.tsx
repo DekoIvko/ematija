@@ -50,14 +50,8 @@ const router = createBrowserRouter(
   )
 );
 
-const Router = () => {
-  return (
-    <>
-      <main className="main">
-        <RouterProvider router={router} />
-      </main>
-    </>
-  );
+const Routes = () => {
+  return <RouterProvider router={router} />;
 };
 
-export default Router;
+export default Routes;
