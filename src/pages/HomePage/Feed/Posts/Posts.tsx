@@ -8,72 +8,52 @@ import { IParamComment } from "../../../../interfaces/IParamComment";
 import { QueryCache, useMutation, useQueryClient } from "@tanstack/react-query";
 
 // implement add comment with react query with useMutation and setQueryData
-const Posts = ({ posts }: any) => {
-  console.log("Components Posts");
+const Posts = ({ posts = [] }: any) => {
+  console.log("Components Posts", posts);
   const [currentPage, setCurrentPage] = useState(1);
   const [showCommentSectionPost, setShowCommentSectionPost] = useState(false);
   const queryClient = useQueryClient();
 
-  const {
-    mutate: addComment,
-    data,
-    isSuccess,
-    isError,
-    error,
-    isLoading,
-  } = useMutation((param: any) => {
-    return AddCommentService(param);
+  const addComments = useMutation({
+    mutationFn: AddCommentService,
+    onSuccess: (data) => {
+      console.log(data);
+      debugger;
+      queryClient.setQueryData(["posts", data.data.postId], (oldData) => {
+        console.log(oldData);
+      });
+      queryClient.invalidateQueries(["posts"], { exact: true });
+    },
   });
 
-  if (isSuccess) {
-    console.log(data);
-  }
-
-  // const [editTodo] = useMutation(edit, {
-  //   onMutate: (edited) => {
-  //     const previousTodos = queryCache.getQueryData('todos') as Todo[]
-  //     const updatedTodos = [...previousTodos]
-  //     const index = updatedTodos.findIndex((todo) => todo.id === edited.id)
-
-  //     if (index !== -1) {
-  //       updatedTodos[index] = {
-  //         ...updatedTodos[index],
-  //         ...edited.body,
-  //       }
-  //       queryCache.setQueryData('todos', updatedTodos)
-  //     }
-
-  //     return () => queryCache.setQueryData('todos', previousTodos)
-  //   },
-  // })
   const onShowCommentSection = (
     e: React.MouseEvent<HTMLButtonElement>,
     post: IPosts
   ) => {
     e.preventDefault();
 
-    const showCommentSect = posts?.map((item: any) => {
-      if (item.id === post.id) {
-        return { ...item, showCommentSection: !item.showCommentSection };
-      }
-      return item;
-    });
-    return showCommentSect;
+    // const showCommentSect = posts?.map((item: any) => {
+    //   if (item.id === post.id) {
+    //     return { ...item, showCommentSection: !item.showCommentSection };
+    //   }
+    //   return item;
+    // });
+    // return showCommentSect;
     // console.log(posts);
     // console.log(showCommentSect);
     // setAllPosts!(showCommentSect);
+    // };
+    // useMutation(data, {
+    //   // mutationFn: onShowCommentSection,
+    //   onMutate: (post: any) => {
+    //     const previousTodos = queryClient.getQueryData(["posts"]);
+
+    //     queryClient.setQueryData(["posts"], (item: any) => [...item, post]);
+
+    //     // Return a context object with the snapshotted value
+    //     return { previousTodos };
+    // },
   };
-  useMutation(data, {
-    // mutationFn: onShowCommentSection,
-    onMutate: (post: any) => {
-      const previousTodos = queryClient.getQueryData(["posts"]);
-
-      queryClient.setQueryData(["posts"], (item: any) => [...item, post]);
-
-      // Return a context object with the snapshotted value
-      return { previousTodos };
-    },
-  });
 
   const onAddComment = async (post: IPosts, newComment: string) => {
     try {
@@ -84,42 +64,10 @@ const Posts = ({ posts }: any) => {
       };
       console.log(newComment);
 
-      addComment(paramComment);
+      addComments.mutate(paramComment);
     } catch (error) {
       console.log(error);
     }
-    // setLoadingAddComment(true);
-    // try {
-
-    //   const { status, data }: AxiosResponse = await AddCommentService(
-    //     paramComment
-    //   );
-
-    //   if (status === 200) {
-    //     const showCommentSect = posts?.map((item: any) => {
-    //       if (item.id === post.id) {
-    //         item.comments.push({
-    //           body: data.body,
-    //           id: item?.comments?.length + 1,
-    //           postId: data.postId,
-    //           user: {
-    //             id: data.user.id,
-    //             username: data.user.username,
-    //           },
-    //         });
-    //       }
-    //       return item;
-    //     });
-    //     // setAllPosts!(showCommentSect);
-    //   } else {
-    //     setErrorAddComment(data?.message);
-    //   }
-    // } catch (error: any) {
-    //   setErrorAddComment(error.message);
-    // } finally {
-    //   //   onShowCommentSection(post);
-    //   setLoadingAddComment(false);
-    // }
   };
   //   console.log("posts posts", posts);
   return (
@@ -166,13 +114,17 @@ const Posts = ({ posts }: any) => {
                     </div>
                     {item?.showCommentSection && (
                       <>
-                        {!isError && isLoading && <Loader />}
-                        {isError && !isLoading && error instanceof Error && (
-                          <StatusMessage
-                            status="error"
-                            message={error.message}
-                          />
+                        {!addComments.isError && addComments.isLoading && (
+                          <Loader />
                         )}
+                        {addComments.isError &&
+                          !addComments.isLoading &&
+                          addComments.error instanceof Error && (
+                            <StatusMessage
+                              status="error"
+                              message={addComments.error.message}
+                            />
+                          )}
                         {
                           <AddComments
                             item={item}

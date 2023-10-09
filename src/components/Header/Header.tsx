@@ -6,6 +6,7 @@ import { StateContext } from "../../store/store";
 import { EHeaderNavItems } from "../../enums/EHeaderNavItems";
 
 import "./Header.scss";
+import BreadCrumbs from "../BreadCrumbs/BreadCrumbs";
 
 const Header = () => {
   const { state, dispatch } = useContext(StateContext);

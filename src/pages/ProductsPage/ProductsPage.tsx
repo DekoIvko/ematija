@@ -3,6 +3,7 @@ import { GetProductsService } from "../../services/ProductsServices";
 import { Loader, StatusMessage } from "../../components";
 
 import "./ProductsPage.scss";
+import { Link } from "react-router-dom";
 
 const ProductsPage = () => {
   console.log("Component Products");
@@ -32,9 +33,11 @@ const ProductsPage = () => {
         {data.products
           ? data?.products.map((item: any, index: number) => {
               return (
-                <div key={`${item.id}_${index}`} className="col-sm">
-                  {item?.title}
-                </div>
+                <Link to={item.id.toString()} key={`${item.id}_${index}`}>
+                  <div key={`${item.id}_${index}`} className="col-sm">
+                    {item?.title}
+                  </div>
+                </Link>
               );
             })
           : null}

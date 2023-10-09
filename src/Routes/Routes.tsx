@@ -8,6 +8,10 @@ import {
 import HomePage from "../pages/HomePage/HomePage";
 import RootLayout from "../layouts/RootLayout";
 import { EHeaderNavItems } from "../enums/EHeaderNavItems";
+import ProductsLayout from "../layouts/ProductsLayout";
+import Product from "../pages/ProductsPage/Product/Products";
+import { Loader } from "../components";
+import ProductError from "../pages/ProductsPage/ProductError/ProductError";
 
 const LazyProfilePage = React.lazy(
   () => import("../pages/ProfilePage/ProfilePage")
@@ -29,7 +33,7 @@ const router = createBrowserRouter(
       <Route
         path={EHeaderNavItems.login}
         element={
-          <Suspense>
+          <Suspense fallback={<Loader />}>
             <LazyLoginPage />
           </Suspense>
         }
@@ -37,23 +41,23 @@ const router = createBrowserRouter(
       <Route
         path={EHeaderNavItems.profile}
         element={
-          <Suspense>
+          <Suspense fallback={<Loader />}>
             <LazyProfilePage />
           </Suspense>
         }
       />
       <Route
         path={EHeaderNavItems.products}
-        element={
-          <Suspense>
-            <LazyProductsPage />
-          </Suspense>
-        }
-      />
+        element={<ProductsLayout />}
+        errorElement={<ProductError />}
+      >
+        <Route path="" element={<LazyProductsPage />} />
+        <Route path=":id" element={<Product />} />
+      </Route>
       <Route
         path="*"
         element={
-          <Suspense>
+          <Suspense fallback={<Loader />}>
             <LazyNotFoundPage />
           </Suspense>
         }
