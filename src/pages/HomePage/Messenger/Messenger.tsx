@@ -17,10 +17,8 @@ const Messenger = () => {
   const getUserOnSearch = async () => {
     setLoading(true);
     try {
-      const { data, status }: AxiosResponse = await GetUsersSearchService(
-        inputSearch
-      );
-      if (status === 200) {
+      const data = await GetUsersSearchService(inputSearch);
+      if (data?.users) {
         setUsers(data?.users);
       } else {
         setError(data.message);
@@ -64,7 +62,11 @@ const Messenger = () => {
       <div className="messenger-body d-flex flex-column">
         {loading && !error && <Loader />}
         {!loading && error && (
-          <StatusMessage status="error" message={error?.message} />
+          <StatusMessage
+            from="messenger"
+            status="error"
+            message={error?.message}
+          />
         )}
         {!loading && !error && users && (
           <ul className="messenger-list d-flex list-group">
@@ -73,7 +75,8 @@ const Messenger = () => {
                   return (
                     <li
                       key={user.email + index}
-                      className="messenger-user list-group-item list-group-item-action list-group-item-dark bg-transparent border-0 p-1 m-1"
+                      className="messenger-user list-group-item list-group-item-action
+                       list-group-item-dark bg-transparent border-0 p-1 m-1"
                     >
                       <div
                         className="d-flex flex-row messenger-user-div"

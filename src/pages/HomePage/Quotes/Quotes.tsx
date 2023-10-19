@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { GetQuotesService } from "../../../services/QuotesService";
 import { IQuotes } from "../../../interfaces/IQuotes";
-import { Loader, Pagination, StatusMessage } from "../../../components";
+import { Lists, Loader, Pagination, StatusMessage } from "../../../components";
 import withCommentsLogic from "../../../hooks/withCommentsLogic";
 import { useQuery } from "@tanstack/react-query";
 
@@ -19,36 +19,32 @@ const Quotes = ({ onClickComments }: any) => {
   });
 
   if (isSuccess) {
-    console.log(data);
+    // console.log(data);
   }
   if (isLoading) {
     return <Loader />;
   }
   if (isError && error instanceof Error) {
     console.log(error);
-    return <StatusMessage status="error" message={error?.message || ""} />;
+    return (
+      <StatusMessage
+        from="quotes"
+        status="error"
+        message={error?.message || ""}
+      />
+    );
   }
 
   return (
     <div className="quotes d-flex flex-column">
       {data?.quotes ? (
         <>
-          {data?.quotes
-            .slice(currentPage, currentPage + 10)
-            .map((item: IQuotes, index: number) => {
-              return (
-                <div
-                  className="quotes-item d-flex flex-column gap-2"
-                  key={item?.id + "_" + index}
-                  onClick={(e) => onClickComments(e)}
-                >
-                  <div className="quote-text d-flex p-3">{item?.quote}</div>
-                  <div className="quote-author">
-                    <span>{item?.author}</span>
-                  </div>
-                </div>
-              );
-            })}
+          <Lists
+            type="quote"
+            data={data?.quotes}
+            onClickItem={onClickComments}
+            currentPage={currentPage}
+          />
           <Pagination
             currentPage={currentPage}
             total={data?.quotes?.length}

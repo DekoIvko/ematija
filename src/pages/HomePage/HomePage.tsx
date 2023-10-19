@@ -1,4 +1,4 @@
-import { useContext } from "react";
+import { useCallback, useContext } from "react";
 import { IStateContext, StateContext } from "../../store/store";
 import { INavigationItems } from "../../interfaces/INavigationItems";
 import { ENavigationItems } from "../../enums/ENavigationItems";
@@ -10,7 +10,6 @@ import { Loader, StatusMessage } from "../../components/index";
 import Feed from "./Feed/Feed";
 import Quotes from "./Quotes/Quotes";
 import Todos from "./Todos/Todos";
-import Products from "../ProductsPage/ProductsPage";
 
 import "./HomePage.scss";
 
@@ -18,9 +17,10 @@ const HomePage = () => {
   console.log("Components HomePage");
   const { state, dispatch } = useContext<IStateContext>(StateContext);
 
-  const setNavItem = (navItem: INavigationItems) => {
+  const setNavItem = useCallback((navItem: INavigationItems) => {
+    console.log("setNavItem");
     dispatch({ type: "setNavItem", payload: navItem });
-  };
+  }, []);
 
   return (
     <div
@@ -31,17 +31,23 @@ const HomePage = () => {
       }}
     >
       {state?.error && !state?.loader && (
-        <StatusMessage status="error" message={state?.errorMessage} />
+        <StatusMessage
+          from="home-page"
+          status="error"
+          message={state?.errorMessage}
+        />
       )}
       {!state?.error && state?.loader && <Loader />}
       {!state?.error && !state?.loader && (
         <>
-          <aside
-            id="navigation-menu"
-            className="navigation d-flex flex-column column align-self-start bd-highlight flex-grow-1"
-          >
-            <NavigationMenu state={state} setNavItem={setNavItem} />
-          </aside>
+          {state && (
+            <aside
+              id="navigation-menu"
+              className="navigation d-flex flex-column column align-self-start bd-highlight flex-grow-1"
+            >
+              <NavigationMenu state={state} setNavItem={setNavItem} />
+            </aside>
+          )}
           {state?.activeNavItem === ENavigationItems.feed ? (
             <section
               id="feed-section"
@@ -66,12 +72,14 @@ const HomePage = () => {
               <Todos />
             </section>
           ) : null}
-          <section
-            id="messenger-users"
-            className="navigation d-flex flex-column flex-grow-1 "
-          >
-            <Messenger />
-          </section>
+          {state && (
+            <section
+              id="messenger-users"
+              className="navigation d-flex flex-column flex-grow-1 "
+            >
+              <Messenger />
+            </section>
+          )}
         </>
       )}
     </div>

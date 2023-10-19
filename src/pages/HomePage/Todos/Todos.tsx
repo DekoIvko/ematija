@@ -1,7 +1,7 @@
 import { useContext, useEffect, useState } from "react";
 import { AxiosResponse } from "axios";
 import { IAddTodo, ITodos } from "../../../interfaces/ITodos";
-import { Loader, Pagination, StatusMessage } from "../../../components";
+import { Lists, Loader, Pagination, StatusMessage } from "../../../components";
 
 import { IStateContext, StateContext } from "../../../store/store";
 import { CreateTodosService } from "../../../services/TodosService";
@@ -72,7 +72,11 @@ const Todos = ({ onClickComments }: any) => {
       </div>
       {loadingNewTodo && !error && <Loader />}
       {!loading && error && (
-        <StatusMessage status="error" message={error.message} />
+        <StatusMessage
+          from="add-new-todos"
+          status="error"
+          message={error.message}
+        />
       )}
       {showTodoCreateInputs && !loadingNewTodo && (
         <AddTodo
@@ -85,26 +89,16 @@ const Todos = ({ onClickComments }: any) => {
       )}
       {loading && !apiError && <Loader />}
       {!loading && apiError && (
-        <StatusMessage status="error" message={apiError.message} />
+        <StatusMessage from="todos" status="error" message={apiError.message} />
       )}
       {!loading && !apiError && todos ? (
         <>
-          {todos
-            ?.slice(currentPage, currentPage + 10)
-            ?.map((item: ITodos, index: number) => {
-              return (
-                <div
-                  className="todos-item d-flex flex-column gap-2"
-                  key={item?.id + "_" + index}
-                  onClick={(e) => onClickComments(e)}
-                >
-                  <div className="todo-text d-flex p-3">{item?.todo}</div>
-                  <div className="todo-completed">
-                    <span>{item?.completed}</span>
-                  </div>
-                </div>
-              );
-            })}
+          <Lists
+            type="todo"
+            data={todos}
+            onClickItem={onClickComments}
+            currentPage={currentPage}
+          />
           <Pagination
             currentPage={currentPage}
             total={todos?.length}

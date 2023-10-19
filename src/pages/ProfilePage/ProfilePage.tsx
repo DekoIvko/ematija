@@ -37,7 +37,11 @@ const ProfilePage = () => {
       }}
     >
       {isError && error instanceof Error && !isLoading && (
-        <StatusMessage status="error" message={error.message} />
+        <StatusMessage
+          from="profile-page"
+          status="error"
+          message={error.message}
+        />
       )}
       {!isError && isLoading && <Loader />}
       {!isError && !isLoading && (

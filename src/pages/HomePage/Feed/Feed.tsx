@@ -1,5 +1,5 @@
-import React, { useContext } from "react";
-import { Loader, StatusMessage } from "../../../components";
+import { useContext } from "react";
+import { Loader, Pagination, StatusMessage } from "../../../components";
 import { IStateContext, StateContext } from "../../../store/store";
 import { useQueries } from "@tanstack/react-query";
 
@@ -22,32 +22,28 @@ interface IProps {
 
 const Feed = ({ feedType }: IProps) => {
   console.log("Components Feed");
+  // const [currentPage, setCurrentPage] = useState(1);
   const { state } = useContext<IStateContext>(StateContext);
 
   const [posts, comments, users, postsByUser] = useQueries({
     queries: [
       {
-        queryKey: ["posts", 1],
+        queryKey: ["posts"],
         queryFn: GetPostsService,
         enabled: feedType === "home-page",
-        refetchOnWindowFocus: false,
       },
       {
-        queryKey: ["comments", 2],
+        queryKey: ["comments"],
         queryFn: GetAllCommentsService,
-        refetchOnWindowFocus: false,
       },
       {
-        queryKey: ["users", 3],
+        queryKey: ["users"],
         queryFn: GetUsersService,
-        staleTime: Infinity,
-        refetchOnWindowFocus: false,
       },
       {
-        queryKey: ["posts-user", 4],
+        queryKey: ["posts-user"],
         queryFn: () => GetUserPostsService(state?.loggedUser?.id.toString()),
         enabled: feedType === "profile-page",
-        refetchOnWindowFocus: false,
       },
     ],
   });
@@ -58,38 +54,41 @@ const Feed = ({ feedType }: IProps) => {
     comments?.isSuccess &&
     users?.isSuccess
   ) {
-    console.log("feed type POSTS");
-    posts?.data?.data.posts.forEach((post: IPosts) => {
-      const user = users?.data?.data?.users.find(
+    posts?.data?.posts.forEach((post: IPosts) => {
+      const user = users?.data?.users.find(
         (user: IUserDetails) => post?.userId === user.id
       );
-      const tempComments = comments?.data?.data?.comments.filter(
+      const tempComments = comments?.data?.comments.filter(
         (comment: IComments) => post.id === comment.postId
       );
 
-      post.comments = tempComments || {};
+      post.comments = post.comments ? post.comments : tempComments;
       post.user = user || {};
-      post.showCommentSection = false;
+      post.showCommentSection = post.showCommentSection
+        ? post.showCommentSection
+        : false;
       return post;
     });
   } else if (
     feedType === "profile-page" &&
     postsByUser?.isSuccess &&
     comments?.isSuccess &&
-    users?.isSuccess
+    users?.isSuccess &&
+    (postsByUser?.isFetching || comments?.isFetching || users?.isFetching)
   ) {
-    console.log("feed type USERS-POSTS");
-    postsByUser?.data?.data.posts.forEach((post: IPosts) => {
-      const user = users?.data?.data?.users.find(
+    postsByUser?.data?.posts.forEach((post: IPosts) => {
+      const user = users?.data?.users.find(
         (user: IUserDetails) => post?.userId === user.id
       );
-      const tempComments = comments?.data?.data?.comments.filter(
+      const tempComments = comments?.data?.comments.filter(
         (comment: IComments) => post.id === comment.postId
       );
 
       post.comments = tempComments || {};
       post.user = user || {};
-      post.showCommentSection = false;
+      post.showCommentSection = post.showCommentSection
+        ? post.showCommentSection
+        : false;
       return post;
     });
     console.log(postsByUser);
@@ -97,24 +96,33 @@ const Feed = ({ feedType }: IProps) => {
 
   return (
     <div className="home-feed">
-      {(posts.isLoading || postsByUser.isLoading) &&
-        !(posts.isError || !postsByUser.isError) && <Loader />}
-      {!(posts.isLoading || !postsByUser.isLoading) &&
-        (posts.isError || postsByUser.isError) &&
-        posts.error instanceof Error && (
-          <StatusMessage status="error" message={posts.error.message} />
+      {/* {(posts?.isLoading || postsByUser?.isLoading) && <Loader />} */}
+      {(!posts?.isLoading || !postsByUser?.isLoading) &&
+        (posts?.isError || postsByUser?.isError) &&
+        posts?.error instanceof Error && (
+          <StatusMessage
+            from="feed"
+            status="error"
+            message={posts.error.message}
+          />
         )}
-      {(!posts.isLoading || !postsByUser.isLoading) &&
-      (!posts.isError || !postsByUser.isError) &&
-      (posts.isSuccess || postsByUser.isSuccess) ? (
+      {posts?.isSuccess && posts?.data ? (
         <>
           <Posts
+            state={state}
             posts={
               feedType === "home-page"
-                ? posts?.data?.data?.posts
-                : postsByUser?.data?.data?.posts
+                ? posts?.data?.posts
+                : postsByUser?.data?.posts
             }
           />
+          {/* 
+          <Pagination
+            // currentPage={currentPage}
+            total={posts?.data?.posts.length || 1}
+            limit={10}
+            // onPageChange={(page: any) => setCurrentPage(page)}
+          /> */}
         </>
       ) : null}
     </div>

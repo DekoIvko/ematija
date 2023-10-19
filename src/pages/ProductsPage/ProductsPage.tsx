@@ -1,46 +1,89 @@
+import { useContext, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { GetProductsService } from "../../services/ProductsServices";
-import { Loader, StatusMessage } from "../../components";
+import { IStateContext, StateContext } from "../../store/store";
+import { Loader, Pagination, StatusMessage } from "../../components";
 
+import ProductList from "./ProductList/ProductList";
+import ProductSidebar from "./ProductSidebar/ProductSidebar";
+import {
+  GetProductCategoriesService,
+  GetProductsByCategoryService,
+  GetProductsService,
+} from "../../services/ProductsServices";
 import "./ProductsPage.scss";
-import { Link } from "react-router-dom";
 
 const ProductsPage = () => {
   console.log("Component Products");
-
-  const { data, isSuccess, isError, error, isLoading, isFetching } = useQuery({
+  const { state } = useContext<IStateContext>(StateContext);
+  const [currentPage, setCurrentPage] = useState(1);
+  const { data, isSuccess, isError, error, isLoading } = useQuery({
     queryKey: ["products"],
     queryFn: GetProductsService,
-    select(data) {
-      return data.data;
-    },
+    staleTime: 1000,
+    // select(data) {
+    //   return data.data;
+    // },
   });
 
+  //   const getByCategory = useQuery({
+  //     ["products-category"],
+  //   queryFn: GetProductsByCategoryService,
+  //   staleTime: 1000,
+
+  // });
+
+  let tempArrCategories: string[] = [];
   if (isSuccess) {
-    console.log(data);
+    data?.products.map((item: any) => {
+      const alreadyInArr = tempArrCategories?.includes(item.category);
+      if (!alreadyInArr) {
+        tempArrCategories.push(item.category);
+      }
+    });
   }
   if (isLoading) {
     return <Loader />;
   }
   if (isError && error instanceof Error) {
-    console.log(error);
-    return <StatusMessage status="error" message={error?.message || ""} />;
+    return (
+      <StatusMessage
+        from="products-page"
+        status="error"
+        message={error?.message || ""}
+      />
+    );
   }
 
+  const onSearchProducts = (value: React.ChangeEvent<HTMLInputElement>) => {
+    console.log(value);
+  };
+
+  const onCategory = (value: string) => {
+    //GetProductsByCategoryService
+    console.log(value);
+  };
+
   return (
-    <div className="container-fluid products d-flex">
-      <div className="row">
-        {data.products
-          ? data?.products.map((item: any, index: number) => {
-              return (
-                <Link to={item.id.toString()} key={`${item.id}_${index}`}>
-                  <div key={`${item.id}_${index}`} className="col-sm">
-                    {item?.title}
-                  </div>
-                </Link>
-              );
-            })
-          : null}
+    <div
+      className="container-fluid products d-flex"
+      style={{
+        background: state?.appTheme === "dark" ? "#18191a" : "whitesmoke",
+        color: state?.appTheme === "dark" ? "whitesmoke" : "#242526",
+      }}
+    >
+      <ProductSidebar
+        categories={tempArrCategories}
+        onSearch={onSearchProducts}
+        onCategory={onCategory}
+      />
+      <div className="row justify-content-md-center gap-4">
+        <ProductList data={data} currentPage={currentPage} />
+        <Pagination
+          currentPage={currentPage}
+          total={data?.products?.length}
+          limit={9}
+          onPageChange={(page: any) => setCurrentPage(page)}
+        />
       </div>
     </div>
   );

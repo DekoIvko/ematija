@@ -5,24 +5,29 @@ import { Loader, Pagination, StatusMessage } from "../../../../components";
 import AddComments from "../AddComments/AddComments";
 import { AddCommentService } from "../../../../services/CommentsService";
 import { IParamComment } from "../../../../interfaces/IParamComment";
-import { QueryCache, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 // implement add comment with react query with useMutation and setQueryData
-const Posts = ({ posts = [] }: any) => {
-  console.log("Components Posts", posts);
+const Posts = ({ posts = [], state }: any) => {
+  console.log("Components Posts");
   const [currentPage, setCurrentPage] = useState(1);
-  const [showCommentSectionPost, setShowCommentSectionPost] = useState(false);
   const queryClient = useQueryClient();
 
   const addComments = useMutation({
     mutationFn: AddCommentService,
-    onSuccess: (data) => {
-      console.log(data);
-      debugger;
-      queryClient.setQueryData(["posts", data.data.postId], (oldData) => {
-        console.log(oldData);
+    onSuccess: (result, variables) => {
+      const updatedPosts = posts?.map((item: any) => {
+        if (item.id === variables.postId) {
+          return {
+            ...item,
+            comments: [...item.comments, result],
+            showCommentSection: !item.showCommentSection,
+          };
+        }
+        return item;
       });
-      queryClient.invalidateQueries(["posts"], { exact: true });
+
+      queryClient.setQueryData(["posts"], { posts: [...updatedPosts] });
     },
   });
 
@@ -31,50 +36,39 @@ const Posts = ({ posts = [] }: any) => {
     post: IPosts
   ) => {
     e.preventDefault();
-
-    // const showCommentSect = posts?.map((item: any) => {
-    //   if (item.id === post.id) {
-    //     return { ...item, showCommentSection: !item.showCommentSection };
-    //   }
-    //   return item;
-    // });
-    // return showCommentSect;
-    // console.log(posts);
-    // console.log(showCommentSect);
-    // setAllPosts!(showCommentSect);
-    // };
-    // useMutation(data, {
-    //   // mutationFn: onShowCommentSection,
-    //   onMutate: (post: any) => {
-    //     const previousTodos = queryClient.getQueryData(["posts"]);
-
-    //     queryClient.setQueryData(["posts"], (item: any) => [...item, post]);
-
-    //     // Return a context object with the snapshotted value
-    //     return { previousTodos };
-    // },
+    const showCommentSect = posts?.map((item: any) => {
+      if (item.id === post.id) {
+        return { ...item, showCommentSection: !item.showCommentSection };
+      }
+      return item;
+    });
+    queryClient.setQueryData(["posts"], { posts: [...showCommentSect] });
   };
 
-  const onAddComment = async (post: IPosts, newComment: string) => {
+  const onAddComment = async (
+    e: React.MouseEvent<HTMLButtonElement>,
+    post: IPosts,
+    newComment: string
+  ) => {
     try {
+      e.preventDefault();
       const paramComment: IParamComment = {
         body: newComment,
         postId: post.id,
-        userId: post?.user.id,
+        userId: state?.loggedUser?.id.toString(),
       };
-      console.log(newComment);
 
-      addComments.mutate(paramComment);
+      await addComments.mutateAsync(paramComment);
     } catch (error) {
       console.log(error);
     }
   };
-  //   console.log("posts posts", posts);
+
   return (
     <>
       {posts
         ? posts
-            ?.slice(currentPage, currentPage + 10)
+            // ?.slice(currentPage, currentPage + 10)
             ?.map((item: IPosts, index: number) => {
               return (
                 <div
@@ -121,6 +115,7 @@ const Posts = ({ posts = [] }: any) => {
                           !addComments.isLoading &&
                           addComments.error instanceof Error && (
                             <StatusMessage
+                              from="posts"
                               status="error"
                               message={addComments.error.message}
                             />

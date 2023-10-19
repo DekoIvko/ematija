@@ -1,6 +1,7 @@
 import "./StatusMessage.scss";
 
 interface IProps {
+  from: string;
   status: "error" | "success";
   message?: string;
   boldText?: boolean;
@@ -9,6 +10,7 @@ interface IProps {
 }
 
 function StatusMessage({
+  from,
   status,
   message,
   boldText,
@@ -29,14 +31,10 @@ function StatusMessage({
   }
   return (
     <div className="status-message-body">
-      <div className={`${className}`}>
+      <div className={`${className} ${from}`}>
         <div className={`d-flex flex-row icons-message ${getAlignmentCss()}`}>
-          {/* {status === 'error' && (
-                        <Icon type="error" size="small" className="mr-2" />
-                    )}
-                    {status === 'success' && (
-                        <Icon type="circleSuccess" size="small" className="mr-2" />
-                    )} */}
+          {status === "error" && <i className="bi bi-bug-fill"></i>}
+          {status === "success" && <i className="bi bi-check-lg"></i>}
           <span
             className={`text-center ${
               status === "error" ? "errorMsg" : "successMsg"

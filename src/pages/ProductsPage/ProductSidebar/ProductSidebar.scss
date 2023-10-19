@@ -1,0 +1,21 @@
+.product-sidebar-menu {
+  min-width: fit-content;
+  margin: 5px;
+  padding: 10px;
+  font-size: larger;
+  height: 100vh;
+  .list-inputs {
+  }
+  .list-categories {
+    margin-top: 5px;
+    font-size: medium;
+    list-style-type: none;
+    text-decoration: none;
+    li {
+      cursor: pointer;
+      a {
+        text-decoration: none;
+      }
+    }
+  }
+}

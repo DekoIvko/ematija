@@ -1,2 +1,35 @@
 .products {
+  .product {
+    background-color: grey;
+    margin: 15px;
+    min-width: 300px;
+    text-decoration: none;
+    border-radius: 15px;
+    .small-images {
+      max-width: 50px;
+      max-height: 50px;
+      min-width: 50px;
+      min-height: 50px;
+      margin-top: 2px;
+    }
+    .card {
+      background-color: #b8b9c6;
+      padding: 15px;
+      height: 100%;
+      .img-img {
+        max-width: 110px;
+        max-height: 110px;
+        min-width: 100px;
+        min-height: 100px;
+      }
+      .price {
+        text-decoration: line-through;
+      }
+    }
+    .card:hover {
+      transform: translateY(-5px) scale(1.005) translateZ(0);
+      box-shadow: 0 24px 36px rgba(0, 0, 0, 0.11),
+        0 24px 46px var(--box-shadow-color);
+    }
+  }
 }

@@ -16,7 +16,7 @@ export const NavigationMenu = ({ state, setNavItem }: IProps) => {
       <div className="profile-name d-flex align-items-center">
         <img
           src={state?.loggedUser?.image}
-          alt="Facebook profile"
+          alt="User profile"
           style={{ maxWidth: "50px", maxHeight: "50px" }}
         />
         <div className="m-0 p-2">{`${state?.loggedUser?.firstName} ${state?.loggedUser?.lastName}`}</div>
