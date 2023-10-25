@@ -22,7 +22,6 @@ interface IProps {
 
 const Feed = ({ feedType }: IProps) => {
   console.log("Components Feed");
-  // const [currentPage, setCurrentPage] = useState(1);
   const { state } = useContext<IStateContext>(StateContext);
 
   const [posts, comments, users, postsByUser] = useQueries({
@@ -96,7 +95,6 @@ const Feed = ({ feedType }: IProps) => {
 
   return (
     <div className="home-feed">
-      {/* {(posts?.isLoading || postsByUser?.isLoading) && <Loader />} */}
       {(!posts?.isLoading || !postsByUser?.isLoading) &&
         (posts?.isError || postsByUser?.isError) &&
         posts?.error instanceof Error && (
@@ -116,13 +114,6 @@ const Feed = ({ feedType }: IProps) => {
                 : postsByUser?.data?.posts
             }
           />
-          {/* 
-          <Pagination
-            // currentPage={currentPage}
-            total={posts?.data?.posts.length || 1}
-            limit={10}
-            // onPageChange={(page: any) => setCurrentPage(page)}
-          /> */}
         </>
       ) : null}
     </div>

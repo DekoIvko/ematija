@@ -40,7 +40,7 @@ export const CreateTodosService = async (todo: IAddTodo) => {
         signal: newAbortSignal(2000),
       }
     );
-    return response.data;
+    return response;
   } catch (error: any) {
     return error;
   }

@@ -40,14 +40,14 @@ const Todos = ({ onClickComments }: any) => {
         userId: state?.loggedUser?.id,
       };
 
-      const { status, data }: AxiosResponse = await CreateTodosService(todo);
+      const responseNewTodo: AxiosResponse = await CreateTodosService(todo);
 
-      if (status === 200) {
-        setTodos((prevArr) => [...prevArr!, data]);
+      if (responseNewTodo.status === 200) {
+        setTodos((prevArr) => [...prevArr!, responseNewTodo.data]);
         setShowTodoCreateInputs((prevVal) => (prevVal = !prevVal));
         setNewTodo("");
       } else {
-        setError(data?.message);
+        setError(responseNewTodo?.data?.message);
       }
     } catch (error: any) {
       setError(error);

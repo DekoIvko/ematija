@@ -1,11 +1,13 @@
 import { useContext, useState } from "react";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { IStateContext, StateContext } from "../../store/store";
 import { Loader, Pagination, StatusMessage } from "../../components";
 
 import ProductList from "./ProductList/ProductList";
 import ProductSidebar from "./ProductSidebar/ProductSidebar";
+import NewProductModal from "./NewProductModal/NewProductModal";
 import {
+  GetProductsBySearchService,
   GetProductCategoriesService,
   GetProductsByCategoryService,
   GetProductsService,
@@ -15,52 +17,70 @@ import "./ProductsPage.scss";
 const ProductsPage = () => {
   console.log("Component Products");
   const { state } = useContext<IStateContext>(StateContext);
+  const queryClient = useQueryClient();
   const [currentPage, setCurrentPage] = useState(1);
-  const { data, isSuccess, isError, error, isLoading } = useQuery({
+
+  const products = useQuery({
     queryKey: ["products"],
     queryFn: GetProductsService,
-    staleTime: 1000,
-    // select(data) {
-    //   return data.data;
-    // },
   });
 
-  //   const getByCategory = useQuery({
-  //     ["products-category"],
-  //   queryFn: GetProductsByCategoryService,
-  //   staleTime: 1000,
+  const categories = useQuery({
+    queryKey: ["categories"],
+    queryFn: GetProductCategoriesService,
+  });
 
-  // });
+  const productsByCategory = useMutation({
+    mutationFn: GetProductsByCategoryService,
+    onSuccess: (result, variables) => {
+      queryClient.cancelQueries(["products"]);
+      queryClient.setQueryData(["products"], result);
+    },
+  });
 
-  let tempArrCategories: string[] = [];
-  if (isSuccess) {
-    data?.products.map((item: any) => {
-      const alreadyInArr = tempArrCategories?.includes(item.category);
-      if (!alreadyInArr) {
-        tempArrCategories.push(item.category);
-      }
-    });
-  }
-  if (isLoading) {
+  const productsBySearch = useMutation({
+    mutationFn: GetProductsBySearchService,
+    onSuccess: (result, variables) => {
+      queryClient.cancelQueries(["products"]);
+      queryClient.setQueryData(["products"], result);
+    },
+  });
+
+  if (products?.isLoading || productsByCategory?.isLoading) {
     return <Loader />;
   }
-  if (isError && error instanceof Error) {
+
+  if (
+    (products?.isError || productsByCategory?.isError) &&
+    products?.error instanceof Error
+  ) {
     return (
       <StatusMessage
         from="products-page"
         status="error"
-        message={error?.message || ""}
+        message={products?.error?.message || ""}
       />
     );
   }
 
-  const onSearchProducts = (value: React.ChangeEvent<HTMLInputElement>) => {
-    console.log(value);
+  const onSearchProducts = (value: string) => {
+    if (value !== "") {
+      productsBySearch.mutateAsync(value);
+    } else {
+      queryClient.refetchQueries(["products"]);
+    }
   };
 
-  const onCategory = (value: string) => {
-    //GetProductsByCategoryService
-    console.log(value);
+  const onCategory = (
+    e: React.MouseEvent<HTMLButtonElement>,
+    value: string
+  ) => {
+    e.preventDefault();
+    if (value !== "all") {
+      productsByCategory.mutateAsync(value);
+    } else {
+      queryClient.refetchQueries(["products"]);
+    }
   };
 
   return (
@@ -72,15 +92,15 @@ const ProductsPage = () => {
       }}
     >
       <ProductSidebar
-        categories={tempArrCategories}
+        categories={categories?.data}
         onSearch={onSearchProducts}
         onCategory={onCategory}
       />
       <div className="row justify-content-md-center gap-4">
-        <ProductList data={data} currentPage={currentPage} />
+        <ProductList data={products?.data} currentPage={currentPage} />
         <Pagination
           currentPage={currentPage}
-          total={data?.products?.length}
+          total={products?.data?.products?.length}
           limit={9}
           onPageChange={(page: any) => setCurrentPage(page)}
         />

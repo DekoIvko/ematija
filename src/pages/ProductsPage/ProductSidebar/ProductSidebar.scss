@@ -5,6 +5,11 @@
   font-size: larger;
   height: 100vh;
   .list-inputs {
+    li {
+      padding: 0;
+      border: none;
+      background: transparent;
+    }
   }
   .list-categories {
     margin-top: 5px;
@@ -13,7 +18,7 @@
     text-decoration: none;
     li {
       cursor: pointer;
-      a {
+      button {
         text-decoration: none;
       }
     }

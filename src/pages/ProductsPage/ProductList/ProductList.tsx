@@ -1,12 +1,12 @@
 import { Link } from "react-router-dom";
 
-const ProductList = ({ data }: any) => {
+const ProductList = ({ data, currentPage }: any) => {
   console.log(data);
   return (
     <>
       {data.products
         ? data?.products
-            // ?.slice(currentPage, currentPage + 9)
+            ?.slice(currentPage - 1, currentPage + 9)
             ?.map((item: any, index: number) => {
               return (
                 <Link

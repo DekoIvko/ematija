@@ -68,7 +68,7 @@ const Posts = ({ posts = [], state }: any) => {
     <>
       {posts
         ? posts
-            // ?.slice(currentPage, currentPage + 10)
+            // ?.slice(currentPage - 1, currentPage + 10)
             ?.map((item: IPosts, index: number) => {
               return (
                 <div

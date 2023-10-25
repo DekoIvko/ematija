@@ -12,12 +12,10 @@ interface IProps {
 }
 
 const Lists = memo(({ type, data, onClickItem, currentPage }: IProps) => {
-  console.log(type);
-  console.log(data);
   return (
     <div className="list d-flex flex-column">
       {data
-        ?.slice(currentPage, currentPage + 10)
+        ?.slice(currentPage - 1, currentPage + 10)
         .map((item: any, index: number) => {
           return (
             <div

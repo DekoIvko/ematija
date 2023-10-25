@@ -1,19 +1,13 @@
 import { useContext } from "react";
 import mkFlag from "../../imgs/MKFlag.png";
 import { NavLink } from "react-router-dom";
-import FacebookLogin from "react-facebook-login";
 import { StateContext } from "../../store/store";
 import { EHeaderNavItems } from "../../enums/EHeaderNavItems";
 
 import "./Header.scss";
-import BreadCrumbs from "../BreadCrumbs/BreadCrumbs";
 
 const Header = () => {
-  const { state, dispatch } = useContext(StateContext);
-
-  const responseFacebook = (response: any) => {
-    dispatch({ type: "setFacebookUser", payload: response });
-  };
+  const { state } = useContext(StateContext);
 
   const onLogOut = () => {
     localStorage.removeItem("ematija-user");
@@ -34,24 +28,6 @@ const Header = () => {
             <a href="/home" className="logo">
               <img src={mkFlag} alt="Macedonian flag" />
             </a>
-          </div>
-          <div className="login-facebook">
-            {state?.facebookUser.id ? (
-              <>
-                <img
-                  src={state?.facebookUser?.picture?.data?.url || ""}
-                  alt="Facebook profile"
-                />
-              </>
-            ) : (
-              <FacebookLogin
-                cssClass="fb-button"
-                appId="1497963941017501"
-                autoLoad={true}
-                fields="name,email,picture"
-                callback={responseFacebook}
-              />
-            )}
           </div>
         </div>
         <nav className="navigate-icons d-flex justify-content-center">
