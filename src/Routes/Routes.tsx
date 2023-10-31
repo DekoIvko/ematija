@@ -9,7 +9,6 @@ import HomePage from "../pages/HomePage/HomePage";
 import RootLayout from "../layouts/RootLayout";
 import { EHeaderNavItems } from "../enums/EHeaderNavItems";
 import ProductsLayout from "../layouts/ProductsLayout";
-import Product from "../pages/ProductsPage/Product/Products";
 import { Loader } from "../components";
 import ProductError from "../pages/ProductsPage/ProductError/ProductError";
 
@@ -21,6 +20,9 @@ const LazyProductsPage = React.lazy(
 );
 const LazyLoginPage = React.lazy(
   () => import("../pages/Features/LogInPage/LogInPage")
+);
+const LazyProductPage = React.lazy(
+  () => import("../pages/ProductsPage/Product/Product")
 );
 const LazyNotFoundPage = React.lazy(
   () => import("../pages/Features/NotFoundPage/NotFoundPage")
@@ -51,8 +53,22 @@ const router = createBrowserRouter(
         element={<ProductsLayout />}
         errorElement={<ProductError />}
       >
-        <Route path="" element={<LazyProductsPage />} />
-        <Route path=":id" element={<Product />} />
+        <Route
+          path=""
+          element={
+            <Suspense fallback={<Loader />}>
+              <LazyProductsPage />
+            </Suspense>
+          }
+        />
+        <Route
+          path=":id"
+          element={
+            <Suspense fallback={<Loader />}>
+              <LazyProductPage />
+            </Suspense>
+          }
+        />
       </Route>
       <Route
         path="*"

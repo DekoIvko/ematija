@@ -1,14 +1,14 @@
-import { NavLink } from "react-router-dom";
 import { IInitialStore } from "../../../interfaces/IInitialStore";
 import { ENavigationItems } from "../../../enums/ENavigationItems";
 
 import "./NavigationMenu.scss";
 interface IProps {
   state: IInitialStore;
-  setNavItem: any;
+  page: string;
+  setPage: any;
 }
 
-export const NavigationMenu = ({ state, setNavItem }: IProps) => {
+export const NavigationMenu = ({ state, page, setPage }: IProps) => {
   console.log("Component NavigationMenu");
   return (
     <div className="container navigation-menu">
@@ -25,54 +25,39 @@ export const NavigationMenu = ({ state, setNavItem }: IProps) => {
         <ul className="list-group d-flex flex-column gap-2 w-100">
           <li
             className="list-group-item"
-            onClick={() => setNavItem(ENavigationItems.feed)}
+            onClick={() => setPage(ENavigationItems.feed)}
           >
-            <NavLink
-              to="/"
-              className={({ isActive, isPending }) =>
-                isPending
-                  ? "top-link-item pending"
-                  : isActive
-                  ? "top-link-item active"
-                  : ""
-              }
+            <button
+              className={`${
+                page === "feed" ? "top-link-item active" : ""
+              } btn btn-link`}
             >
               Feed
-            </NavLink>
+            </button>
           </li>
           <li
             className="list-group-item"
-            onClick={() => setNavItem(ENavigationItems.quotes)}
+            onClick={() => setPage(ENavigationItems.quotes)}
           >
-            <NavLink
-              to="/"
-              className={({ isActive, isPending }) =>
-                isPending
-                  ? "top-link-item pending"
-                  : isActive
-                  ? "top-link-item active"
-                  : ""
-              }
+            <button
+              className={`${
+                page === "quotes" ? "top-link-item active" : ""
+              } btn btn-link`}
             >
               Quotes
-            </NavLink>
+            </button>
           </li>
           <li
             className="list-group-item"
-            onClick={() => setNavItem(ENavigationItems.todos)}
+            onClick={() => setPage(ENavigationItems.todos)}
           >
-            <NavLink
-              to="/"
-              className={({ isActive, isPending }) =>
-                isPending
-                  ? "top-link-item pending"
-                  : isActive
-                  ? "top-link-item active"
-                  : ""
-              }
+            <button
+              className={`${
+                page === "todos" ? "top-link-item active" : ""
+              } btn btn-link`}
             >
               Todos
-            </NavLink>
+            </button>
           </li>
         </ul>
       </nav>

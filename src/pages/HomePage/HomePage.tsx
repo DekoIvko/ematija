@@ -1,6 +1,5 @@
-import { useCallback, useContext } from "react";
+import { useContext, useState } from "react";
 import { IStateContext, StateContext } from "../../store/store";
-import { INavigationItems } from "../../interfaces/INavigationItems";
 import { ENavigationItems } from "../../enums/ENavigationItems";
 import { NavigationMenu } from "./NavigationMenu/NavigationMenu";
 import Messenger from "./Messenger/Messenger";
@@ -15,12 +14,8 @@ import "./HomePage.scss";
 
 const HomePage = () => {
   console.log("Components HomePage");
-  const { state, dispatch } = useContext<IStateContext>(StateContext);
-
-  const setNavItem = useCallback((navItem: INavigationItems) => {
-    console.log("setNavItem");
-    dispatch({ type: "setNavItem", payload: navItem });
-  }, []);
+  const [page, setPage] = useState("feed");
+  const { state } = useContext<IStateContext>(StateContext);
 
   return (
     <div
@@ -45,10 +40,10 @@ const HomePage = () => {
               id="navigation-menu"
               className="navigation d-flex flex-column column align-self-start bd-highlight flex-grow-1"
             >
-              <NavigationMenu state={state} setNavItem={setNavItem} />
+              <NavigationMenu state={state} page={page} setPage={setPage} />
             </aside>
           )}
-          {state?.activeNavItem === ENavigationItems.feed ? (
+          {page === ENavigationItems.feed ? (
             <section
               id="feed-section"
               className="section-page d-flex flex-column align-self-center "
@@ -56,7 +51,7 @@ const HomePage = () => {
               <Feed feedType="home-page" />
             </section>
           ) : null}
-          {state?.activeNavItem === ENavigationItems.quotes ? (
+          {page === ENavigationItems.quotes ? (
             <section
               id="quotes-section"
               className="section-page d-flex flex-column align-self-center "
@@ -64,7 +59,7 @@ const HomePage = () => {
               <Quotes />
             </section>
           ) : null}
-          {state?.activeNavItem === ENavigationItems.todos ? (
+          {page === ENavigationItems.todos ? (
             <section
               id="todos-section"
               className="section-page d-flex flex-column align-self-center "
@@ -72,7 +67,7 @@ const HomePage = () => {
               <Todos />
             </section>
           ) : null}
-          {state && (
+          {page && (
             <section
               id="messenger-users"
               className="navigation d-flex flex-column flex-grow-1 "

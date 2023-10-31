@@ -13,14 +13,14 @@
       background: transparent;
       border: none;
       color: $light;
-      a {
+      button {
         text-decoration: none;
         color: $light;
         div {
           display: flex;
         }
       }
-      a.active {
+      button.active {
         color: #2374e1;
       }
       button {

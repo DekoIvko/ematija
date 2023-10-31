@@ -7,19 +7,6 @@ import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import "./App.css";
 
 function App() {
-  // const [queryClient] = useState(
-  //   () =>
-  //     new QueryClient({
-  //       defaultOptions: {
-  //         queries: {
-  //           refetchOnWindowFocus: false,
-  //           refetchOnMount: false,
-  //           retry: 1,
-  //           cacheTime: 1000 * 60 * 60 * 24, // 24 hours
-  //         },
-  //       },
-  //     })
-  // );
   const queryClient = new QueryClient({
     defaultOptions: {
       queries: {

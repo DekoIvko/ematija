@@ -1,4 +1,5 @@
 import { MouseEventHandler } from "react";
+import { Button } from "react-bootstrap";
 
 interface IProps {
   setNewTodo: Function;
@@ -46,13 +47,13 @@ const AddTodo = ({
           </label>
         </div>
         <div className="button-add">
-          <button
+          <Button
             type="button"
             className="btn btn-secondary"
             onClick={createTodo}
           >
             Add todo
-          </button>
+          </Button>
         </div>
       </div>
     </div>

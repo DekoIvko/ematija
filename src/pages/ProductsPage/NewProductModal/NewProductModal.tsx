@@ -26,7 +26,7 @@ const NewProductModal = ({ categories }: IProps) => {
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
   const [productsParams, setProductsParams] = useState<IProducts>({
-    id: categories.length + 1250,
+    id: categories?.length + 1250,
     title: "",
     category: "",
     brand: "",
@@ -50,10 +50,9 @@ const NewProductModal = ({ categories }: IProps) => {
 
   const addNewProducts = useMutation({
     mutationFn: AddNewProductsService,
-    onSuccess: (result, variables) => {
+    onSuccess: (variables) => {
       queryClient.cancelQueries(["products"]);
       queryClient.setQueryData(["products"], (oldData: any) => {
-        console.log(oldData);
         return { ...oldData, products: [variables, ...oldData.products] };
       });
       setShow(false);

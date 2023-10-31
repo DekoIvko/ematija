@@ -1,7 +1,6 @@
 import { Link } from "react-router-dom";
 
 const ProductList = ({ data, currentPage }: any) => {
-  console.log(data);
   return (
     <>
       {data.products
@@ -42,9 +41,10 @@ const ProductList = ({ data, currentPage }: any) => {
                     <div className="d-flex">
                       <p className="">
                         {"$" +
-                          Math.round(
+                          (
+                            item?.price -
                             item?.price * (item?.discountPercentage / 100)
-                          )}
+                          ).toFixed(2)}
                       </p>
                       <span>{" " + " - " + " "}</span>
                       <p className="discount-price">

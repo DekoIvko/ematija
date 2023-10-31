@@ -24,12 +24,17 @@ const Feed = ({ feedType }: IProps) => {
   console.log("Components Feed");
   const { state } = useContext<IStateContext>(StateContext);
 
-  const [posts, comments, users, postsByUser] = useQueries({
+  const [posts, postsByUser, comments, users] = useQueries({
     queries: [
       {
         queryKey: ["posts"],
         queryFn: GetPostsService,
         enabled: feedType === "home-page",
+      },
+      {
+        queryKey: ["posts-user"],
+        queryFn: () => GetUserPostsService(state?.loggedUser?.id.toString()),
+        enabled: feedType === "profile-page",
       },
       {
         queryKey: ["comments"],
@@ -38,11 +43,6 @@ const Feed = ({ feedType }: IProps) => {
       {
         queryKey: ["users"],
         queryFn: GetUsersService,
-      },
-      {
-        queryKey: ["posts-user"],
-        queryFn: () => GetUserPostsService(state?.loggedUser?.id.toString()),
-        enabled: feedType === "profile-page",
       },
     ],
   });
@@ -72,12 +72,11 @@ const Feed = ({ feedType }: IProps) => {
     feedType === "profile-page" &&
     postsByUser?.isSuccess &&
     comments?.isSuccess &&
-    users?.isSuccess &&
-    (postsByUser?.isFetching || comments?.isFetching || users?.isFetching)
+    users?.isSuccess
   ) {
     postsByUser?.data?.posts.forEach((post: IPosts) => {
       const user = users?.data?.users.find(
-        (user: IUserDetails) => post?.userId === user.id
+        (user: IUserDetails) => state?.loggedUser?.id === user.id
       );
       const tempComments = comments?.data?.comments.filter(
         (comment: IComments) => post.id === comment.postId
@@ -95,16 +94,19 @@ const Feed = ({ feedType }: IProps) => {
 
   return (
     <div className="home-feed">
-      {(!posts?.isLoading || !postsByUser?.isLoading) &&
+      {(posts.isFetching || postsByUser.isFetching) && <Loader />}
+      {(!posts?.isFetching || !postsByUser?.isFetching) &&
         (posts?.isError || postsByUser?.isError) &&
-        posts?.error instanceof Error && (
+        (posts?.error instanceof Error ||
+          postsByUser?.error instanceof Error) && (
           <StatusMessage
             from="feed"
             status="error"
-            message={posts.error.message}
+            message={"ova ovde treba da se opravi mi vodi inat so nedeli"}
           />
         )}
-      {posts?.isSuccess && posts?.data ? (
+      {(posts?.isSuccess || postsByUser?.isSuccess) &&
+      (posts?.data || postsByUser?.data) ? (
         <>
           <Posts
             state={state}

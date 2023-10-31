@@ -23,9 +23,6 @@ const ProfilePage = () => {
   } = useQuery({
     queryKey: ["user-details"],
     queryFn: () => GetSingleUserService(state?.loggedUser?.id.toString()),
-    select(data) {
-      return data.data;
-    },
   });
 
   return (

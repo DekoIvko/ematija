@@ -5,7 +5,6 @@ import { Loader, Pagination, StatusMessage } from "../../components";
 
 import ProductList from "./ProductList/ProductList";
 import ProductSidebar from "./ProductSidebar/ProductSidebar";
-import NewProductModal from "./NewProductModal/NewProductModal";
 import {
   GetProductsBySearchService,
   GetProductCategoriesService,
@@ -32,7 +31,7 @@ const ProductsPage = () => {
 
   const productsByCategory = useMutation({
     mutationFn: GetProductsByCategoryService,
-    onSuccess: (result, variables) => {
+    onSuccess: (result) => {
       queryClient.cancelQueries(["products"]);
       queryClient.setQueryData(["products"], result);
     },
@@ -40,7 +39,7 @@ const ProductsPage = () => {
 
   const productsBySearch = useMutation({
     mutationFn: GetProductsBySearchService,
-    onSuccess: (result, variables) => {
+    onSuccess: (result) => {
       queryClient.cancelQueries(["products"]);
       queryClient.setQueryData(["products"], result);
     },
