@@ -1,21 +1,17 @@
 import { ErrorFallback, Header } from "../components";
 import { Outlet } from "react-router";
 import Footer from "../components/Footer/Footer";
-import AuthProvider from "../hooks/AuthProvider";
 import { ErrorBoundary } from "react-error-boundary";
+import { Toaster } from "react-hot-toast";
 
 const RootLayout = () => {
   return (
     <div className="root-layout">
       <Header />
-      <main>
-        <ErrorBoundary
-          FallbackComponent={ErrorFallback}
-          onReset={() => window.location.reload()}
-        >
-          <AuthProvider>
-            <Outlet /> {/* render all pages here */}
-          </AuthProvider>
+      <main className="pt-16 bg-slate-500 min-h-[calc(100vh)]">
+        <Toaster />
+        <ErrorBoundary FallbackComponent={ErrorFallback}>
+          <Outlet /> {/* render all pages here */}
         </ErrorBoundary>
       </main>
       <Footer />

@@ -1,18 +1,18 @@
-import { useContext } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { IStateContext, StateContext } from "../../store/store";
 import { GetSingleUserService } from "../../services/UsersService";
-// import { IUserDetails } from "../../interfaces/IUserDetails";
 import UserDetails from "./UserDetails/UserDetails";
+import { useSelector } from "react-redux";
 import ProfileInfo from "./ProfileInfo/ProfileInfo";
 import Feed from "../HomePage/Feed/Feed";
 import { Loader, StatusMessage } from "../../components/index";
 
 import "./ProfilePage.scss";
+import { useAppSelector } from "../../store/hooks";
 
 const ProfilePage = () => {
   console.log("Components ProfilePage");
-  const { state } = useContext<IStateContext>(StateContext);
+  const user = useAppSelector((state: any) => state.user);
+  // const { state } = useContext<IStateContext>(StateContext);
 
   const {
     data: userDetails,
@@ -22,16 +22,16 @@ const ProfilePage = () => {
     isLoading,
   } = useQuery({
     queryKey: ["user-details"],
-    queryFn: () => GetSingleUserService(state?.loggedUser?.id.toString()),
+    queryFn: () => GetSingleUserService(user?.loggedUser?.id.toString()),
   });
 
   return (
     <div
-      className="profile-page container-fluid d-flex flex-column"
-      style={{
-        background: state?.appTheme === "dark" ? "#18191a" : "whitesmoke",
-        color: state?.appTheme === "dark" ? "whitesmoke" : "#242526",
-      }}
+      className="profile-page container-fluid flex flex-col"
+      // style={{
+      //   background: user?.appTheme === "dark" ? "#18191a" : "whitesmoke",
+      //   color: user?.appTheme === "dark" ? "whitesmoke" : "#242526",
+      // }}
     >
       {isError && error instanceof Error && !isLoading && (
         <StatusMessage
@@ -43,14 +43,14 @@ const ProfilePage = () => {
       {!isError && isLoading && <Loader />}
       {!isError && !isLoading && (
         <>
-          <div className="profile-info d-flex flex-column w-100">
+          <div className="profile-info flex flex-col w-100">
             {isSuccess && <ProfileInfo userDetails={userDetails} />}
           </div>
-          <div className="personal-info d-flex flex-row w-100 p-4">
-            <div className="personal-info-body d-flex flex-column p-3">
+          <div className="personal-info flex flex-row w-100 p-4">
+            <div className="personal-info-body flex flex-col p-3">
               {isSuccess && <UserDetails userDetails={userDetails} />}
             </div>
-            <div className="profile-feed d-flex flex-column">
+            <div className="profile-feed flex flex-col">
               {isSuccess && <Feed feedType="profile-page" />}
             </div>
           </div>

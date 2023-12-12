@@ -1,5 +1,5 @@
-import { Button } from "react-bootstrap";
-import NewProductModal from "../NewProductModal/NewProductModal";
+import { Link } from "react-router-dom";
+import { EHeaderNavItems } from "../../../enums/EHeaderNavItems";
 import "./ProductSidebar.scss";
 
 interface IProps {
@@ -11,10 +11,15 @@ interface IProps {
 const ProductSidebar = ({ categories, onSearch, onCategory }: IProps) => {
   return (
     <div className="container product-sidebar-menu">
-      <nav className="navigation-bar d-flex flex-column">
-        <ul className="list-group d-flex flex-column gap-2 w-100 list-inputs">
+      <nav className="navigation-bar flex flex-col">
+        <ul className="list-group flex flex-col gap-2 w-100 list-inputs">
           <li className="list-group-item">
-            <NewProductModal categories={categories} />
+            <Link
+              className="px-2 py-1 bg-red-400 bg-white hover:bg-red-600"
+              to={EHeaderNavItems.newProducts}
+            >
+              Home
+            </Link>
           </li>
           <div>Filters</div>
           <li
@@ -26,26 +31,26 @@ const ProductSidebar = ({ categories, onSearch, onCategory }: IProps) => {
             <input type="text" placeholder="Search..." />
           </li>
         </ul>
-        <ul className="list-group d-flex flex-column gap-2 w-100 list-categories">
+        <ul className="list-group flex flex-col gap-2 w-100 list-categories">
           <li key="all">
-            <Button
+            <button
               type="button"
               className="btn btn-link m-0 p-0"
               onClick={(e) => onCategory(e, "all")}
             >
               All
-            </Button>
+            </button>
           </li>
           {categories?.map((category: string) => {
             return (
               <li key={category}>
-                <Button
+                <button
                   type="button"
                   className="btn btn-link m-0 p-0"
                   onClick={(e) => onCategory(e, category)}
                 >
                   {category}
-                </Button>
+                </button>
               </li>
             );
           })}

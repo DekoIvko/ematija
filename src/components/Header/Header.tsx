@@ -1,38 +1,47 @@
-import { useContext } from "react";
+import { useState } from "react";
 import mkFlag from "../../imgs/MKFlag.png";
-import { NavLink } from "react-router-dom";
-import { StateContext } from "../../store/store";
+import { Link, NavLink } from "react-router-dom";
+import { FaUserAlt } from "react-icons/fa";
 import { EHeaderNavItems } from "../../enums/EHeaderNavItems";
-
-import "./Header.scss";
+import { useAppSelector } from "../../store/hooks";
+import useRefreshToken from "../../hooks/useRefreshToken";
 
 const Header = () => {
-  const { state } = useContext(StateContext);
+  const refreshToken = useRefreshToken();
+  const auth = useAppSelector((state) => state.auth);
+  const [showMenu, setShowMenu] = useState(false);
+  const [user] = useState({
+    email: "",
+    password: "",
+    image: "",
+  });
+
+  const handleShowMenu = () => {
+    setShowMenu((prevObj) => !prevObj);
+  };
 
   const onLogOut = () => {
     localStorage.removeItem("ematija-user");
     window.location.reload();
   };
 
+  const refresh = () => {
+    refreshToken();
+  };
+
   return (
-    <header
-      className="header"
-      style={{
-        background: state?.appTheme === "dark" ? "#242526" : "whitesmoke",
-        color: state?.appTheme === "dark" ? "whitesmoke" : "#242526",
-      }}
-    >
-      <div className="container-fluid d-flex align-items-center">
-        <div className="header-context d-flex flex-row align-items-center">
-          <div className="company-logo">
-            <a href="/home" className="logo">
-              <img src={mkFlag} alt="Macedonian flag" />
+    <header className="fixed w-full h-16 z-50 bg-slate-800 text-white">
+      <div className="flex items-center h-full">
+        <div className="header-context">
+          <div className="company-logo p-1 w-16 h-16">
+            <a href="/home" className="">
+              <img src={mkFlag} alt="Macedonian flag" className="w-full" />
             </a>
           </div>
         </div>
-        <nav className="navigate-icons d-flex justify-content-center">
-          <ul className="list-group list-group-flush d-flex flex-row">
-            <li className="list-group-item">
+        <nav className="navigate-icons w-full">
+          <ul className="flex justify-center items-center gap-10">
+            <li className="">
               <NavLink
                 to={EHeaderNavItems.home}
                 className={({ isActive, isPending }) =>
@@ -43,7 +52,7 @@ const Header = () => {
                     : ""
                 }
               >
-                <div className="d-flex flex-column">
+                <div className="flex gap-2 items-center">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     width="26"
@@ -58,7 +67,7 @@ const Header = () => {
                 </div>
               </NavLink>
             </li>
-            <li className="list-group-item">
+            <li className="">
               <NavLink
                 to={EHeaderNavItems.profile}
                 className={({ isActive, isPending }) =>
@@ -69,7 +78,7 @@ const Header = () => {
                     : ""
                 }
               >
-                <div className="d-flex flex-column">
+                <div className="flex gap-2 items-center">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     width="26"
@@ -84,7 +93,7 @@ const Header = () => {
                 </div>
               </NavLink>
             </li>
-            <li className="list-group-item">
+            <li className="">
               <NavLink
                 to={EHeaderNavItems.products}
                 className={({ isActive, isPending }) =>
@@ -95,7 +104,7 @@ const Header = () => {
                     : ""
                 }
               >
-                <div className="d-flex flex-column">
+                <div className="flex gap-2 items-center">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     width="26"
@@ -112,15 +121,65 @@ const Header = () => {
             </li>
           </ul>
         </nav>
-        <div>
-          <button
-            type="button"
-            className="btn btn-link"
-            style={{ width: "max-content", textDecoration: "none" }}
-            onClick={onLogOut}
-          >
-            Log out
-          </button>
+        <div className="text-slate-600 px-2" onClick={handleShowMenu}>
+          <div className="text-3xl cursor-pointer overflow-hidden drop-shadow-md">
+            {user?.image ? (
+              <img
+                src={user.image}
+                alt="profile"
+                className="w-12 h-12 rounded-full"
+              />
+            ) : (
+              <FaUserAlt />
+            )}
+          </div>
+          {showMenu && (
+            <div className="absolute right-2 bg-white py-2 px-2 shadow drop-shadow-md flex flex-col">
+              {!auth?.user ? (
+                <Link
+                  to={EHeaderNavItems.login}
+                  className="px-2 py-1 hover:bg-slate-200"
+                >
+                  LogIn
+                </Link>
+              ) : (
+                <>
+                  <p
+                    className="px-2 py-1  hover:bg-slate-200 cursor-pointer"
+                    onClick={onLogOut}
+                  >
+                    Log Out
+                  </p>
+                  <button className="p-2" onClick={refresh}>
+                    Refresh
+                  </button>
+                </>
+              )}
+              <nav className="text-base md:text-lg flex flex-col md:hidden">
+                <Link
+                  className="px-2 py-1  hover:bg-slate-200"
+                  to={EHeaderNavItems.home}
+                >
+                  Home
+                </Link>
+                <Link
+                  className="px-2 py-1  hover:bg-slate-200"
+                  to={EHeaderNavItems.profile}
+                >
+                  Profile
+                </Link>
+                <Link
+                  className="px-2 py-1  hover:bg-slate-200"
+                  to={EHeaderNavItems.products}
+                >
+                  Products
+                </Link>
+                <button className="p-2" onClick={refresh}>
+                  Refresh
+                </button>
+              </nav>
+            </div>
+          )}
         </div>
       </div>
     </header>

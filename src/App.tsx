@@ -1,6 +1,6 @@
-// import { useState } from "react";
+import { Provider } from "react-redux";
 import Routes from "./Routes/Routes";
-import { InitialContextProvider } from "./store/store";
+import { store } from "./store/store";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 
@@ -11,20 +11,20 @@ function App() {
     defaultOptions: {
       queries: {
         refetchOnWindowFocus: false,
-        refetchOnMount: false,
-        retry: 1,
-        cacheTime: 1000 * 60 * 60 * 24, // 24 hours
-        staleTime: Infinity,
+        // refetchOnMount: false,
+        retry: 2,
+        // cacheTime: 1000 * 60 * 60 * 24, // 24 hours
+        // staleTime: Infinity,
       },
     },
   });
   return (
-    <InitialContextProvider>
+    <Provider store={store}>
       <QueryClientProvider client={queryClient}>
         <Routes />
         <ReactQueryDevtools initialIsOpen={false} />
       </QueryClientProvider>
-    </InitialContextProvider>
+    </Provider>
   );
 }
 

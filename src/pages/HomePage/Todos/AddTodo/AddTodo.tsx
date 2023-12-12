@@ -1,5 +1,5 @@
 import { MouseEventHandler } from "react";
-import { Button } from "react-bootstrap";
+// import { Button } from "react-bootstrap";
 
 interface IProps {
   setNewTodo: Function;
@@ -17,11 +17,11 @@ const AddTodo = ({
   createTodo,
 }: IProps) => {
   return (
-    <div className="create-todo d-flex flex-column p-3">
-      <div className="title d-flex">
+    <div className="create-todo flex flex-col p-3">
+      <div className="title flex">
         <h3>Add new Todo</h3>
       </div>
-      <div className="create-todo-inputs d-flex flex-row gap-3 align-items-center">
+      <div className="create-todo-inputs flex flex-row gap-3 align-items-center">
         <div className="input-group mb-3">
           <input
             type="text"
@@ -47,13 +47,13 @@ const AddTodo = ({
           </label>
         </div>
         <div className="button-add">
-          <Button
+          <button
             type="button"
             className="btn btn-secondary"
             onClick={createTodo}
           >
             Add todo
-          </Button>
+          </button>
         </div>
       </div>
     </div>

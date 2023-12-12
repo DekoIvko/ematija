@@ -13,7 +13,7 @@ export const NavigationMenu = ({ state, page, setPage }: IProps) => {
   return (
     <div className="container navigation-menu">
       {" "}
-      <div className="profile-name d-flex align-items-center">
+      <div className="profile-name flex align-items-center">
         <img
           src={state?.loggedUser?.image}
           alt="User profile"
@@ -21,8 +21,8 @@ export const NavigationMenu = ({ state, page, setPage }: IProps) => {
         />
         <div className="m-0 p-2">{`${state?.loggedUser?.firstName} ${state?.loggedUser?.lastName}`}</div>
       </div>
-      <nav className="navigation-bar d-flex">
-        <ul className="list-group d-flex flex-column gap-2 w-100">
+      <nav className="navigation-bar flex">
+        <ul className="list-group flex flex-col gap-2 w-100">
           <li
             className="list-group-item"
             onClick={() => setPage(ENavigationItems.feed)}

@@ -8,25 +8,25 @@ const UserDetails = ({ userDetails }: IProps) => {
   return (
     <div>
       {" "}
-      <div className="d-flex">
-        <div className="info-title d-flex">
+      <div className="flex">
+        <div className="info-title flex">
           <h3>Intro</h3>
         </div>
       </div>
-      <div className="info-data d-flex flex-column">
-        <div className="info-details p-2 m-3 d-flex flex-row gap-2">
+      <div className="info-data flex flex-col">
+        <div className="info-details p-2 m-3 flex flex-row gap-2">
           <span>Gender:</span>
           <span>{userDetails?.gender}</span>
         </div>
-        <div className="info-details p-2 m-3 d-flex flex-row gap-2">
+        <div className="info-details p-2 m-3 flex flex-row gap-2">
           <span>Address:</span>
           <span>{userDetails?.address.address}</span>
         </div>
-        <div className="info-details p-2 m-3 d-flex flex-row gap-2">
+        <div className="info-details p-2 m-3 flex flex-row gap-2">
           <span>Email:</span>
           <span>{userDetails?.email}</span>
         </div>
-        <div className="info-details p-2 m-3 d-flex flex-row gap-2">
+        <div className="info-details p-2 m-3 flex flex-row gap-2">
           <span>Mobile:</span>
           <span>{userDetails?.phone}</span>
         </div>

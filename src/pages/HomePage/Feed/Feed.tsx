@@ -1,6 +1,4 @@
-import { useContext } from "react";
-import { Loader, Pagination, StatusMessage } from "../../../components";
-import { IStateContext, StateContext } from "../../../store/store";
+import { Loader } from "../../../components";
 import { useQueries } from "@tanstack/react-query";
 
 import { IPosts } from "../../../interfaces/IPosts";
@@ -15,6 +13,8 @@ import { GetUsersService } from "../../../services/UsersService";
 import { IUserDetails } from "../../../interfaces/IUserDetails";
 import Posts from "./Posts/Posts";
 import "./Feed.scss";
+import { useAppSelector } from "../../../store/hooks";
+import { useErrorBoundary } from "react-error-boundary";
 
 interface IProps {
   feedType: string;
@@ -22,7 +22,8 @@ interface IProps {
 
 const Feed = ({ feedType }: IProps) => {
   console.log("Components Feed");
-  const { state } = useContext<IStateContext>(StateContext);
+  const user = useAppSelector((state: any) => state.user);
+  const { showBoundary } = useErrorBoundary();
 
   const [posts, postsByUser, comments, users] = useQueries({
     queries: [
@@ -33,7 +34,7 @@ const Feed = ({ feedType }: IProps) => {
       },
       {
         queryKey: ["posts-user"],
-        queryFn: () => GetUserPostsService(state?.loggedUser?.id.toString()),
+        queryFn: () => GetUserPostsService(user.id),
         enabled: feedType === "profile-page",
       },
       {
@@ -53,71 +54,78 @@ const Feed = ({ feedType }: IProps) => {
     comments?.isSuccess &&
     users?.isSuccess
   ) {
-    posts?.data?.posts.forEach((post: IPosts) => {
-      const user = users?.data?.users.find(
-        (user: IUserDetails) => post?.userId === user.id
-      );
-      const tempComments = comments?.data?.comments.filter(
-        (comment: IComments) => post.id === comment.postId
-      );
-
-      post.comments = post.comments ? post.comments : tempComments;
-      post.user = user || {};
-      post.showCommentSection = post.showCommentSection
-        ? post.showCommentSection
-        : false;
-      return post;
-    });
+    console.log(posts);
+    if (posts?.data?.status === 200) {
+      posts?.data?.data?.forEach((post: IPosts) => {
+        const user = users?.data?.users.find(
+          (user: IUserDetails) => post?.userId === user.id
+        );
+        const tempComments = comments?.data?.comments.filter(
+          (comment: IComments) => post.id === comment.postId
+        );
+        post.comments = post.comments ? post.comments : tempComments;
+        post.user = user || {};
+        post.showCommentSection = post.showCommentSection
+          ? post.showCommentSection
+          : false;
+        return post;
+      });
+    } else {
+      console.log("nema postovi!");
+    }
   } else if (
     feedType === "profile-page" &&
     postsByUser?.isSuccess &&
     comments?.isSuccess &&
     users?.isSuccess
   ) {
-    postsByUser?.data?.posts.forEach((post: IPosts) => {
-      const user = users?.data?.users.find(
-        (user: IUserDetails) => state?.loggedUser?.id === user.id
-      );
-      const tempComments = comments?.data?.comments.filter(
-        (comment: IComments) => post.id === comment.postId
-      );
+    if (postsByUser?.data?.status === 200) {
+      postsByUser?.data?.data.forEach((post: IPosts) => {
+        const user = users?.data?.users.find(
+          (user: IUserDetails) => 123456 === user.id
+        );
+        const tempComments = comments?.data?.comments.filter(
+          (comment: IComments) => post.id === comment.postId
+        );
 
-      post.comments = tempComments || {};
-      post.user = user || {};
-      post.showCommentSection = post.showCommentSection
-        ? post.showCommentSection
-        : false;
-      return post;
-    });
-    console.log(postsByUser);
+        post.comments = tempComments || {};
+        post.user = user || {};
+        post.showCommentSection = post.showCommentSection
+          ? post.showCommentSection
+          : false;
+        return post;
+      });
+    } else {
+    }
+  }
+
+  if (
+    posts?.isError ||
+    postsByUser?.isError ||
+    comments?.isError ||
+    users?.isError
+  ) {
+    showBoundary(
+      posts.error || postsByUser?.error || comments?.error || users?.error
+    );
+  }
+
+  if (posts.isFetching || postsByUser.isFetching) {
+    return <Loader />;
   }
 
   return (
     <div className="home-feed">
-      {(posts.isFetching || postsByUser.isFetching) && <Loader />}
-      {(!posts?.isFetching || !postsByUser?.isFetching) &&
-        (posts?.isError || postsByUser?.isError) &&
-        (posts?.error instanceof Error ||
-          postsByUser?.error instanceof Error) && (
-          <StatusMessage
-            from="feed"
-            status="error"
-            message={"ova ovde treba da se opravi mi vodi inat so nedeli"}
-          />
-        )}
       {(posts?.isSuccess || postsByUser?.isSuccess) &&
-      (posts?.data || postsByUser?.data) ? (
+      (posts?.data?.data || postsByUser?.data?.data) ? (
         <>
           <Posts
-            state={state}
-            posts={
-              feedType === "home-page"
-                ? posts?.data?.posts
-                : postsByUser?.data?.posts
-            }
+            posts={feedType === "home-page" ? posts?.data : postsByUser?.data}
           />
         </>
-      ) : null}
+      ) : (
+        <p>No posts to display!</p>
+      )}
     </div>
   );
 };

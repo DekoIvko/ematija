@@ -8,15 +8,15 @@ const ProfileInfo = ({ userDetails }: IProps) => {
   return (
     <div>
       {" "}
-      <div className="profile-name-edit d-flex flex-row align-self-center w-100 p-5 m-1">
-        <div className="profile-picture-name d-flex flex-row justify-content-between w-100">
-          <div className="d-flex flex-row align-self-center w-70">
+      <div className="profile-name-edit flex flex-row align-self-center w-100 p-5 m-1">
+        <div className="profile-picture-name flex flex-row justify-content-between w-100">
+          <div className="flex flex-row align-self-center w-70">
             <img src={userDetails?.image} alt="Profile" />
-            <div className="d-flex align-self-end ms-3">
+            <div className="flex align-self-end ms-3">
               <h2>{`${userDetails?.firstName} ${userDetails?.lastName}`}</h2>
             </div>
           </div>
-          <div className="d-flex align-self-end">
+          <div className="flex align-self-end">
             <button className="btn btn-secondary" type="button">
               <svg
                 xmlns="http://www.w3.org/2000/svg"

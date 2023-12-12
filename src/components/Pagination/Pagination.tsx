@@ -34,40 +34,44 @@ const Pagination = ({ currentPage, total, limit, onPageChange }: IProps) => {
   const isFirstPage = currentPage === 1;
   const isLastPage = currentPage === pages.length;
   return (
-    <ul className="pagination d-flex justify-content-center">
-      <PaginationItem
-        page="First"
-        currentPage={currentPage}
-        onPageChange={() => onPageChange(1)}
-        isDisabled={isFirstPage}
-      />
-      <PaginationItem
-        page="Prev"
-        currentPage={currentPage}
-        onPageChange={() => onPageChange(currentPage - 1)}
-        isDisabled={isFirstPage}
-      />
-      {pages.map((page) => (
-        <PaginationItem
-          page={page}
-          key={page}
-          currentPage={currentPage}
-          onPageChange={onPageChange}
-        />
-      ))}
-      <PaginationItem
-        page="Next"
-        currentPage={currentPage}
-        onPageChange={() => onPageChange(currentPage + 1)}
-        isDisabled={isLastPage}
-      />
-      <PaginationItem
-        page="Last"
-        currentPage={currentPage}
-        onPageChange={() => onPageChange(pages.length)}
-        isDisabled={isLastPage}
-      />
-    </ul>
+    <>
+      {currentPage && total && limit && (
+        <ul className="pagination flex justify-content-center">
+          <PaginationItem
+            page="First"
+            currentPage={currentPage}
+            onPageChange={() => onPageChange(1)}
+            isDisabled={isFirstPage}
+          />
+          <PaginationItem
+            page="Prev"
+            currentPage={currentPage}
+            onPageChange={() => onPageChange(currentPage - 1)}
+            isDisabled={isFirstPage}
+          />
+          {pages.map((page) => (
+            <PaginationItem
+              page={page}
+              key={page}
+              currentPage={currentPage}
+              onPageChange={onPageChange}
+            />
+          ))}
+          <PaginationItem
+            page="Next"
+            currentPage={currentPage}
+            onPageChange={() => onPageChange(currentPage + 1)}
+            isDisabled={isLastPage}
+          />
+          <PaginationItem
+            page="Last"
+            currentPage={currentPage}
+            onPageChange={() => onPageChange(pages.length)}
+            isDisabled={isLastPage}
+          />
+        </ul>
+      )}
+    </>
   );
 };
 

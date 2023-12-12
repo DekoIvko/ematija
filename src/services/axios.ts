@@ -1,30 +1,42 @@
-import Axios from "axios";
+import axios from "axios";
 import { appConfig } from "../appConfig";
-import { ILoggedUser } from "../interfaces/ILoggedUser";
-import { parseJsonString } from "../utils/helpers";
+import { toast } from "react-hot-toast";
+// import useRefreshToken from "../hooks/useRefreshToken";
 
-const axios = Axios.create({
-  baseURL: appConfig.baseApiURL,
-});
+axios.defaults.baseURL = appConfig.localApiUrl;
 
-const CancelToken = Axios.CancelToken.source(); // let it for now
+axios.defaults.headers["Content-Type"] = "application/json";
+axios.defaults.headers["Access-Control-Allow-Origin"] = "*";
+axios.defaults.headers["Access-Control-Allow-Methods"] = "POST, PUT, GET";
+axios.defaults.headers["Access-Control-Allow-Headers"] =
+  "Origin, X-Requested-With, Content-Type, Accept, Authorization";
+// axios.defaults.withCredentials = true;
 
-axios.interceptors.request.use((config: any) => {
-  const user = localStorage.getItem("ematija-user");
-  const userObj: ILoggedUser = parseJsonString(user!);
-
-  if (userObj?.token) {
-    config.headers.Authorization = `Bearer ${userObj?.token}`;
-  }
-  return config;
-});
+// axios.interceptors.request.use((config: any) => {
+//   return config;
+// });
 
 axios.interceptors.response.use(
-  function (response) {
-    // Optional: Do something with response data
-    return response;
-  },
-  function (error) {
+  (response) => response,
+  (error) => {
+    if (error.message === "Network Error" && !error.response) {
+      toast.error("Network error = make sure API is running!");
+    }
+    if (axios.isCancel(error)) {
+      throw new Error(`Is canceled ${error}`);
+    }
+    if (error?.response?.status === 404) {
+      throw new Error(`PAGE NOT FOUND ${error?.request?.responseURL}`);
+    }
+    if (error?.response?.status === 401) {
+      throw new Error(`Unauthorized 401 ${error}`);
+    }
+    if (error?.response?.status === 403) {
+      throw new Error(`Forbidden: 403 ${error}`);
+    }
+    if (error?.response?.status === 500) {
+      return error?.response;
+    }
     // Do whatever you want with the response error here:
 
     // But, be SURE to return the rejected promise, so the caller still has
@@ -32,12 +44,5 @@ axios.interceptors.response.use(
     return error?.response;
   }
 );
-
-axios.defaults.headers["Content-Type"] = "application/json";
-axios.defaults.headers["Access-Control-Allow-Origin"] = "*";
-axios.defaults.headers["Access-Control-Allow-Headers"] =
-  "Origin, X-Requested-With, Content-Type, Accept";
-axios.defaults.headers["Access-Control-Allow-Methods"] =
-  "POST, PUT, DELETE, GET, OPTIONS";
 
 export default axios;

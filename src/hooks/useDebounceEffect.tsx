@@ -10,3 +10,5 @@ function useDebounceEffect(effect: any, deps: DependencyList, delay = 500) {
 }
 
 export default useDebounceEffect;
+
+// this is for exercise propers CUSTOM HOOK

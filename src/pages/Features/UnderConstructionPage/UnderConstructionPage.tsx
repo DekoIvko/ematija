@@ -5,8 +5,8 @@ import "./UnderConstructionPage.scss";
 function UnderConstructionPage() {
   return (
     <div className="mt-5 mb-5">
-      <div className="d-flex flex-column justify-content-center">
-        <div className="d-flex flex-column text-center">
+      <div className="flex flex-col justify-content-center">
+        <div className="flex flex-col text-center">
           <h3>Whoa easy there tiger!</h3>
           <p>
             This page is still under construction, but please make sure to come

@@ -1,12 +1,18 @@
-"use client";
+import { FallbackProps } from "react-error-boundary";
 
-const ErrorFallback = ({ error, resetErrorBoundary }: any) => {
-  console.log(error);
+const ErrorFallback = ({ error, resetErrorBoundary }: FallbackProps) => {
   return (
-    <div role="alert">
-      <p>Something went wrong:</p>
-      <pre style={{ color: "red" }}>{error.message}</pre>
-      <button onClick={resetErrorBoundary}>Reload page</button>
+    <div role="alert" className="min-h-screen flex items-center justify-center">
+      <div className="text-center">
+        <h1 className="text-3xl p-2">Something went wrong</h1>
+        <p className="text-xl text-red-600 mb-4 p-2">{error.message}</p>
+        <button
+          className="mt-4 p-2 bg-red-400 rounded"
+          onClick={resetErrorBoundary}
+        >
+          Reload page
+        </button>
+      </div>
     </div>
   );
 };

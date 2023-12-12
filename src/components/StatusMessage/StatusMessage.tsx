@@ -32,7 +32,7 @@ function StatusMessage({
   return (
     <div className="status-message-body">
       <div className={`${className} ${from}`}>
-        <div className={`d-flex flex-row icons-message ${getAlignmentCss()}`}>
+        <div className={`flex flex-row icons-message ${getAlignmentCss()}`}>
           {status === "error" && <i className="bi bi-bug-fill"></i>}
           {status === "success" && <i className="bi bi-check-lg"></i>}
           <span

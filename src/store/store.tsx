@@ -1,26 +1,13 @@
-import { Dispatch, SetStateAction, createContext, useReducer } from "react";
-import InitialStore from "./InitialStore";
-import { IInitialStore } from "../interfaces/IInitialStore";
-import { IActions, reducer } from "./reducers";
+import { configureStore } from "@reduxjs/toolkit";
+import userReducer from "./userSlice";
+import authReducer from "./authSlice";
 
-export interface IStateContext {
-  state: IInitialStore;
-  dispatch: Dispatch<SetStateAction<IActions>>;
-}
+export const store = configureStore({
+  reducer: {
+    user: userReducer,
+    auth: authReducer,
+  },
+});
 
-type InitialContextProviderProps = {
-  children: React.ReactNode;
-};
-
-export const StateContext = createContext(InitialStore);
-
-export const InitialContextProvider = ({
-  children,
-}: InitialContextProviderProps) => {
-  const [state, dispatch] = useReducer(reducer, InitialStore);
-  return (
-    <StateContext.Provider value={{ state, dispatch }}>
-      {children}
-    </StateContext.Provider>
-  );
-};
+export type RootState = ReturnType<typeof store.getState>;
+export type AppDispatch = typeof store.dispatch;

@@ -10,4 +10,4 @@ const RenderPropsCounter = (props: any) => {
 
 export default RenderPropsCounter;
 
-// this is for exercise propers HOC
+// this is for exercise propers RENDER PROPS

@@ -14,7 +14,7 @@ const AddComments = React.memo(({ item, onAddComment }: IProps) => {
 
   return (
     <>
-      <div className="input-group add-comment-input d-flex">
+      <div className="input-group add-comment-input flex">
         <input className="form-control" ref={newComment} />
         <button
           className="btn btn-secondary"

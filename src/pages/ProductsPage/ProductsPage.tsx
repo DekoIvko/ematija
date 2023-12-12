@@ -1,7 +1,6 @@
-import { useContext, useState } from "react";
+import { useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { IStateContext, StateContext } from "../../store/store";
-import { Loader, Pagination, StatusMessage } from "../../components";
+import { Loader, Pagination } from "../../components";
 
 import ProductList from "./ProductList/ProductList";
 import ProductSidebar from "./ProductSidebar/ProductSidebar";
@@ -12,12 +11,14 @@ import {
   GetProductsService,
 } from "../../services/ProductsServices";
 import "./ProductsPage.scss";
+import { useErrorBoundary } from "react-error-boundary";
 
 const ProductsPage = () => {
   console.log("Component Products");
-  const { state } = useContext<IStateContext>(StateContext);
+  const { showBoundary } = useErrorBoundary();
   const queryClient = useQueryClient();
   const [currentPage, setCurrentPage] = useState(1);
+  const [counter, setCounter] = useState(1);
 
   const products = useQuery({
     queryKey: ["products"],
@@ -50,15 +51,16 @@ const ProductsPage = () => {
   }
 
   if (
-    (products?.isError || productsByCategory?.isError) &&
-    products?.error instanceof Error
+    products?.isError ||
+    productsByCategory?.isError ||
+    productsBySearch?.isError ||
+    categories?.isError
   ) {
-    return (
-      <StatusMessage
-        from="products-page"
-        status="error"
-        message={products?.error?.message || ""}
-      />
+    showBoundary(
+      products?.error ||
+        productsByCategory?.error ||
+        productsBySearch?.error ||
+        categories?.error
     );
   }
 
@@ -83,26 +85,32 @@ const ProductsPage = () => {
   };
 
   return (
-    <div
-      className="container-fluid products d-flex"
-      style={{
-        background: state?.appTheme === "dark" ? "#18191a" : "whitesmoke",
-        color: state?.appTheme === "dark" ? "whitesmoke" : "#242526",
-      }}
-    >
+    <div className="container-fluid products flex">
       <ProductSidebar
         categories={categories?.data}
         onSearch={onSearchProducts}
         onCategory={onCategory}
       />
+      {counter}
+      <button
+        className="bg-red-500 text-white p-4"
+        onClick={() => setCounter((prevCount) => prevCount + 1)}
+      >
+        Counter plus
+      </button>
       <div className="row justify-content-md-center gap-4">
-        <ProductList data={products?.data} currentPage={currentPage} />
-        <Pagination
-          currentPage={currentPage}
-          total={products?.data?.products?.length}
-          limit={9}
-          onPageChange={(page: any) => setCurrentPage(page)}
-        />
+        {products?.data && (
+          <>
+            <ProductList data={products?.data} currentPage={currentPage} />
+
+            <Pagination
+              currentPage={currentPage}
+              total={products?.data?.data?.length}
+              limit={9}
+              onPageChange={(page: any) => setCurrentPage(page)}
+            />
+          </>
+        )}
       </div>
     </div>
   );

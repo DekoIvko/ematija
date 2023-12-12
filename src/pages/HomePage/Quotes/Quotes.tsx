@@ -31,7 +31,7 @@ const Quotes = ({ onClickComments }: any) => {
   }
 
   return (
-    <div className="quotes d-flex flex-column">
+    <div className="quotes flex flex-col">
       {data?.quotes ? (
         <>
           <Lists

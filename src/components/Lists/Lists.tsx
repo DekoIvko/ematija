@@ -13,17 +13,17 @@ interface IProps {
 
 const Lists = memo(({ type, data, onClickItem, currentPage }: IProps) => {
   return (
-    <div className="list d-flex flex-column">
+    <div className="list flex flex-col">
       {data
         ?.slice(currentPage - 1, currentPage + 10)
         .map((item: any, index: number) => {
           return (
             <div
-              className="list-item d-flex flex-column gap-2"
+              className="list-item flex flex-col gap-2"
               key={item?.id + "_" + index}
               onClick={(e) => onClickItem(type, e)}
             >
-              <div className="list-text d-flex p-3">
+              <div className="list-text flex p-3">
                 {type === "quote" ? item?.quote : item?.todo}
               </div>
               <div className="list-author">

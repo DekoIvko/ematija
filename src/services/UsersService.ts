@@ -13,7 +13,7 @@ export const GetUsersService = async () => {
     );
     return response.data;
   } catch (error: any) {
-    return error;
+    throw error;
   }
 };
 
@@ -27,7 +27,7 @@ export const GetSingleUserService = async (userId: string) => {
     );
     return response.data;
   } catch (error: any) {
-    return error;
+    throw error;
   }
 };
 
@@ -41,6 +41,29 @@ export const GetUsersSearchService = async (userSearch: string) => {
     );
     return response.data;
   } catch (error: any) {
-    return error;
+    throw error;
+  }
+};
+
+export const RegisterUserService = async (user: any) => {
+  try {
+    const response = await axios.post("/user/register", user, {
+      signal: newAbortSignal(2000),
+    });
+    return response.data;
+  } catch (error: any) {
+    throw error;
+  }
+};
+
+export const LoginUserService = async (user: any) => {
+  try {
+    const response = await axios.post("/user/login", user, {
+      signal: newAbortSignal(2000),
+      withCredentials: true,
+    });
+    return response.data;
+  } catch (error: any) {
+    throw error;
   }
 };

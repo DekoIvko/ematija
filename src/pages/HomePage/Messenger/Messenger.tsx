@@ -44,14 +44,11 @@ const Messenger = () => {
   };
 
   return (
-    <div
-      className="messenger container d-flex flex-column "
-      data-bs-spy="scroll"
-    >
+    <div className="messenger container flex flex-col " data-bs-spy="scroll">
       <div className="messenger-title">
         <h3>Contacts</h3>
       </div>
-      <div className="messenger-user-search d-flex flex-column p-2">
+      <div className="messenger-user-search flex flex-col p-2">
         <input
           // ref={test}
           onChange={(e) => searchInputHandler(e.target.value)}
@@ -59,7 +56,7 @@ const Messenger = () => {
           className="form-control"
         />
       </div>
-      <div className="messenger-body d-flex flex-column">
+      <div className="messenger-body flex flex-col">
         {loading && !error && <Loader />}
         {!loading && error && (
           <StatusMessage
@@ -69,35 +66,37 @@ const Messenger = () => {
           />
         )}
         {!loading && !error && users && (
-          <ul className="messenger-list d-flex list-group">
-            {users
-              ? users?.map((user: IUserDetails, index: number) => {
-                  return (
-                    <li
-                      key={user.email + index}
-                      className="messenger-user list-group-item list-group-item-action
+          <ul className="messenger-list flex list-group">
+            {users ? (
+              users?.map((user: IUserDetails, index: number) => {
+                return (
+                  <li
+                    key={user.email + index}
+                    className="messenger-user list-group-item list-group-item-action
                        list-group-item-dark bg-transparent border-0 p-1 m-1"
+                  >
+                    <div
+                      className="flex flex-row messenger-user-div"
+                      onClick={onMessengerUser}
                     >
-                      <div
-                        className="d-flex flex-row messenger-user-div"
-                        onClick={onMessengerUser}
-                      >
-                        <img
-                          src={user?.image}
-                          alt="User profile"
-                          style={{
-                            maxWidth: "30px",
-                            maxHeight: "30px",
-                            marginRight: "5px",
-                          }}
-                          className="bg-secondary rounded-circle"
-                        />
-                        <div className="user-name">{`${user?.firstName} ${user.lastName}`}</div>
-                      </div>
-                    </li>
-                  );
-                })
-              : null}
+                      <img
+                        src={user?.image}
+                        alt="User profile"
+                        style={{
+                          maxWidth: "30px",
+                          maxHeight: "30px",
+                          marginRight: "5px",
+                        }}
+                        className="bg-secondary rounded-circle"
+                      />
+                      <div className="user-name">{`${user?.firstName} ${user.lastName}`}</div>
+                    </div>
+                  </li>
+                );
+              })
+            ) : (
+              <p>No users to display</p>
+            )}
           </ul>
         )}
       </div>

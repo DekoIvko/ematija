@@ -1,14 +1,14 @@
-import { useContext } from "react";
+// import { useContext } from "react";
 import { useParams } from "react-router";
 import { useQuery } from "@tanstack/react-query";
 import { GetProductService } from "../../../services/ProductsServices";
-import { IStateContext, StateContext } from "../../../store/store";
+// import { IStateContext, StateContext } from "../../../store/store";
 
 import "./Product.scss";
 
 const Product = () => {
   const { id } = useParams();
-  const { state } = useContext<IStateContext>(StateContext);
+  // const { state } = useContext<IStateContext>(StateContext);
   const product = useQuery({
     queryKey: ["product", id],
     queryFn: () => GetProductService(id?.toString()!),
@@ -21,15 +21,15 @@ const Product = () => {
   return (
     <div
       className="product"
-      style={{
-        background: state?.appTheme === "dark" ? "#18191a" : "whitesmoke",
-        color: state?.appTheme === "dark" ? "whitesmoke" : "#242526",
-      }}
+      // style={{
+      //   background: state?.appTheme === "dark" ? "#18191a" : "whitesmoke",
+      //   color: state?.appTheme === "dark" ? "whitesmoke" : "#242526",
+      // }}
     >
-      <div className="product-body d-flex flex-row p-4">
+      <div className="product-body flex flex-row p-4">
         <div className="images">
           <img src={product?.data?.thumbnail} alt="" />
-          <div className="images-small d-flex flex-row">
+          <div className="images-small flex flex-row">
             {product?.data?.images.map((img: string, index: number) => {
               return <img key={img + index} src={img} alt="" />;
             })}
@@ -46,7 +46,7 @@ const Product = () => {
           <div>
             Category: <span>{product?.data?.category}</span>
           </div>
-          <div className="d-flex flex-row gap-2">
+          <div className="flex flex-row gap-2">
             <div>
               Rating:<span> {product?.data?.rating}</span>
             </div>
@@ -55,8 +55,8 @@ const Product = () => {
             </div>
           </div>
           <br />
-          <div className="price d-flex flex-column gap-2">
-            <div className="d-flex flex-row gap-2 align-items-center">
+          <div className="price flex flex-col gap-2">
+            <div className="flex flex-row gap-2 align-items-center">
               <span style={{ textDecoration: "line-through" }}>
                 {" " + product?.data?.price + "$"}
               </span>
@@ -71,13 +71,13 @@ const Product = () => {
           </div>
         </div>
       </div>
-      <div className="product-actions d-flex flex-row p-4 gap-4 justify-content-center align-items-center">
-        <div className="d-flex ">
+      <div className="product-actions flex flex-row p-4 gap-4 justify-content-center align-items-center">
+        <div className="flex ">
           <div>
             Delivery <span>Estimated delivery on 20-30 days </span>
           </div>
         </div>
-        <div className="d-flex flex-row align-items-center">
+        <div className="flex flex-row align-items-center">
           Quantity:{" "}
           <div>
             <input type="number" />

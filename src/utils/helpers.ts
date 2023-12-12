@@ -41,3 +41,15 @@ export function newAbortSignal(timeoutMs: number) {
 
   return abortController.signal;
 }
+
+export function imageToBase64(params: any) {
+  const reader = new FileReader();
+  reader.readAsDataURL(params);
+
+  const data = new Promise((resolve, reject) => {
+    reader.onload = () => resolve(reader.result);
+    reader.onerror = (err) => reject(err);
+  });
+
+  return data;
+}

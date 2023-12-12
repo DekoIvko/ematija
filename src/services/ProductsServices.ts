@@ -1,20 +1,19 @@
 import { appConfig } from "../appConfig";
 import { IProducts } from "../interfaces/IProducts";
 import { newAbortSignal } from "../utils/helpers";
+import { authHeader } from "./AuthHeader";
 
 import axios from "./axios";
 
 export const GetProductsService = async () => {
   try {
-    const response = await axios.get(
-      `${appConfig.baseApiURL}/products?limit=95`,
-      {
-        signal: newAbortSignal(2000),
-      }
-    );
-    return response.data;
+    const response = await axios.get(`${appConfig.localApiUrl}/products`, {
+      headers: authHeader(),
+      signal: newAbortSignal(2000),
+    });
+    return response;
   } catch (error: any) {
-    return error;
+    throw new Error(error);
   }
 };
 
@@ -28,7 +27,7 @@ export const GetProductService = async (idProduct: string) => {
     );
     return response.data;
   } catch (error: any) {
-    return error;
+    throw new Error(error);
   }
 };
 
@@ -42,7 +41,7 @@ export const GetProductCategoriesService = async () => {
     );
     return response.data;
   } catch (error: any) {
-    return error;
+    throw new Error(error);
   }
 };
 
@@ -56,7 +55,7 @@ export const GetProductsByCategoryService = async (category: string) => {
     );
     return response.data;
   } catch (error: any) {
-    return error;
+    throw new Error(error);
   }
 };
 
@@ -70,21 +69,22 @@ export const GetProductsBySearchService = async (search: string) => {
     );
     return response.data;
   } catch (error: any) {
-    return error;
+    throw new Error(error);
   }
 };
 
 export const AddNewProductsService = async (products: IProducts) => {
   try {
     const response = await axios.post(
-      `${appConfig.baseApiURL}/products/add`,
+      `${appConfig.localApiUrl}/products/add`,
       { products },
       {
+        headers: authHeader(),
         signal: newAbortSignal(2000),
       }
     );
     return response.data;
   } catch (error: any) {
-    return error;
+    throw new Error(error);
   }
 };
