@@ -6,10 +6,13 @@ import { authHeader } from "./AuthHeader";
 
 export const GetPostsService = async () => {
   try {
-    const response = await axios.get(`${appConfig.localApiUrl}/posts`, {
-      headers: authHeader(),
-      signal: newAbortSignal(2000),
-    });
+    const response: AxiosResponse = await axios.get(
+      `${appConfig.localApiUrl}/posts`,
+      {
+        headers: authHeader(),
+        signal: newAbortSignal(2000),
+      }
+    );
     return response;
   } catch (error: any) {
     throw new Error(error);
@@ -18,9 +21,10 @@ export const GetPostsService = async () => {
 
 export const GetUserPostsService = async (userId: string) => {
   try {
-    const response = await axios.get(
-      `${appConfig.baseApiURL}/post/user/${userId}`,
+    const response: AxiosResponse = await axios.get(
+      `${appConfig.localApiUrl}/posts?id=${userId}`,
       {
+        headers: authHeader(),
         signal: newAbortSignal(2000),
       }
     );
@@ -32,9 +36,10 @@ export const GetUserPostsService = async (userId: string) => {
 
 export const UpdatePostsService = async (postId: string) => {
   try {
-    const response = await axios.put(
+    const response: AxiosResponse = await axios.put(
       `${appConfig.baseApiURL}/posts/${postId}`,
       {
+        headers: authHeader(),
         signal: newAbortSignal(2000),
       }
     );

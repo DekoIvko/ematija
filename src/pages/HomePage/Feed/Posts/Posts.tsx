@@ -6,12 +6,13 @@ import AddComments from "../AddComments/AddComments";
 import { AddCommentService } from "../../../../services/CommentsService";
 import { IParamComment } from "../../../../interfaces/IParamComment";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { useAppSelector } from "../../../../store/hooks";
+import { useUserAuthContext } from "../../../../context/UserAuthContext";
+import toast from "react-hot-toast";
 
 // implement add comment with react query with useMutation and setQueryData
 const Posts = ({ posts = [] }: any) => {
-  console.log("Components Posts ", posts);
-  const user = useAppSelector((state) => state.user.user);
+  // console.log("Components Posts ");
+  const user = useUserAuthContext();
   const [currentPage, setCurrentPage] = useState(1);
   const queryClient = useQueryClient();
 
@@ -29,7 +30,8 @@ const Posts = ({ posts = [] }: any) => {
         return item;
       });
 
-      // queryClient.setQueryData(["posts"], { posts: [...updatedPosts] });
+      queryClient.setQueryData(["posts"], { posts: [...updatedPosts] });
+      toast.success("Success add comment!");
     },
   });
 
@@ -57,12 +59,13 @@ const Posts = ({ posts = [] }: any) => {
       const paramComment: IParamComment = {
         body: newComment,
         postId: post.id,
-        userId: user?.id.toString(),
+        userId: user?.user.id,
       };
 
       await addComments.mutateAsync(paramComment);
-    } catch (error) {
+    } catch (error: any) {
       console.log(error);
+      toast.error(error.toString());
     }
   };
 
@@ -73,32 +76,38 @@ const Posts = ({ posts = [] }: any) => {
           ?.slice(currentPage - 1, currentPage + 10)
           ?.map((item: IPosts, index: number) => {
             return (
-              <div key={item?.id + "_" + index} className="posts flex flex-col">
-                <div className="post-header flex flex-col gap-3">
-                  <div className="flex flex-row gap-1 align-items-end">
-                    <img src={item?.user?.image} alt="Profile" />
+              <div
+                key={item?.id + "_" + index}
+                className="flex flex-col bg-gray-800 rounded p-2 my-2 text-slate-200"
+              >
+                <div className="flex flex-col gap-3">
+                  <div className="flex gap-1 items-end align-items-end">
+                    <img
+                      src={item?.user?.image}
+                      alt="Profile"
+                      className="max-w-[30px]"
+                    />
                     <span>{`${item?.user?.firstName} ${item?.user?.lastName}`}</span>
                   </div>
-                  <h4>{item?.title}</h4>
                 </div>
-                <div className="post-body flex">
-                  <div className="post-body-comment-text text-left">
-                    {item?.body}
-                  </div>
+                <div className="py-4 px-2">
+                  <div>{item?.body}</div>
                 </div>
-                <div className="post-tags flex flex-row gap-3">
+                <div className="w-full bg-gray-700 h-[2px]"></div>
+                <div className="flex flex-row gap-3  p-1">
                   {item?.tags.map((tag: string, index: number) => {
                     return <span key={tag + "_" + index}>{`#${tag}`}</span>;
                   })}
                 </div>
-                <div className="comments flex flex-col">
+                <div className="w-full bg-gray-700 h-[2px]"></div>
+                <div className="flex flex-col max-h-[160px] mt-2 p-2 overflow-y-auto overflow-x-hidden shadow-inner shadow-gray-600/40">
                   <Comments comments={item?.comments} />
                 </div>
-                <div className="add-comment flex flex-col">
+                <div className="flex flex-col">
                   <div className="flex w-100 justify-content-center">
                     <button
                       type="button"
-                      className="btn btn-link text-decoration-none"
+                      className="p-1 text-decoration-none"
                       style={{ color: "#b0b3b8" }}
                       onClick={(e) => onShowCommentSection(e, item)}
                     >

@@ -1,23 +1,20 @@
 import { useRef, useState } from "react";
-import AuthService from "../../../services/AuthService";
 import { useLocation, useNavigate } from "react-router";
 import { AiOutlineUserAdd } from "react-icons/ai";
 import { BiShow, BiHide } from "react-icons/bi";
 import { Link } from "react-router-dom";
 import { EHeaderNavItems } from "../../../enums/EHeaderNavItems";
 import { useErrorBoundary } from "react-error-boundary";
-import { useAppDispatch } from "../../../store/hooks";
-import { addUser } from "../../../store/userSlice";
 import { useMutation } from "@tanstack/react-query";
 import { LoginUserService } from "../../../services/UsersService";
 import { toast } from "react-hot-toast";
-import { setCredentials } from "../../../store/authSlice";
+import { useUserAuthContext } from "../../../context/UserAuthContext";
 
 const LogInPage = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const from = location.state?.from?.pathname || "/home";
-  const dispatch = useAppDispatch();
+  const userAuth = useUserAuthContext();
   const { showBoundary } = useErrorBoundary();
   const [showPassword, setShowPassword] = useState(false);
   const emailRef = useRef<HTMLInputElement>(null);
@@ -38,8 +35,7 @@ const LogInPage = () => {
     onSuccess: async (result, variables) => {
       console.log(result);
       if (result && result?.status === 200) {
-        await dispatch(setCredentials(result?.data)); // add user in redux auth
-        await dispatch(addUser(result?.data)); // add user in redux logged user
+        await userAuth.setUser(result?.data);
 
         localStorage.setItem("ematija-user", JSON.stringify(result?.data)); // add user in local storage
         toast.success(result?.message);
@@ -56,15 +52,14 @@ const LogInPage = () => {
   const loginDummyUser = async () => {
     // sign in with dummy user
     try {
-      const authUser = await AuthService({
+      const authUser = {
         firstName: "",
         lastName: "",
         image: "",
         username: "atuny0",
         password: "9uQFF1Lh",
-      });
-
-      dispatch(addUser(authUser));
+      };
+      await userAuth.setUser(authUser);
       localStorage.setItem("ematija-user", JSON.stringify(authUser));
       navigate("/home");
     } catch (error) {
@@ -113,15 +108,15 @@ const LogInPage = () => {
 
   return (
     <div className="p-2 md:p-4">
-      <div className="w-full max-w-md bg-white-900 flex flex-col p-4 shadow-xl mt-4 m-auto">
+      <div className="bg-gray-400 rounded w-full max-w-md flex flex-col p-4 shadow-xl mt-4 m-auto">
         <div className="w-20 h-20 overflow-hidden rounded-full drop-shadow-md shadow-md m-auto relative">
           <AiOutlineUserAdd className="text-6xl ml-2 pb-2" />
         </div>
         <form onSubmit={onSubmitBtn} className="w-full flex flex-col">
-          <div className="card p-4">
-            <div className="card-body flex flex-col gap-3">
+          <div className="p-4">
+            <div className="flex flex-col gap-3">
               <div className="flex flex-col">
-                <label htmlFor="email">email</label>
+                <label htmlFor="email">Email</label>
                 <input
                   ref={emailRef}
                   className="mt-1 mb-2 w-full bg-slate-200 p-1 px-2 py-1 rounded focus-within:outline-blue-400"

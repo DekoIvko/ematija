@@ -3,6 +3,7 @@ import Routes from "./Routes/Routes";
 import { store } from "./store/store";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
+import { AuthUserProvider } from "./context/UserAuthContext";
 
 import "./App.css";
 
@@ -11,17 +12,16 @@ function App() {
     defaultOptions: {
       queries: {
         refetchOnWindowFocus: false,
-        // refetchOnMount: false,
         retry: 2,
-        // cacheTime: 1000 * 60 * 60 * 24, // 24 hours
-        // staleTime: Infinity,
       },
     },
   });
   return (
     <Provider store={store}>
       <QueryClientProvider client={queryClient}>
-        <Routes />
+        <AuthUserProvider>
+          <Routes />
+        </AuthUserProvider>
         <ReactQueryDevtools initialIsOpen={false} />
       </QueryClientProvider>
     </Provider>

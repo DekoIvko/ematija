@@ -1,11 +1,13 @@
 import { Navigate, Outlet, useLocation } from "react-router";
+import { useUserAuthContext } from "../context/UserAuthContext";
 
 const RequireAuth = () => {
   const location = useLocation();
-  const userAndToken = JSON.parse(window.localStorage.getItem("ematija-user")!);
+  const authUser = useUserAuthContext();
+
   return (
     <>
-      {userAndToken?.accessToken ? (
+      {authUser?.isTokenValid() ? (
         <Outlet />
       ) : (
         <Navigate to="/login" state={{ from: location }} replace />

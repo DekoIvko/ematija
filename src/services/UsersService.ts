@@ -1,31 +1,32 @@
+import { AxiosResponse } from "axios";
 import { appConfig } from "../appConfig";
 import { newAbortSignal } from "../utils/helpers";
 
 import axios from "./axios";
+import { authHeader } from "./AuthHeader";
 
 export const GetUsersService = async () => {
   try {
-    const response = await axios.get(
-      `${appConfig.baseApiURL}/users?limit=100`,
-      {
-        signal: newAbortSignal(2000),
-      }
-    );
-    return response.data;
+    const response = await axios.get(`${appConfig.localApiUrl}/users`, {
+      headers: authHeader(),
+      signal: newAbortSignal(2000),
+    });
+    return response;
   } catch (error: any) {
     throw error;
   }
 };
 
-export const GetSingleUserService = async (userId: string) => {
+export const GetMessengerUsersService = async () => {
   try {
-    const response = await axios.get(
-      `${appConfig.baseApiURL}/users/${userId}`,
+    const response: AxiosResponse = await axios.get(
+      `${appConfig.localApiUrl}/users`,
       {
+        headers: authHeader(),
         signal: newAbortSignal(2000),
       }
     );
-    return response.data;
+    return response;
   } catch (error: any) {
     throw error;
   }
@@ -47,9 +48,13 @@ export const GetUsersSearchService = async (userSearch: string) => {
 
 export const RegisterUserService = async (user: any) => {
   try {
-    const response = await axios.post("/user/register", user, {
-      signal: newAbortSignal(2000),
-    });
+    const response: AxiosResponse = await axios.post(
+      `${appConfig.localApiUrl}/user/register`,
+      user,
+      {
+        signal: newAbortSignal(2000),
+      }
+    );
     return response.data;
   } catch (error: any) {
     throw error;
@@ -58,10 +63,14 @@ export const RegisterUserService = async (user: any) => {
 
 export const LoginUserService = async (user: any) => {
   try {
-    const response = await axios.post("/user/login", user, {
-      signal: newAbortSignal(2000),
-      withCredentials: true,
-    });
+    const response: AxiosResponse = await axios.post(
+      `${appConfig.localApiUrl}/user/login`,
+      user,
+      {
+        signal: newAbortSignal(2000),
+        withCredentials: true,
+      }
+    );
     return response.data;
   } catch (error: any) {
     throw error;

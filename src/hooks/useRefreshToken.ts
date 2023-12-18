@@ -1,15 +1,12 @@
-import { useAppDispatch } from "../store/hooks";
-import axios from "../services/axios";
-import { setCredentials } from "../store/authSlice";
+import { useUserAuthContext } from "../context/UserAuthContext";
+import { AuthRefreshService } from "../services/AuthService";
 
 const useRefreshToken = () => {
-  const dispatch = useAppDispatch();
+  const authUser = useUserAuthContext();
 
   const refresh = async () => {
-    const response = await axios.get("/refresh", {
-      withCredentials: true,
-    });
-    await dispatch(setCredentials(response.data.accessToken));
+    const response = await AuthRefreshService();
+    await authUser.setUser(response.data);
     const user = JSON.parse(window.localStorage.getItem("ematija-user")!);
     const userWithNewAccessToken = {
       ...user,

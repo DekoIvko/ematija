@@ -1,52 +1,56 @@
-import { useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { AxiosResponse } from "axios";
 import { IAddTodo, ITodos } from "../../../interfaces/ITodos";
 import { Lists, Loader, Pagination, StatusMessage } from "../../../components";
 
-// import { IStateContext, StateContext } from "../../../store/store";
 import { CreateTodosService } from "../../../services/TodosService";
 import withCommentsLogic from "../../../hooks/withCommentsLogic";
 import { useFetchGet } from "../../../hooks/useFetchGet";
 import { appConfig } from "../../../appConfig";
 import AddTodo from "./AddTodo/AddTodo";
+import { useAppSelector } from "../../../store/hooks";
 import "./Todos.scss";
 
 // example with CUSTOM HOOK FETCH DATA ------->>
 const Todos = ({ onClickComments }: any) => {
-  // const { state } = useContext<IStateContext>(StateContext);
+  const user = useAppSelector((state) => state.user.user);
   const [todos, setTodos] = useState<ITodos[]>();
   const [error, setError] = useState<Error>();
   const [loadingNewTodo, setLoadingNewTodo] = useState<boolean>(false);
   const [currentPage, setCurrentPage] = useState(1);
-  // const { loading, apiError, apiData } = useFetchGet(
-  //   // custom hook
-  //   `${appConfig?.baseApiURL}/todos/user/${state?.loggedUser?.id}`
-  // );
+  const { loading, apiError, apiData } = useFetchGet(
+    // custom hook
+    `${appConfig?.baseApiURL}/todos/user/${user?.id}`
+  );
   const [newTodo, setNewTodo] = useState<string>("");
   const [newTodoCompleted, setNewTodoCompleted] = useState<boolean>(false);
   const [showTodoCreateInputs, setShowTodoCreateInputs] =
     useState<boolean>(false);
 
-  // useEffect(() => {
-  //   setTodos(apiData?.todos);
-  // }, [apiData]);
+  useEffect(() => {
+    console.log(user);
+  }, [user]);
+
+  useEffect(() => {
+    setTodos(apiData?.todos);
+  }, [apiData]);
 
   const createTodo = async () => {
     setLoadingNewTodo(true);
     try {
-      // const todo: IAddTodo = {
-      //   todo: newTodo,
-      //   completed: newTodoCompleted,
-      //   userId: state?.loggedUser?.id,
-      // };
-      // const responseNewTodo: AxiosResponse = await CreateTodosService(todo);
-      // if (responseNewTodo.status === 200) {
-      //   setTodos((prevArr) => [...prevArr!, responseNewTodo.data]);
-      //   setShowTodoCreateInputs((prevVal) => (prevVal = !prevVal));
-      //   setNewTodo("");
-      // } else {
-      //   setError(responseNewTodo?.data?.message);
-      // }
+      const todo: IAddTodo = {
+        todo: newTodo,
+        completed: newTodoCompleted,
+        userId: user?.id,
+      };
+      const responseNewTodo: AxiosResponse = await CreateTodosService(todo);
+      if (responseNewTodo.status === 200) {
+        setTodos((prevArr) => [...prevArr!, responseNewTodo.data]);
+        setShowTodoCreateInputs((prevVal) => (prevVal = !prevVal));
+        setNewTodo("");
+      } else {
+        setError(responseNewTodo?.data?.message);
+      }
     } catch (error: any) {
       setError(error);
     } finally {
@@ -69,13 +73,13 @@ const Todos = ({ onClickComments }: any) => {
         </button>
       </div>
       {loadingNewTodo && !error && <Loader />}
-      {/* {!loading && error && (
+      {!loading && error && (
         <StatusMessage
           from="add-new-todos"
           status="error"
           message={error.message}
         />
-      )} */}
+      )}
       {showTodoCreateInputs && !loadingNewTodo && (
         <AddTodo
           setNewTodo={setNewTodo}
@@ -85,7 +89,7 @@ const Todos = ({ onClickComments }: any) => {
           createTodo={createTodo}
         />
       )}
-      {/* {loading && !apiError && <Loader />}
+      {loading && !apiError && <Loader />}
       {!loading && apiError && (
         <StatusMessage from="todos" status="error" message={apiError.message} />
       )}
@@ -104,7 +108,7 @@ const Todos = ({ onClickComments }: any) => {
             onPageChange={(page: any) => setCurrentPage(page)}
           />
         </>
-      ) : null} */}
+      ) : null}
     </div>
   );
 };

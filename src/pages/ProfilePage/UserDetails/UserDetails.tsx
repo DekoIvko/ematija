@@ -8,7 +8,7 @@ const UserDetails = ({ userDetails }: IProps) => {
   return (
     <div>
       {" "}
-      <div className="flex">
+      <div className="flex text-slate-200">
         <div className="info-title flex">
           <h3>Intro</h3>
         </div>
@@ -20,7 +20,7 @@ const UserDetails = ({ userDetails }: IProps) => {
         </div>
         <div className="info-details p-2 m-3 flex flex-row gap-2">
           <span>Address:</span>
-          <span>{userDetails?.address.address}</span>
+          <span>{userDetails?.contact?.address}</span>
         </div>
         <div className="info-details p-2 m-3 flex flex-row gap-2">
           <span>Email:</span>
@@ -28,7 +28,7 @@ const UserDetails = ({ userDetails }: IProps) => {
         </div>
         <div className="info-details p-2 m-3 flex flex-row gap-2">
           <span>Mobile:</span>
-          <span>{userDetails?.phone}</span>
+          <span>{userDetails?.contact?.phone}</span>
         </div>
       </div>
     </div>

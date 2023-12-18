@@ -1,42 +1,38 @@
-import { useState } from "react";
-
-import { AxiosResponse } from "axios";
-import { GetUsersSearchService } from "../../../services/UsersService";
-import { Loader, StatusMessage } from "../../../components";
+import { GetMessengerUsersService } from "../../../services/UsersService";
+import { Loader } from "../../../components";
 import { IUserDetails } from "../../../interfaces/IUserDetails";
 import useDebounceEffect from "../../../hooks/useDebounceEffect";
+import { useFetchQuery } from "../../../hooks/useFetchQuery";
+import { useErrorBoundary } from "react-error-boundary";
 import "./Messenger.scss";
+
 // react query refetch while typing
 const Messenger = () => {
   console.log("Component Messenger");
-  const [users, setUsers] = useState<IUserDetails[]>([]);
-  const [loading, setLoading] = useState<boolean>(false);
-  const [error, setError] = useState<Error>();
-  const [inputSearch, setInputSearch] = useState("");
+  const { showBoundary } = useErrorBoundary();
+  // const [inputSearch, setInputSearch] = useState("");
 
-  const getUserOnSearch = async () => {
-    setLoading(true);
-    try {
-      const data = await GetUsersSearchService(inputSearch);
-      if (data?.users) {
-        setUsers(data?.users);
-      } else {
-        setError(data.message);
-      }
-    } catch (error: any) {
-      setError(error);
-    } finally {
-      setLoading(false);
-    }
-  };
+  const {
+    data: users,
+    isError,
+    error,
+    isLoading,
+  } = useFetchQuery(GetMessengerUsersService, "messenger");
 
-  useDebounceEffect(() => {
-    getUserOnSearch();
-  }, [inputSearch]);
+  if (isError) {
+    showBoundary(error);
+  }
+  if (isLoading) {
+    <Loader />;
+  }
+  console.log(users);
+  // useDebounceEffect(() => {
+  // getUserOnSearch();
+  // }, [inputSearch]);
 
-  const searchInputHandler = (e: string) => {
-    setInputSearch(e);
-  };
+  // const searchInputHandler = (e: string) => {
+  //   setInputSearch(e);
+  // };
 
   const onMessengerUser = () => {
     //write some logic here
@@ -44,61 +40,48 @@ const Messenger = () => {
   };
 
   return (
-    <div className="messenger container flex flex-col " data-bs-spy="scroll">
-      <div className="messenger-title">
+    <div
+      className="container flex flex-col text-slate-200 p-2"
+      data-bs-spy="scroll"
+    >
+      <div className=" pl-2 text-xl">
         <h3>Contacts</h3>
       </div>
-      <div className="messenger-user-search flex flex-col p-2">
+      <div className="p-2 w-full">
         <input
-          // ref={test}
-          onChange={(e) => searchInputHandler(e.target.value)}
+          // onChange={(e) => searchInputHandler(e.target.value)}
           type="text"
-          className="form-control"
+          placeholder="Search..."
+          className="w-full rounded bg-slate-200 text-slate-800 p-1"
         />
       </div>
-      <div className="messenger-body flex flex-col">
-        {loading && !error && <Loader />}
-        {!loading && error && (
-          <StatusMessage
-            from="messenger"
-            status="error"
-            message={error?.message}
-          />
-        )}
-        {!loading && !error && users && (
-          <ul className="messenger-list flex list-group">
-            {users ? (
-              users?.map((user: IUserDetails, index: number) => {
-                return (
-                  <li
-                    key={user.email + index}
-                    className="messenger-user list-group-item list-group-item-action
-                       list-group-item-dark bg-transparent border-0 p-1 m-1"
+      <div className="">
+        <ul className="flex flex-col overflow-y-auto overflow-x-hidden max-h-[78vh]">
+          {users ? (
+            users?.data?.map((user: IUserDetails, index: number) => {
+              return (
+                <li
+                  key={user.email + index}
+                  className="p-1 m-1 hover:bg-slate-700 cursor-pointer w-full rounded"
+                >
+                  <div
+                    className="flex flex-row   "
+                    // onClick={onMessengerUser}
                   >
-                    <div
-                      className="flex flex-row messenger-user-div"
-                      onClick={onMessengerUser}
-                    >
-                      <img
-                        src={user?.image}
-                        alt="User profile"
-                        style={{
-                          maxWidth: "30px",
-                          maxHeight: "30px",
-                          marginRight: "5px",
-                        }}
-                        className="bg-secondary rounded-circle"
-                      />
-                      <div className="user-name">{`${user?.firstName} ${user.lastName}`}</div>
-                    </div>
-                  </li>
-                );
-              })
-            ) : (
-              <p>No users to display</p>
-            )}
-          </ul>
-        )}
+                    <img
+                      src={user?.image}
+                      alt=""
+                      className="max-w-[30px] mr-1"
+                    />
+                    <div className="">{`${user?.firstName} ${user.lastName}`}</div>
+                  </div>
+                </li>
+              );
+            })
+          ) : (
+            <p>No users to display</p>
+          )}
+        </ul>
       </div>
     </div>
   );

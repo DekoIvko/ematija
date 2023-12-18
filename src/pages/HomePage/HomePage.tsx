@@ -1,10 +1,7 @@
-import { useContext, useState } from "react";
-// import { IStateContext, StateContext } from "../../store/store";
+import { useState } from "react";
 import { ENavigationItems } from "../../enums/ENavigationItems";
 import { NavigationMenu } from "./NavigationMenu/NavigationMenu";
 import Messenger from "./Messenger/Messenger";
-
-import { Loader, StatusMessage } from "../../components/index";
 
 import Feed from "./Feed/Feed";
 import Quotes from "./Quotes/Quotes";
@@ -15,62 +12,30 @@ import "./HomePage.scss";
 const HomePage = () => {
   console.log("Components HomePage");
   const [page, setPage] = useState("feed");
-  // const { state } = useContext<IStateContext>(StateContext);
 
   return (
-    <div className="home-page container-fluid flex flex-row gap-2">
-      {/* {state?.error && !state?.loader && (
-        <StatusMessage
-          from="home-page"
-          status="error"
-          message={state?.errorMessage}
-        />
-      )}
-      {!state?.error && state?.loader && <Loader />} */}
-      {/* {!state?.error && !state?.loader && ( */}
-      <>
-        {
-          <aside
-            id="navigation-menu"
-            className="navigation flex flex-col column align-self-start bd-highlight flex-grow-1"
-          >
-            {/* <NavigationMenu state={state} page={page} setPage={setPage} /> */}
-          </aside>
-        }
+    <div className="container-fluid flex flex-row gap-2">
+      <aside
+        id="navigation-menu"
+        className="md:min-w-[250px] sm:min-w-[150px] bg-gray-800 m-2 rounded"
+      >
+        <NavigationMenu page={page} setPage={setPage} />
+      </aside>
+      <section id="section" className="w-full">
         {page === ENavigationItems.feed ? (
-          <section
-            id="feed-section"
-            className="section-page flex flex-col align-self-center "
-          >
-            <Feed feedType="home-page" />
-          </section>
+          <Feed feedType="home-page" />
+        ) : page === ENavigationItems.quotes ? (
+          <Quotes />
+        ) : page === ENavigationItems.todos ? (
+          <Todos />
         ) : null}
-        {page === ENavigationItems.quotes ? (
-          <section
-            id="quotes-section"
-            className="section-page flex flex-col align-self-center "
-          >
-            <Quotes />
-          </section>
-        ) : null}
-        {page === ENavigationItems.todos ? (
-          <section
-            id="todos-section"
-            className="section-page flex flex-col align-self-center "
-          >
-            <Todos />
-          </section>
-        ) : null}
-        {page && (
-          <section
-            id="messenger-users"
-            className="navigation flex flex-col flex-grow-1 "
-          >
-            {/* <Messenger /> */}
-          </section>
-        )}
-      </>
-      {/* )} */}
+      </section>
+      <aside
+        id="messenger-users"
+        className="md:min-w-[240px] sm:min-w-[140px] bg-gray-800 m-2 rounded"
+      >
+        <Messenger />
+      </aside>
     </div>
   );
 };

@@ -1,12 +1,12 @@
-export interface IUserDetails {
+export interface IUser {
   id: number;
+  email: string;
   username: string;
   firstName: string;
   lastName: string;
   password: string;
   contact: IContact;
   birthDate: string;
-  email: string;
   gender: string;
   image: string;
 }
@@ -15,5 +15,5 @@ interface IContact {
   address: string;
   city: string;
   state: string;
-  phone: String;
+  phone: string;
 }

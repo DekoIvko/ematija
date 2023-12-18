@@ -93,7 +93,7 @@ const ProductsPage = () => {
       />
       {counter}
       <button
-        className="bg-red-500 text-white p-4"
+        className="bg-red-500 text-slate-200 p-4"
         onClick={() => setCounter((prevCount) => prevCount + 1)}
       >
         Counter plus

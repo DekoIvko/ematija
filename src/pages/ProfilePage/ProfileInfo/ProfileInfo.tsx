@@ -8,7 +8,7 @@ const ProfileInfo = ({ userDetails }: IProps) => {
   return (
     <div>
       {" "}
-      <div className="profile-name-edit flex flex-row align-self-center w-100 p-5 m-1">
+      <div className="profile-name-edit flex flex-row align-self-center w-100 p-5 m-1 text-slate-200">
         <div className="profile-picture-name flex flex-row justify-content-between w-100">
           <div className="flex flex-row align-self-center w-70">
             <img src={userDetails?.image} alt="Profile" />

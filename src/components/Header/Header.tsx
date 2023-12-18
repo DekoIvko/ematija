@@ -1,20 +1,16 @@
 import { useState } from "react";
 import mkFlag from "../../imgs/MKFlag.png";
-import { Link, NavLink } from "react-router-dom";
+import { Link, NavLink, useLocation } from "react-router-dom";
 import { FaUserAlt } from "react-icons/fa";
 import { EHeaderNavItems } from "../../enums/EHeaderNavItems";
-import { useAppSelector } from "../../store/hooks";
 import useRefreshToken from "../../hooks/useRefreshToken";
+import { useUserAuthContext } from "../../context/UserAuthContext";
 
 const Header = () => {
   const refreshToken = useRefreshToken();
-  const auth = useAppSelector((state) => state.auth);
+  const location = useLocation();
+  const userAuth = useUserAuthContext();
   const [showMenu, setShowMenu] = useState(false);
-  const [user] = useState({
-    email: "",
-    password: "",
-    image: "",
-  });
 
   const handleShowMenu = () => {
     setShowMenu((prevObj) => !prevObj);
@@ -22,6 +18,7 @@ const Header = () => {
 
   const onLogOut = () => {
     localStorage.removeItem("ematija-user");
+    userAuth.setUser(null);
     window.location.reload();
   };
 
@@ -30,7 +27,7 @@ const Header = () => {
   };
 
   return (
-    <header className="fixed w-full h-16 z-50 bg-slate-800 text-white">
+    <header className="fixed w-full h-16 z-50 bg-slate-800 text-slate-200">
       <div className="flex items-center h-full">
         <div className="header-context">
           <div className="company-logo p-1 w-16 h-16">
@@ -39,20 +36,17 @@ const Header = () => {
             </a>
           </div>
         </div>
-        <nav className="navigate-icons w-full">
-          <ul className="flex justify-center items-center gap-10">
-            <li className="">
-              <NavLink
-                to={EHeaderNavItems.home}
-                className={({ isActive, isPending }) =>
-                  isPending
-                    ? "top-link-itm pending"
-                    : isActive
-                    ? "top-link-itm active"
-                    : ""
-                }
-              >
-                <div className="flex gap-2 items-center">
+        <nav className="w-full h-full">
+          <ul className="flex justify-center items-center gap-10 h-full">
+            <li
+              className={`flex items-center ${
+                location.pathname === "/home"
+                  ? "border-slate-200 border-b-[3px]"
+                  : ""
+              } h-full`}
+            >
+              <NavLink to={EHeaderNavItems.home} className={``}>
+                <div className="flex gap-2 justify-center items-center">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     width="26"
@@ -67,17 +61,14 @@ const Header = () => {
                 </div>
               </NavLink>
             </li>
-            <li className="">
-              <NavLink
-                to={EHeaderNavItems.profile}
-                className={({ isActive, isPending }) =>
-                  isPending
-                    ? "top-link-itm pending"
-                    : isActive
-                    ? "top-link-itm active"
-                    : ""
-                }
-              >
+            <li
+              className={`flex items-center h-full ${
+                location.pathname === "/profile"
+                  ? "border-slate-200 border-b-[3px]"
+                  : ""
+              }`}
+            >
+              <NavLink to={EHeaderNavItems.profile}>
                 <div className="flex gap-2 items-center">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -93,17 +84,14 @@ const Header = () => {
                 </div>
               </NavLink>
             </li>
-            <li className="">
-              <NavLink
-                to={EHeaderNavItems.products}
-                className={({ isActive, isPending }) =>
-                  isPending
-                    ? "top-link-itm pending"
-                    : isActive
-                    ? "top-link-itm active"
-                    : ""
-                }
-              >
+            <li
+              className={`flex items-center ${
+                location.pathname === "/products"
+                  ? "border-slate-200 border-b-[3px]"
+                  : ""
+              } h-full`}
+            >
+              <NavLink to={EHeaderNavItems.products}>
                 <div className="flex gap-2 items-center">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -123,9 +111,9 @@ const Header = () => {
         </nav>
         <div className="text-slate-600 px-2" onClick={handleShowMenu}>
           <div className="text-3xl cursor-pointer overflow-hidden drop-shadow-md">
-            {user?.image ? (
+            {userAuth?.user?.image ? (
               <img
-                src={user.image}
+                src={userAuth?.user?.image}
                 alt="profile"
                 className="w-12 h-12 rounded-full"
               />
@@ -135,7 +123,7 @@ const Header = () => {
           </div>
           {showMenu && (
             <div className="absolute right-2 bg-white py-2 px-2 shadow drop-shadow-md flex flex-col">
-              {!auth?.user ? (
+              {!userAuth?.user ? (
                 <Link
                   to={EHeaderNavItems.login}
                   className="px-2 py-1 hover:bg-slate-200"

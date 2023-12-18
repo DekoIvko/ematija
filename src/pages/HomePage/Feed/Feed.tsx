@@ -12,18 +12,19 @@ import {
 import { GetUsersService } from "../../../services/UsersService";
 import { IUserDetails } from "../../../interfaces/IUserDetails";
 import Posts from "./Posts/Posts";
-import "./Feed.scss";
-import { useAppSelector } from "../../../store/hooks";
 import { useErrorBoundary } from "react-error-boundary";
+import toast from "react-hot-toast";
+import "./Feed.scss";
+import { useUserAuthContext } from "../../../context/UserAuthContext";
 
 interface IProps {
   feedType: string;
 }
 
 const Feed = ({ feedType }: IProps) => {
-  console.log("Components Feed");
-  const user = useAppSelector((state: any) => state.user);
+  // console.log("Components Feed");
   const { showBoundary } = useErrorBoundary();
+  const authUser = useUserAuthContext();
 
   const [posts, postsByUser, comments, users] = useQueries({
     queries: [
@@ -34,7 +35,7 @@ const Feed = ({ feedType }: IProps) => {
       },
       {
         queryKey: ["posts-user"],
-        queryFn: () => GetUserPostsService(user.id),
+        queryFn: () => GetUserPostsService(authUser?.user?.id.toString()),
         enabled: feedType === "profile-page",
       },
       {
@@ -54,24 +55,29 @@ const Feed = ({ feedType }: IProps) => {
     comments?.isSuccess &&
     users?.isSuccess
   ) {
-    console.log(posts);
-    if (posts?.data?.status === 200) {
-      posts?.data?.data?.forEach((post: IPosts) => {
-        const user = users?.data?.users.find(
-          (user: IUserDetails) => post?.userId === user.id
-        );
-        const tempComments = comments?.data?.comments.filter(
-          (comment: IComments) => post.id === comment.postId
-        );
-        post.comments = post.comments ? post.comments : tempComments;
-        post.user = user || {};
-        post.showCommentSection = post.showCommentSection
-          ? post.showCommentSection
-          : false;
-        return post;
-      });
-    } else {
-      console.log("nema postovi!");
+    // console.log(posts);
+    try {
+      // console.log(users.data);
+      if (posts?.data?.status === 200) {
+        posts?.data?.data?.forEach((post: IPosts) => {
+          const user = users?.data?.data.find(
+            (user: IUserDetails) => post?.userId === user.id
+          );
+          const tempComments = comments?.data?.data.filter(
+            (comment: IComments) => post.id === comment.postId
+          );
+          post.comments = post.comments ? post.comments : tempComments;
+          post.user = user || {};
+          post.showCommentSection = post.showCommentSection
+            ? post.showCommentSection
+            : false;
+          return post;
+        });
+      } else {
+        toast("No posts to display!");
+      }
+    } catch (error) {
+      showBoundary(error);
     }
   } else if (
     feedType === "profile-page" &&
@@ -79,23 +85,29 @@ const Feed = ({ feedType }: IProps) => {
     comments?.isSuccess &&
     users?.isSuccess
   ) {
-    if (postsByUser?.data?.status === 200) {
-      postsByUser?.data?.data.forEach((post: IPosts) => {
-        const user = users?.data?.users.find(
-          (user: IUserDetails) => 123456 === user.id
-        );
-        const tempComments = comments?.data?.comments.filter(
-          (comment: IComments) => post.id === comment.postId
-        );
+    // console.log(postsByUser);
+    try {
+      if (postsByUser?.data?.status === 200) {
+        postsByUser?.data?.data.forEach((post: IPosts) => {
+          const user = users?.data?.data.find(
+            (user: IUserDetails) => authUser?.user.id === user.id
+          );
+          const tempComments = comments?.data?.data.filter(
+            (comment: IComments) => post.id === comment.postId
+          );
 
-        post.comments = tempComments || {};
-        post.user = user || {};
-        post.showCommentSection = post.showCommentSection
-          ? post.showCommentSection
-          : false;
-        return post;
-      });
-    } else {
+          post.comments = tempComments || {};
+          post.user = user || {};
+          post.showCommentSection = post.showCommentSection
+            ? post.showCommentSection
+            : false;
+          return post;
+        });
+      } else {
+        toast("No posts to display!");
+      }
+    } catch (error) {
+      showBoundary(error);
     }
   }
 
@@ -115,7 +127,7 @@ const Feed = ({ feedType }: IProps) => {
   }
 
   return (
-    <div className="home-feed">
+    <div>
       {(posts?.isSuccess || postsByUser?.isSuccess) &&
       (posts?.data?.data || postsByUser?.data?.data) ? (
         <>

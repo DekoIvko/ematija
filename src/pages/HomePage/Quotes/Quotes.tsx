@@ -1,53 +1,49 @@
 import { useState } from "react";
 import { GetQuotesService } from "../../../services/QuotesService";
-import { IQuotes } from "../../../interfaces/IQuotes";
-import { Lists, Loader, Pagination, StatusMessage } from "../../../components";
+import { Lists, Loader, Pagination } from "../../../components";
 import withCommentsLogic from "../../../hooks/withCommentsLogic";
-import { useQuery } from "@tanstack/react-query";
 
+import { useFetchQuery } from "../../../hooks/useFetchQuery";
+import { useErrorBoundary } from "react-error-boundary";
 import "./Quotes.scss";
 
 const Quotes = ({ onClickComments }: any) => {
   console.log("Component Quotes");
+  const { showBoundary } = useErrorBoundary();
   const [currentPage, setCurrentPage] = useState(1);
 
-  const { data, isSuccess, isError, error, isLoading, isFetching } = useQuery({
-    queryKey: ["quotes"],
-    queryFn: GetQuotesService,
-  });
+  const { data, isError, error, isLoading } = useFetchQuery(
+    GetQuotesService,
+    "quotes"
+  );
 
   if (isLoading) {
-    return <Loader />;
+    <Loader />;
   }
-  if (isError && error instanceof Error) {
-    console.log(error);
-    return (
-      <StatusMessage
-        from="quotes"
-        status="error"
-        message={error?.message || ""}
-      />
-    );
+  if (isError) {
+    showBoundary(error);
   }
 
   return (
     <div className="quotes flex flex-col">
-      {data?.quotes ? (
+      {data?.data ? (
         <>
           <Lists
             type="quote"
-            data={data?.quotes}
+            data={data?.data}
             onClickItem={onClickComments}
             currentPage={currentPage}
           />
           <Pagination
             currentPage={currentPage}
-            total={data?.quotes?.length}
+            total={data?.data?.length}
             limit={10}
             onPageChange={(page: any) => setCurrentPage(page)}
           />
         </>
-      ) : null}
+      ) : (
+        <p>No quotes to display!</p>
+      )}
     </div>
   );
 };

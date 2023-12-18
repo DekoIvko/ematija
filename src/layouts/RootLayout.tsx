@@ -8,7 +8,7 @@ const RootLayout = () => {
   return (
     <div className="root-layout">
       <Header />
-      <main className="pt-16 bg-slate-500 min-h-[calc(100vh)]">
+      <main className="pt-16 bg-gray-600 min-h-[calc(100vh)]">
         <Toaster />
         <ErrorBoundary FallbackComponent={ErrorFallback}>
           <Outlet /> {/* render all pages here */}

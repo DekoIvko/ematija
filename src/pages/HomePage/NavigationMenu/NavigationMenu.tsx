@@ -1,60 +1,59 @@
-import { IInitialStore } from "../../../interfaces/IInitialStore";
+import { useUserAuthContext } from "../../../context/UserAuthContext";
 import { ENavigationItems } from "../../../enums/ENavigationItems";
-
 import "./NavigationMenu.scss";
 interface IProps {
-  state: IInitialStore;
   page: string;
   setPage: any;
 }
 
-export const NavigationMenu = ({ state, page, setPage }: IProps) => {
+export const NavigationMenu = ({ page, setPage }: IProps) => {
   console.log("Component NavigationMenu");
+  const authUser = useUserAuthContext();
+
   return (
-    <div className="container navigation-menu">
-      {" "}
-      <div className="profile-name flex align-items-center">
+    <div className="container ">
+      <div className="flex pl-4 py-2">
         <img
-          src={state?.loggedUser?.image}
+          src={authUser?.user?.image}
           alt="User profile"
-          style={{ maxWidth: "50px", maxHeight: "50px" }}
+          className="rounded max-h-[50px] max-w-[50px]"
         />
-        <div className="m-0 p-2">{`${state?.loggedUser?.firstName} ${state?.loggedUser?.lastName}`}</div>
+        <div className="m-0 p-2 text-slate-200">{`${authUser?.user?.firstName} ${authUser?.user?.lastName}`}</div>
       </div>
-      <nav className="navigation-bar flex">
-        <ul className="list-group flex flex-col gap-2 w-100">
+      <nav className="p-2 w-full">
+        <ul className="flex flex-col gap-4 justify-center py-2">
           <li
-            className="list-group-item"
+            className="p-2 rounded hover:bg-slate-500 cursor-pointer"
             onClick={() => setPage(ENavigationItems.feed)}
           >
             <button
               className={`${
-                page === "feed" ? "top-link-item active" : ""
-              } btn btn-link`}
+                page === "feed" ? "text-slate-400" : "text-slate-200"
+              } `}
             >
               Feed
             </button>
           </li>
           <li
-            className="list-group-item"
+            className="p-2 rounded hover:bg-slate-500 cursor-pointer"
             onClick={() => setPage(ENavigationItems.quotes)}
           >
             <button
               className={`${
-                page === "quotes" ? "top-link-item active" : ""
-              } btn btn-link`}
+                page === "quotes" ? "text-slate-400" : "text-slate-200"
+              } `}
             >
               Quotes
             </button>
           </li>
           <li
-            className="list-group-item"
+            className="p-2 rounded hover:bg-slate-500 cursor-pointer"
             onClick={() => setPage(ENavigationItems.todos)}
           >
             <button
               className={`${
-                page === "todos" ? "top-link-item active" : ""
-              } btn btn-link`}
+                page === "todos" ? "text-slate-400" : "text-slate-200"
+              } `}
             >
               Todos
             </button>

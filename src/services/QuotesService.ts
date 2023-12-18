@@ -2,16 +2,18 @@ import { AxiosResponse } from "axios";
 import { appConfig } from "../appConfig";
 import { newAbortSignal } from "../utils/helpers";
 import axios from "./axios";
+import { authHeader } from "./AuthHeader";
 
 export const GetQuotesService = async () => {
   try {
-    const response = await axios.get(
-      `${appConfig.baseApiURL}/quotes?limit=100`,
+    const response: AxiosResponse = await axios.get(
+      `${appConfig.localApiUrl}/quotes`,
       {
+        headers: authHeader(),
         signal: newAbortSignal(2000),
       }
     );
-    return response.data;
+    return response;
   } catch (error: any) {
     return error;
   }
