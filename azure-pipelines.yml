@@ -6,34 +6,35 @@
 trigger:
   - develop
 
+variables:
+  uiSource: ".src"
+  uiBuild: "$(uiSource)/build"
+
 pool:
-  vmImage: windows-2019
+  vmImage: "ubuntu-latest"
 
-  # steps:
-  #   - task: PublishBuildArtifacts@1
-  #     inputs:
-  #       PathtoPublish: "$(Build.ArtifactStagingDirectory)"
-  #       ArtifactName: "drop"
-  #       publishLocation: "Container"
+steps:
+  - task: NodeTool@0
+    inputs:
+      versionSpec: "10.x"
+    displayName: "Install Node.js"
 
-stages:
-- stage: 'Build'
-  displayName: 'Build the web application'
-  jobs: 
-  - job: 'Build'
-    displayName: 'Build Ematija job'
-    pool:
-      vmImage: 'windows-2019'
-      demands:
-      - npm
+  - script: |
+      pushd $(uiSource)
+      npm install
+      npm run build
+      popd
+    displayName: "npm install and build"
+  - task: ArchiveFiles@2
+    inputs:
+      rootFolderOrFile: "$(uiBuild)"
+      includeRootFolder: true
+      archiveType: "zip"
+      archiveFile: "$(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip"
+      replaceExistingArchive: true
 
-  steps:
-    - task: NodeTool@0
-      inputs:
-        versionSpec: "10.x"
-      displayName: "Install Node.js"
-
-    - script: |
-        npm install
-        npm run build
-      displayName: "npm install and build"
+  - task: PublishBuildArtifacts@1
+    inputs:
+      PathtoPublish: "$(Build.ArtifactStagingDirectory)"
+      ArtifactName: "drop"
+      publishLocation: "Container"
