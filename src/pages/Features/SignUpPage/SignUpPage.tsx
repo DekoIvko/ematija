@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { SetStateAction, useState } from "react";
 import { AiOutlineUserAdd } from "react-icons/ai";
 import { BiShow, BiHide } from "react-icons/bi";
 import { imageToBase64 } from "../../../utils/helpers";
@@ -30,7 +30,7 @@ const SignUpPage = () => {
 
   const registerUser = useMutation({
     mutationFn: RegisterUserService,
-    onSuccess: (result) => {
+    onSuccess: (result: any) => {
       if (result?.status === 200) {
         setOnSuccess(result?.message);
         toast.success(result?.message);
@@ -38,7 +38,7 @@ const SignUpPage = () => {
         toast.error(result?.message);
       }
     },
-    onError(error) {
+    onError(error: any) {
       showBoundary(error);
     },
   });

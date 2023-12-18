@@ -189,7 +189,6 @@ const NewProductModal = () => {
           id="category"
           className="bg-slate-200 p-1  "
           onChange={handleOnChange}
-          placeholder="Please choice category"
         >
           {categories?.data?.map((category: any, index: number) => {
             return (

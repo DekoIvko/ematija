@@ -32,7 +32,7 @@ const LogInPage = () => {
 
   const loginUser = useMutation({
     mutationFn: LoginUserService,
-    onSuccess: async (result, variables) => {
+    onSuccess: async (result: any) => {
       console.log(result);
       if (result && result?.status === 200) {
         await userAuth.setUser(result?.data);
@@ -44,7 +44,7 @@ const LogInPage = () => {
         toast.error(result?.message);
       }
     },
-    onError(error, context) {
+    onError(error: Error) {
       showBoundary(error);
     },
   });
