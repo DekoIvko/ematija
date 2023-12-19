@@ -13,8 +13,6 @@ import { GetUsersService } from "../../../services/UsersService";
 import { IUserDetails } from "../../../interfaces/IUserDetails";
 import Posts from "./Posts/Posts";
 import { useErrorBoundary } from "react-error-boundary";
-import toast from "react-hot-toast";
-import "./Feed.scss";
 import { useUserAuthContext } from "../../../context/UserAuthContext";
 
 interface IProps {
@@ -73,8 +71,6 @@ const Feed = ({ feedType }: IProps) => {
             : false;
           return post;
         });
-      } else {
-        toast("No posts to display!");
       }
     } catch (error) {
       showBoundary(error);
@@ -103,8 +99,6 @@ const Feed = ({ feedType }: IProps) => {
             : false;
           return post;
         });
-      } else {
-        toast("No posts to display!");
       }
     } catch (error) {
       showBoundary(error);
@@ -127,9 +121,8 @@ const Feed = ({ feedType }: IProps) => {
   }
 
   return (
-    <div>
-      {(posts?.isSuccess || postsByUser?.isSuccess) &&
-      (posts?.data?.data || postsByUser?.data?.data) ? (
+    <>
+      {posts?.isSuccess || postsByUser?.isSuccess ? (
         <>
           <Posts
             posts={feedType === "home-page" ? posts?.data : postsByUser?.data}
@@ -138,7 +131,7 @@ const Feed = ({ feedType }: IProps) => {
       ) : (
         <p>No posts to display!</p>
       )}
-    </div>
+    </>
   );
 };
 

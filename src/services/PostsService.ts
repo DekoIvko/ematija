@@ -9,6 +9,7 @@ export const GetPostsService = async () => {
     const response: AxiosResponse = await axios.get(
       `${appConfig.localApiUrl}/posts`,
       {
+        withCredentials: true,
         headers: authHeader(),
         signal: newAbortSignal(2000),
       }

@@ -1,23 +1,28 @@
+import { useState } from "react";
 import { GetMessengerUsersService } from "../../../services/UsersService";
 import { Loader } from "../../../components";
 import { IUserDetails } from "../../../interfaces/IUserDetails";
-import useDebounceEffect from "../../../hooks/useDebounceEffect";
 import { useFetchQuery } from "../../../hooks/useFetchQuery";
+import useDebounce from "../../../hooks/useDebounce";
 import { useErrorBoundary } from "react-error-boundary";
-import "./Messenger.scss";
+import toast from "react-hot-toast";
 
 // react query refetch while typing
 const Messenger = () => {
   console.log("Component Messenger");
   const { showBoundary } = useErrorBoundary();
-  // const [inputSearch, setInputSearch] = useState("");
+  const [inputSearch, setInputSearch] = useState("");
+  const debouncedFilter = useDebounce(inputSearch);
 
   const {
     data: users,
     isError,
     error,
     isLoading,
-  } = useFetchQuery(GetMessengerUsersService, "messenger");
+  } = useFetchQuery(
+    () => GetMessengerUsersService(debouncedFilter),
+    `messenger ${debouncedFilter}`
+  );
 
   if (isError) {
     showBoundary(error);
@@ -25,31 +30,24 @@ const Messenger = () => {
   if (isLoading) {
     <Loader />;
   }
-  console.log(users);
-  // useDebounceEffect(() => {
-  // getUserOnSearch();
-  // }, [inputSearch]);
 
-  // const searchInputHandler = (e: string) => {
-  //   setInputSearch(e);
-  // };
+  const searchInputHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setInputSearch(e.target.value);
+  };
 
   const onMessengerUser = () => {
     //write some logic here
-    alert("User is not available!");
+    toast("User is not available!");
   };
 
   return (
-    <div
-      className="container flex flex-col text-slate-200 p-2"
-      data-bs-spy="scroll"
-    >
+    <div className="container flex flex-col p-2 " data-bs-spy="scroll">
       <div className=" pl-2 text-xl">
         <h3>Contacts</h3>
       </div>
       <div className="p-2 w-full">
         <input
-          // onChange={(e) => searchInputHandler(e.target.value)}
+          onChange={searchInputHandler}
           type="text"
           placeholder="Search..."
           className="w-full rounded bg-slate-200 text-slate-800 p-1"
@@ -64,14 +62,11 @@ const Messenger = () => {
                   key={user.email + index}
                   className="p-1 m-1 hover:bg-slate-700 cursor-pointer w-full rounded"
                 >
-                  <div
-                    className="flex flex-row   "
-                    // onClick={onMessengerUser}
-                  >
+                  <div className="flex flex-row " onClick={onMessengerUser}>
                     <img
                       src={user?.image}
                       alt=""
-                      className="max-w-[30px] mr-1"
+                      className="max-w-[24px] mr-1 rounded-xl"
                     />
                     <div className="">{`${user?.firstName} ${user.lastName}`}</div>
                   </div>

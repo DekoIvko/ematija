@@ -1,30 +1,29 @@
-import React from "react";
-import { useRef } from "react";
+import { useEffect, useRef } from "react";
 import { IPosts } from "../../../../interfaces/IPosts";
 
 interface IProps {
   item: IPosts;
   onAddComment: Function;
-  setNewComment?: Function;
 }
 
-const AddComments = React.memo(({ item, onAddComment }: IProps) => {
-  console.log("Component AddComments");
+const AddComments = ({ item, onAddComment }: IProps) => {
   let newComment = useRef<HTMLInputElement>(null);
 
+  useEffect(() => {
+    newComment.current?.focus();
+  }, []);
+
   return (
-    <>
-      <div className="input-group add-comment-input flex">
-        <input className="form-control" ref={newComment} />
-        <button
-          className="btn btn-secondary"
-          onClick={(e) => onAddComment(e, item, newComment.current?.value)}
-        >
-          Add
-        </button>
-      </div>
-    </>
+    <div className="flex w-full">
+      <input className="w-full rounded-l p-1 text-slate-800" ref={newComment} />
+      <button
+        className="bg-white text-gray-600 rounded-r p-1 border"
+        onClick={(e) => onAddComment(e, item, newComment.current?.value)}
+      >
+        Add
+      </button>
+    </div>
   );
-});
+};
 
 export default AddComments;

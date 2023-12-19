@@ -7,21 +7,26 @@ import { authHeader } from "./AuthHeader";
 
 export const GetUsersService = async () => {
   try {
-    const response = await axios.get(`${appConfig.localApiUrl}/users`, {
-      headers: authHeader(),
-      signal: newAbortSignal(2000),
-    });
+    const response: AxiosResponse = await axios.get(
+      `${appConfig.localApiUrl}/users`,
+      {
+        withCredentials: true,
+        headers: authHeader(),
+        signal: newAbortSignal(2000),
+      }
+    );
     return response;
   } catch (error: any) {
     throw error;
   }
 };
 
-export const GetMessengerUsersService = async () => {
+export const GetMessengerUsersService = async (filter: string) => {
   try {
     const response: AxiosResponse = await axios.get(
-      `${appConfig.localApiUrl}/users`,
+      `${appConfig.localApiUrl}/users/messenger?filter=${filter}`,
       {
+        withCredentials: true,
         headers: authHeader(),
         signal: newAbortSignal(2000),
       }

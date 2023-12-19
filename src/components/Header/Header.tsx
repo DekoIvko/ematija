@@ -2,15 +2,24 @@ import { useState } from "react";
 import mkFlag from "../../imgs/MKFlag.png";
 import { Link, NavLink, useLocation } from "react-router-dom";
 import { FaUserAlt } from "react-icons/fa";
+import { MdModeNight, MdOutlineModeNight } from "react-icons/md";
 import { EHeaderNavItems } from "../../enums/EHeaderNavItems";
 import useRefreshToken from "../../hooks/useRefreshToken";
 import { useUserAuthContext } from "../../context/UserAuthContext";
+import { useAppDispatch, useAppSelector } from "../../store/hooks";
+import { changeAppTheme } from "../../store/appSettingsSlice";
 
 const Header = () => {
   const refreshToken = useRefreshToken();
   const location = useLocation();
   const userAuth = useUserAuthContext();
   const [showMenu, setShowMenu] = useState(false);
+  const appSettings = useAppSelector((state) => state.appSettings);
+  const dispatch = useAppDispatch();
+
+  const onChangeAppTheme = (theme: string) => {
+    dispatch(changeAppTheme(theme));
+  };
 
   const handleShowMenu = () => {
     setShowMenu((prevObj) => !prevObj);
@@ -27,7 +36,13 @@ const Header = () => {
   };
 
   return (
-    <header className="fixed w-full h-16 z-50 bg-slate-800 text-slate-200">
+    <header
+      className={`fixed w-full h-16 z-50 ${
+        appSettings.appTheme === "dark"
+          ? "text-slate-200 bg-gray-800"
+          : "text-slate-800 bg-gray-200"
+      }`}
+    >
       <div className="flex items-center h-full">
         <div className="header-context">
           <div className="company-logo p-1 w-16 h-16">
@@ -109,8 +124,24 @@ const Header = () => {
             </li>
           </ul>
         </nav>
-        <div className="text-slate-600 px-2" onClick={handleShowMenu}>
-          <div className="text-3xl cursor-pointer overflow-hidden drop-shadow-md">
+        <div className="flex text-slate-600 px-2 w-min-[40px]">
+          <div className="flex m-1 w-12 h-12 items-center justify-center">
+            {appSettings.appTheme === "dark" ? (
+              <MdOutlineModeNight
+                className="w-6 h-6 cursor-pointer"
+                onClick={() => onChangeAppTheme("light")}
+              />
+            ) : (
+              <MdModeNight
+                className="w-6 h-6 cursor-pointer"
+                onClick={() => onChangeAppTheme("dark")}
+              />
+            )}
+          </div>
+          <div
+            className="text-3xl cursor-pointer overflow-hidden drop-shadow-md"
+            onClick={handleShowMenu}
+          >
             {userAuth?.user?.image ? (
               <img
                 src={userAuth?.user?.image}
@@ -122,7 +153,7 @@ const Header = () => {
             )}
           </div>
           {showMenu && (
-            <div className="absolute right-2 bg-white py-2 px-2 shadow drop-shadow-md flex flex-col">
+            <div className="absolute right-2 top-16 bg-white py-2 px-2 shadow drop-shadow-md flex flex-col">
               {!userAuth?.user ? (
                 <Link
                   to={EHeaderNavItems.login}

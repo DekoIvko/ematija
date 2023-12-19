@@ -1,7 +1,8 @@
 import React, { useState } from "react";
 import { IPosts } from "../../../../interfaces/IPosts";
 import Comments from "../Comments/Comments";
-import { Loader, Pagination, StatusMessage } from "../../../../components";
+import { Loader, Pagination } from "../../../../components";
+import { useAppSelector } from "../../../../store/hooks";
 import AddComments from "../AddComments/AddComments";
 import { AddCommentService } from "../../../../services/CommentsService";
 import { IParamComment } from "../../../../interfaces/IParamComment";
@@ -9,10 +10,10 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useUserAuthContext } from "../../../../context/UserAuthContext";
 import toast from "react-hot-toast";
 
-// implement add comment with react query with useMutation and setQueryData
 const Posts = ({ posts = [] }: any) => {
   // console.log("Components Posts ");
   const user = useUserAuthContext();
+  const appSettings = useAppSelector((state) => state.appSettings);
   const [currentPage, setCurrentPage] = useState(1);
   const queryClient = useQueryClient();
 
@@ -30,10 +31,14 @@ const Posts = ({ posts = [] }: any) => {
         return item;
       });
 
-      queryClient.setQueryData(["posts"], { posts: [...updatedPosts] });
+      queryClient.setQueryData(["posts"], { data: [...updatedPosts] });
       toast.success("Success add comment!");
     },
   });
+
+  if (addComments?.isError) {
+    toast.error(addComments?.error!.toString() || "");
+  }
 
   const onShowCommentSection = (
     e: React.MouseEvent<HTMLButtonElement>,
@@ -46,7 +51,7 @@ const Posts = ({ posts = [] }: any) => {
       }
       return item;
     });
-    queryClient.setQueryData(["posts"], { posts: [...showCommentSect] });
+    queryClient.setQueryData(["posts"], { data: [...showCommentSect] });
   };
 
   const onAddComment = async (
@@ -58,8 +63,13 @@ const Posts = ({ posts = [] }: any) => {
       e.preventDefault();
       const paramComment: IParamComment = {
         body: newComment,
-        postId: post.id,
-        userId: user?.user.id,
+        postId: post?.id,
+        user: {
+          id: user?.user.id,
+          username: user?.user.username,
+        },
+        tags: [],
+        reactions: [],
       };
 
       await addComments.mutateAsync(paramComment);
@@ -78,14 +88,18 @@ const Posts = ({ posts = [] }: any) => {
             return (
               <div
                 key={item?.id + "_" + index}
-                className="flex flex-col bg-gray-800 rounded p-2 my-2 text-slate-200"
+                className={`flex flex-col rounded p-2 my-2 ${
+                  appSettings.appTheme === "dark"
+                    ? "text-slate-200 bg-gray-800"
+                    : "text-slate-800 bg-gray-200"
+                }`}
               >
                 <div className="flex flex-col gap-3">
                   <div className="flex gap-1 items-end align-items-end">
                     <img
                       src={item?.user?.image}
                       alt="Profile"
-                      className="max-w-[30px]"
+                      className="max-w-[30px] rounded-xl"
                     />
                     <span>{`${item?.user?.firstName} ${item?.user?.lastName}`}</span>
                   </div>
@@ -104,11 +118,10 @@ const Posts = ({ posts = [] }: any) => {
                   <Comments comments={item?.comments} />
                 </div>
                 <div className="flex flex-col">
-                  <div className="flex w-100 justify-content-center">
+                  <div className="flex w-full justify-center">
                     <button
                       type="button"
-                      className="p-1 text-decoration-none"
-                      style={{ color: "#b0b3b8" }}
+                      className="p-1 text-decoration-none text-slate-400"
                       onClick={(e) => onShowCommentSection(e, item)}
                     >
                       Add comment
@@ -116,19 +129,8 @@ const Posts = ({ posts = [] }: any) => {
                   </div>
                   {item?.showCommentSection && (
                     <>
-                      {!addComments.isError && addComments.isLoading && (
-                        <Loader />
-                      )}
-                      {addComments.isError &&
-                        !addComments.isLoading &&
-                        addComments.error instanceof Error && (
-                          <StatusMessage
-                            from="posts"
-                            status="error"
-                            message={addComments.error.message}
-                          />
-                        )}
-                      {<AddComments item={item} onAddComment={onAddComment} />}
+                      {addComments.isLoading && <Loader />}
+                      <AddComments item={item} onAddComment={onAddComment} />
                     </>
                   )}
                 </div>

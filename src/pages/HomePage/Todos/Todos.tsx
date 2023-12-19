@@ -2,25 +2,25 @@ import { useEffect, useState } from "react";
 import { AxiosResponse } from "axios";
 import { IAddTodo, ITodos } from "../../../interfaces/ITodos";
 import { Lists, Loader, Pagination, StatusMessage } from "../../../components";
+import { useUserAuthContext } from "../../../context/UserAuthContext";
 
 import { CreateTodosService } from "../../../services/TodosService";
 import withCommentsLogic from "../../../hooks/withCommentsLogic";
 import { useFetchGet } from "../../../hooks/useFetchGet";
 import { appConfig } from "../../../appConfig";
 import AddTodo from "./AddTodo/AddTodo";
-import { useAppSelector } from "../../../store/hooks";
 import "./Todos.scss";
 
 // example with CUSTOM HOOK FETCH DATA ------->>
 const Todos = ({ onClickComments }: any) => {
-  const user = useAppSelector((state) => state.user.user);
+  const user = useUserAuthContext();
   const [todos, setTodos] = useState<ITodos[]>();
   const [error, setError] = useState<Error>();
   const [loadingNewTodo, setLoadingNewTodo] = useState<boolean>(false);
   const [currentPage, setCurrentPage] = useState(1);
   const { loading, apiError, apiData } = useFetchGet(
     // custom hook
-    `${appConfig?.baseApiURL}/todos/user/${user?.id}`
+    `${appConfig?.baseApiURL}/todos/user/${user?.user.id}`
   );
   const [newTodo, setNewTodo] = useState<string>("");
   const [newTodoCompleted, setNewTodoCompleted] = useState<boolean>(false);
@@ -41,7 +41,7 @@ const Todos = ({ onClickComments }: any) => {
       const todo: IAddTodo = {
         todo: newTodo,
         completed: newTodoCompleted,
-        userId: user?.id,
+        userId: user?.user.id,
       };
       const responseNewTodo: AxiosResponse = await CreateTodosService(todo);
       if (responseNewTodo.status === 200) {

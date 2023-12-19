@@ -9,6 +9,7 @@ export const GetAllCommentsService = async () => {
     const response: AxiosResponse = await axios.get(
       `${appConfig.localApiUrl}/comments`,
       {
+        withCredentials: true,
         headers: authHeader(),
         signal: newAbortSignal(2000),
       }
@@ -21,7 +22,7 @@ export const GetAllCommentsService = async () => {
 export const AddCommentService = async (comment: IParamComment) => {
   try {
     const response: AxiosResponse = await axios.post(
-      `${appConfig.baseApiURL}/comments/add`,
+      `${appConfig.localApiUrl}/comments/add`,
       comment,
       {
         headers: authHeader(),

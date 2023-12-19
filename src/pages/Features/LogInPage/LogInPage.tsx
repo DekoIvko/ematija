@@ -9,6 +9,7 @@ import { useMutation } from "@tanstack/react-query";
 import { LoginUserService } from "../../../services/UsersService";
 import { toast } from "react-hot-toast";
 import { useUserAuthContext } from "../../../context/UserAuthContext";
+import Cookies from "universal-cookie";
 
 const LogInPage = () => {
   const navigate = useNavigate();
@@ -16,6 +17,7 @@ const LogInPage = () => {
   const from = location.state?.from?.pathname || "/home";
   const userAuth = useUserAuthContext();
   const { showBoundary } = useErrorBoundary();
+  const cookies = new Cookies(null, { path: "/" });
   const [showPassword, setShowPassword] = useState(false);
   const emailRef = useRef<HTMLInputElement>(null);
   const passwordRef = useRef<HTMLInputElement>(null);
@@ -36,7 +38,7 @@ const LogInPage = () => {
       console.log(result);
       if (result && result?.status === 200) {
         await userAuth.setUser(result?.data);
-
+        cookies.set("token", result?.data.accessToken);
         localStorage.setItem("ematija-user", JSON.stringify(result?.data)); // add user in local storage
         toast.success(result?.message);
         navigate(from, { replace: true }); // if redirect to login page go back to previous page

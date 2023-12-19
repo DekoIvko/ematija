@@ -1,5 +1,3 @@
-import "./StatusMessage.scss";
-
 interface IProps {
   from: string;
   status: "error" | "success";
@@ -29,6 +27,7 @@ function StatusMessage({
         return "";
     }
   }
+  // need to add some style
   return (
     <div className="status-message-body">
       <div className={`${className} ${from}`}>

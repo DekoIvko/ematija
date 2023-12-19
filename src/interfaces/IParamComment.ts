@@ -1,5 +1,11 @@
 export interface IParamComment {
+  id?: number;
   body: string;
   postId: number;
-  userId: number;
+  tags: [];
+  reactions: [];
+  user: {
+    id: number;
+    username: string;
+  };
 }

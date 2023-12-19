@@ -1,6 +1,5 @@
 import { useUserAuthContext } from "../../../context/UserAuthContext";
 import { ENavigationItems } from "../../../enums/ENavigationItems";
-import "./NavigationMenu.scss";
 interface IProps {
   page: string;
   setPage: any;
@@ -18,7 +17,7 @@ export const NavigationMenu = ({ page, setPage }: IProps) => {
           alt="User profile"
           className="rounded max-h-[50px] max-w-[50px]"
         />
-        <div className="m-0 p-2 text-slate-200">{`${authUser?.user?.firstName} ${authUser?.user?.lastName}`}</div>
+        <div className="m-0 p-2 ">{`${authUser?.user?.firstName} ${authUser?.user?.lastName}`}</div>
       </div>
       <nav className="p-2 w-full">
         <ul className="flex flex-col gap-4 justify-center py-2">

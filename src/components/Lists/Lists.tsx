@@ -2,8 +2,6 @@ import { memo } from "react";
 import { ITodos } from "../../interfaces/ITodos";
 import { IQuotes } from "../../interfaces/IQuotes";
 
-import "./Lists.scss";
-
 interface IProps {
   type: string;
   data: ITodos[] | IQuotes[];

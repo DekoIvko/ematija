@@ -5,7 +5,6 @@ import withCommentsLogic from "../../../hooks/withCommentsLogic";
 
 import { useFetchQuery } from "../../../hooks/useFetchQuery";
 import { useErrorBoundary } from "react-error-boundary";
-import "./Quotes.scss";
 
 const Quotes = ({ onClickComments }: any) => {
   console.log("Component Quotes");
@@ -25,7 +24,7 @@ const Quotes = ({ onClickComments }: any) => {
   }
 
   return (
-    <div className="quotes flex flex-col">
+    <div className="flex flex-col">
       {data?.data ? (
         <>
           <Lists
