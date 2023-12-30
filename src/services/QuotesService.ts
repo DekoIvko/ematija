@@ -10,11 +10,15 @@ export const GetQuotesService = async () => {
       `${appConfig.localApiUrl}/quotes`,
       {
         headers: authHeader(),
-        signal: newAbortSignal(2000),
+        signal: newAbortSignal(),
       }
     );
     return response;
-  } catch (error: any) {
-    return error;
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      Promise.reject(error);
+    } else {
+      throw new Error(`${error}`);
+    }
   }
 };

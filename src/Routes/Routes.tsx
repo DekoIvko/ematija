@@ -116,6 +116,14 @@ const router = createBrowserRouter(
         </Route>
       </Route>
       <Route
+        path="not-found"
+        element={
+          <Suspense fallback={<Loader />}>
+            <LazyNotFoundPage />
+          </Suspense>
+        }
+      />
+      <Route
         path="*"
         element={
           <Suspense fallback={<Loader />}>

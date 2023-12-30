@@ -1,17 +1,23 @@
+import withCommentsLogic from "../../../../hooks/withCommentsLogic";
 import { IComments } from "../../../../interfaces/IComments";
 
 interface IProps {
   comments: IComments[];
+  onClickComments: any;
 }
 
-const Comments = ({ comments }: IProps) => {
+const Comments = ({ comments, onClickComments }: IProps) => {
   return (
     <>
       {" "}
       {comments ? (
         comments.map((comment: IComments, index: number) => {
           return (
-            <div key={comment.id + "_" + index}>
+            <div
+              key={comment.id + "_" + index}
+              onClick={onClickComments}
+              onScroll={() => console.log("loud!")}
+            >
               <div className="comment-user-details p-1">
                 {comment?.user?.username}
               </div>
@@ -26,4 +32,4 @@ const Comments = ({ comments }: IProps) => {
   );
 };
 
-export default Comments;
+export default withCommentsLogic(Comments);

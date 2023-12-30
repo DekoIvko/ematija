@@ -1,24 +1,26 @@
 import { useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Loader, Pagination } from "../../components";
+import { useErrorBoundary } from "react-error-boundary";
 
 import ProductList from "./ProductList/ProductList";
 import ProductSidebar from "./ProductSidebar/ProductSidebar";
+import useDebounceEffect from "../../hooks/useDebounceEffect";
 import {
-  GetProductsBySearchService,
+  GetProductsFiltersService,
   GetProductCategoriesService,
-  GetProductsByCategoryService,
   GetProductsService,
 } from "../../services/ProductsServices";
-import "./ProductsPage.scss";
-import { useErrorBoundary } from "react-error-boundary";
 
 const ProductsPage = () => {
   console.log("Component Products");
   const { showBoundary } = useErrorBoundary();
   const queryClient = useQueryClient();
   const [currentPage, setCurrentPage] = useState(1);
-  const [counter, setCounter] = useState(1);
+  const [params, setParams] = useState({
+    search: "",
+    category: "",
+  });
 
   const products = useQuery({
     queryKey: ["products"],
@@ -30,76 +32,41 @@ const ProductsPage = () => {
     queryFn: GetProductCategoriesService,
   });
 
-  const productsByCategory = useMutation({
-    mutationFn: GetProductsByCategoryService,
-    onSuccess: (result) => {
-      queryClient.cancelQueries(["products"]);
-      queryClient.setQueryData(["products"], result);
-    },
-  });
-
   const productsBySearch = useMutation({
-    mutationFn: GetProductsBySearchService,
+    mutationFn: GetProductsFiltersService,
     onSuccess: (result) => {
       queryClient.cancelQueries(["products"]);
       queryClient.setQueryData(["products"], result);
     },
   });
 
-  if (products?.isLoading || productsByCategory?.isLoading) {
+  useDebounceEffect(() => {
+    productsBySearch.mutateAsync(params);
+  }, [params.category, params.search]);
+
+  if (products?.isLoading) {
     return <Loader />;
   }
 
-  if (
-    products?.isError ||
-    productsByCategory?.isError ||
-    productsBySearch?.isError ||
-    categories?.isError
-  ) {
+  if (products?.isError || productsBySearch?.isError || categories?.isError) {
     showBoundary(
-      products?.error ||
-        productsByCategory?.error ||
-        productsBySearch?.error ||
-        categories?.error
+      products?.error || productsBySearch?.error || categories?.error
     );
   }
 
-  const onSearchProducts = (value: string) => {
-    if (value !== "") {
-      productsBySearch.mutateAsync(value);
-    } else {
-      queryClient.refetchQueries(["products"]);
-    }
-  };
-
-  const onCategory = (
-    e: React.MouseEvent<HTMLButtonElement>,
-    value: string
-  ) => {
-    e.preventDefault();
-    if (value !== "all") {
-      productsByCategory.mutateAsync(value);
-    } else {
-      queryClient.refetchQueries(["products"]);
-    }
+  const onSearchProducts = async (name: string, value: string) => {
+    setParams((prevParams) => ({ ...prevParams, [name]: value }));
   };
 
   return (
-    <div className="container-fluid products flex">
+    <div className="md:container-fluid products flex">
       <ProductSidebar
         categories={categories?.data}
         onSearch={onSearchProducts}
-        onCategory={onCategory}
       />
-      {counter}
-      <button
-        className="bg-red-500 text-slate-200 p-4"
-        onClick={() => setCounter((prevCount) => prevCount + 1)}
-      >
-        Counter plus
-      </button>
-      <div className="row justify-content-md-center gap-4">
-        {products?.data && (
+
+      <div className="">
+        {products?.isSuccess && products?.data && (
           <>
             <ProductList data={products?.data} currentPage={currentPage} />
 

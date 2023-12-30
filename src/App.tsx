@@ -13,6 +13,7 @@ function App() {
       queries: {
         refetchOnWindowFocus: false,
         retry: 2,
+        useErrorBoundary: true,
       },
     },
   });
@@ -27,5 +28,5 @@ function App() {
     </Provider>
   );
 }
-
+console.log(App());
 export default App;

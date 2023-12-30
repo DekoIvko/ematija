@@ -9,6 +9,7 @@ import { useErrorBoundary } from "react-error-boundary";
 const Quotes = ({ onClickComments }: any) => {
   console.log("Component Quotes");
   const { showBoundary } = useErrorBoundary();
+
   const [currentPage, setCurrentPage] = useState(1);
 
   const { data, isError, error, isLoading } = useFetchQuery(
@@ -46,5 +47,4 @@ const Quotes = ({ onClickComments }: any) => {
     </div>
   );
 };
-
 export default withCommentsLogic(Quotes);

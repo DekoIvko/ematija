@@ -43,11 +43,12 @@ const LogInPage = () => {
         toast.success(result?.message);
         navigate(from, { replace: true }); // if redirect to login page go back to previous page
       } else {
-        toast.error(result?.message);
+        toast.error(result?.data?.message);
       }
     },
-    onError(error: Error) {
-      showBoundary(error);
+    onError(error: any) {
+      console.log(error);
+      toast.error(error?.data);
     },
   });
 
@@ -64,20 +65,26 @@ const LogInPage = () => {
       await userAuth.setUser(authUser);
       localStorage.setItem("ematija-user", JSON.stringify(authUser));
       navigate("/home");
-    } catch (error) {
+    } catch (error: any) {
       console.log(error);
+      toast.error(`${error?.data}`);
     }
   };
 
   const onSubmitBtn = async (e: any) => {
     // on login button
     e.preventDefault();
-    if (validate()) {
-      const authUser = {
-        email: emailRef.current?.value,
-        password: passwordRef.current?.value,
-      };
-      await loginUser.mutateAsync(authUser);
+    try {
+      if (validate()) {
+        const authUser = {
+          email: emailRef.current?.value,
+          password: passwordRef.current?.value,
+        };
+        await loginUser.mutateAsync(authUser);
+      }
+    } catch (error: any) {
+      console.log(error);
+      toast.error(`${error?.data}`);
     }
   };
 

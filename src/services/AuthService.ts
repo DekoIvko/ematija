@@ -5,10 +5,7 @@ import axios from "./axios";
 export const AuthAccessService = async () => {
   try {
     const response: AxiosResponse = await axios.get(
-      `${appConfig.localApiUrl}/auth/access`,
-      {
-        withCredentials: true,
-      }
+      `${appConfig.localApiUrl}/auth/access`
     );
 
     if (response?.status === 200) {
@@ -17,15 +14,18 @@ export const AuthAccessService = async () => {
       return response;
     }
   } catch (error: any) {
-    throw Error(error);
+    if (axios.isAxiosError(error)) {
+      Promise.reject(error);
+    } else {
+      throw new Error(`${error}`);
+    }
   }
 };
 
 export const AuthRefreshService = async () => {
   try {
     const response: AxiosResponse = await axios.get(
-      `${appConfig.localApiUrl}/auth/refresh`,
-      { withCredentials: true }
+      `${appConfig.localApiUrl}/auth/refresh`
     );
 
     if (response?.status === 200) {
@@ -34,6 +34,10 @@ export const AuthRefreshService = async () => {
       return response;
     }
   } catch (error: any) {
-    throw Error(error);
+    if (axios.isAxiosError(error)) {
+      Promise.reject(error);
+    } else {
+      throw new Error(`${error}`);
+    }
   }
 };

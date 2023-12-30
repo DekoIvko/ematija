@@ -37,7 +37,7 @@ const Header = () => {
 
   return (
     <header
-      className={`fixed w-full h-16 z-50 ${
+      className={`fixed w-full h-16 z-50 shadow ${
         appSettings.appTheme === "dark"
           ? "text-slate-200 bg-gray-800"
           : "text-slate-800 bg-gray-200"
@@ -52,7 +52,7 @@ const Header = () => {
           </div>
         </div>
         <nav className="w-full h-full">
-          <ul className="flex justify-center items-center gap-10 h-full">
+          <ul className="flex md:justify-center items-center gap-10 h-full">
             <li
               className={`flex items-center ${
                 location.pathname === "/home"

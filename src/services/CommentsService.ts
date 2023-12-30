@@ -9,14 +9,17 @@ export const GetAllCommentsService = async () => {
     const response: AxiosResponse = await axios.get(
       `${appConfig.localApiUrl}/comments`,
       {
-        withCredentials: true,
         headers: authHeader(),
-        signal: newAbortSignal(2000),
+        signal: newAbortSignal(),
       }
     );
     return response;
   } catch (error: any) {
-    return error;
+    if (axios.isAxiosError(error)) {
+      Promise.reject(error);
+    } else {
+      throw new Error(`${error}`);
+    }
   }
 };
 export const AddCommentService = async (comment: IParamComment) => {
@@ -26,11 +29,15 @@ export const AddCommentService = async (comment: IParamComment) => {
       comment,
       {
         headers: authHeader(),
-        signal: newAbortSignal(2000),
+        signal: newAbortSignal(),
       }
     );
     return response.data;
   } catch (error: any) {
-    return error;
+    if (axios.isAxiosError(error)) {
+      Promise.reject(error);
+    } else {
+      throw new Error(`${error}`);
+    }
   }
 };

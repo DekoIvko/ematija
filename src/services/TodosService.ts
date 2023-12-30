@@ -8,7 +8,7 @@ export const GetTodosService = async () => {
     const response = await axios.get(
       `${appConfig.baseApiURL}/todos?limit=300`,
       {
-        signal: newAbortSignal(2000),
+        signal: newAbortSignal(),
       }
     );
     return response.data;
@@ -22,7 +22,7 @@ export const GetTodosByUserService = async (userId: string) => {
     const response = await axios.get(
       `${appConfig.baseApiURL}/todos/user/${userId}`,
       {
-        signal: newAbortSignal(2000),
+        signal: newAbortSignal(),
       }
     );
     return response.data;
@@ -37,7 +37,7 @@ export const CreateTodosService = async (todo: IAddTodo) => {
       `${appConfig.baseApiURL}/todos/add`,
       todo,
       {
-        signal: newAbortSignal(2000),
+        signal: newAbortSignal(),
       }
     );
     return response;

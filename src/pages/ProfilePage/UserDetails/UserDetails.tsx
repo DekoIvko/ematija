@@ -1,10 +1,7 @@
-import { IUserDetails } from "../../../interfaces/IUserDetails";
+import { useUserAuthContext } from "../../../context/UserAuthContext";
 
-interface IProps {
-  userDetails: IUserDetails;
-}
-
-const UserDetails = ({ userDetails }: IProps) => {
+const UserDetails = () => {
+  const userDetails = useUserAuthContext();
   return (
     <div>
       {" "}
@@ -16,19 +13,19 @@ const UserDetails = ({ userDetails }: IProps) => {
       <div className="info-data flex flex-col">
         <div className="info-details p-2 m-3 flex flex-row gap-2">
           <span>Gender:</span>
-          <span>{userDetails?.gender}</span>
+          <span>{userDetails?.user?.gender}</span>
         </div>
         <div className="info-details p-2 m-3 flex flex-row gap-2">
           <span>Address:</span>
-          <span>{userDetails?.contact?.address}</span>
+          <span>{userDetails?.user?.contact?.address}</span>
         </div>
         <div className="info-details p-2 m-3 flex flex-row gap-2">
           <span>Email:</span>
-          <span>{userDetails?.email}</span>
+          <span>{userDetails?.user?.email}</span>
         </div>
         <div className="info-details p-2 m-3 flex flex-row gap-2">
           <span>Mobile:</span>
-          <span>{userDetails?.contact?.phone}</span>
+          <span>{userDetails?.user?.contact?.phone}</span>
         </div>
       </div>
     </div>

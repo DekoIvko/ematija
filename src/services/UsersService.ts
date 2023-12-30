@@ -10,14 +10,17 @@ export const GetUsersService = async () => {
     const response: AxiosResponse = await axios.get(
       `${appConfig.localApiUrl}/users`,
       {
-        withCredentials: true,
         headers: authHeader(),
-        signal: newAbortSignal(2000),
+        signal: newAbortSignal(),
       }
     );
     return response;
-  } catch (error: any) {
-    throw error;
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      Promise.reject(error);
+    } else {
+      throw new Error(`${error}`);
+    }
   }
 };
 
@@ -26,14 +29,17 @@ export const GetMessengerUsersService = async (filter: string) => {
     const response: AxiosResponse = await axios.get(
       `${appConfig.localApiUrl}/users/messenger?filter=${filter}`,
       {
-        withCredentials: true,
         headers: authHeader(),
-        signal: newAbortSignal(2000),
+        signal: newAbortSignal(),
       }
     );
     return response;
   } catch (error: any) {
-    throw error;
+    if (axios.isAxiosError(error)) {
+      Promise.reject(error);
+    } else {
+      throw new Error(`${error}`);
+    }
   }
 };
 
@@ -42,7 +48,7 @@ export const GetUsersSearchService = async (userSearch: string) => {
     const response = await axios.get(
       `${appConfig.baseApiURL}/users/search?limit=100&q=${userSearch}`,
       {
-        signal: newAbortSignal(2000),
+        signal: newAbortSignal(),
       }
     );
     return response.data;
@@ -57,7 +63,7 @@ export const RegisterUserService = async (user: any) => {
       `${appConfig.localApiUrl}/user/register`,
       user,
       {
-        signal: newAbortSignal(2000),
+        signal: newAbortSignal(),
       }
     );
     return response.data;
@@ -72,12 +78,11 @@ export const LoginUserService = async (user: any) => {
       `${appConfig.localApiUrl}/user/login`,
       user,
       {
-        signal: newAbortSignal(2000),
-        withCredentials: true,
+        signal: newAbortSignal(),
       }
     );
     return response.data;
   } catch (error: any) {
-    throw error;
+    return error.response;
   }
 };

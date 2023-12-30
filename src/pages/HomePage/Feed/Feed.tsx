@@ -1,8 +1,12 @@
 import { Loader } from "../../../components";
 import { useQueries } from "@tanstack/react-query";
 
+import Posts from "./Posts/Posts";
 import { IPosts } from "../../../interfaces/IPosts";
 import { IComments } from "../../../interfaces/IComments";
+import { IUserDetails } from "../../../interfaces/IUserDetails";
+import { useErrorBoundary } from "react-error-boundary";
+import toast from "react-hot-toast";
 
 import { GetAllCommentsService } from "../../../services/CommentsService";
 import {
@@ -10,10 +14,8 @@ import {
   GetUserPostsService,
 } from "../../../services/PostsService";
 import { GetUsersService } from "../../../services/UsersService";
-import { IUserDetails } from "../../../interfaces/IUserDetails";
-import Posts from "./Posts/Posts";
-import { useErrorBoundary } from "react-error-boundary";
 import { useUserAuthContext } from "../../../context/UserAuthContext";
+import AddPost from "./AddPost/AddPost";
 
 interface IProps {
   feedType: string;
@@ -23,6 +25,21 @@ const Feed = ({ feedType }: IProps) => {
   // console.log("Components Feed");
   const { showBoundary } = useErrorBoundary();
   const authUser = useUserAuthContext();
+
+  const setPostsWithCommentsAndUsers = (post: IPosts) => {
+    const user = users?.data?.data.find(
+      (user: IUserDetails) => post?.userId === user.id
+    );
+    const tempComments = comments?.data?.data.filter(
+      (comment: IComments) => post.id === comment.postId
+    );
+    post.comments = post.comments ? post.comments : tempComments;
+    post.user = user || {};
+    post.showCommentSection = post.showCommentSection
+      ? post.showCommentSection
+      : false;
+    return post;
+  };
 
   const [posts, postsByUser, comments, users] = useQueries({
     queries: [
@@ -53,27 +70,15 @@ const Feed = ({ feedType }: IProps) => {
     comments?.isSuccess &&
     users?.isSuccess
   ) {
-    // console.log(posts);
     try {
-      // console.log(users.data);
+      console.log(posts.data);
       if (posts?.data?.status === 200) {
         posts?.data?.data?.forEach((post: IPosts) => {
-          const user = users?.data?.data.find(
-            (user: IUserDetails) => post?.userId === user.id
-          );
-          const tempComments = comments?.data?.data.filter(
-            (comment: IComments) => post.id === comment.postId
-          );
-          post.comments = post.comments ? post.comments : tempComments;
-          post.user = user || {};
-          post.showCommentSection = post.showCommentSection
-            ? post.showCommentSection
-            : false;
-          return post;
+          setPostsWithCommentsAndUsers(post);
         });
       }
     } catch (error) {
-      showBoundary(error);
+      toast.error(`${error}`);
     }
   } else if (
     feedType === "profile-page" &&
@@ -81,27 +86,15 @@ const Feed = ({ feedType }: IProps) => {
     comments?.isSuccess &&
     users?.isSuccess
   ) {
-    // console.log(postsByUser);
     try {
+      // console.log(postsByUser);
       if (postsByUser?.data?.status === 200) {
         postsByUser?.data?.data.forEach((post: IPosts) => {
-          const user = users?.data?.data.find(
-            (user: IUserDetails) => authUser?.user.id === user.id
-          );
-          const tempComments = comments?.data?.data.filter(
-            (comment: IComments) => post.id === comment.postId
-          );
-
-          post.comments = tempComments || {};
-          post.user = user || {};
-          post.showCommentSection = post.showCommentSection
-            ? post.showCommentSection
-            : false;
-          return post;
+          setPostsWithCommentsAndUsers(post);
         });
       }
     } catch (error) {
-      showBoundary(error);
+      toast.error(`${error}`);
     }
   }
 
@@ -124,6 +117,7 @@ const Feed = ({ feedType }: IProps) => {
     <>
       {posts?.isSuccess || postsByUser?.isSuccess ? (
         <>
+          <AddPost />
           <Posts
             posts={feedType === "home-page" ? posts?.data : postsByUser?.data}
           />

@@ -1,11 +1,11 @@
 import { useState } from "react";
 import { GetMessengerUsersService } from "../../../services/UsersService";
-import { Loader } from "../../../components";
 import { IUserDetails } from "../../../interfaces/IUserDetails";
 import { useFetchQuery } from "../../../hooks/useFetchQuery";
 import useDebounce from "../../../hooks/useDebounce";
 import { useErrorBoundary } from "react-error-boundary";
 import toast from "react-hot-toast";
+import MessengerSkeleon from "../../../skeletons/MessengerSkeleon";
 
 // react query refetch while typing
 const Messenger = () => {
@@ -18,7 +18,8 @@ const Messenger = () => {
     data: users,
     isError,
     error,
-    isLoading,
+    isFetching,
+    isSuccess,
   } = useFetchQuery(
     () => GetMessengerUsersService(debouncedFilter),
     `messenger ${debouncedFilter}`
@@ -26,9 +27,6 @@ const Messenger = () => {
 
   if (isError) {
     showBoundary(error);
-  }
-  if (isLoading) {
-    <Loader />;
   }
 
   const searchInputHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -55,7 +53,15 @@ const Messenger = () => {
       </div>
       <div className="">
         <ul className="flex flex-col overflow-y-auto overflow-x-hidden max-h-[78vh]">
-          {users ? (
+          {isFetching && !users && <MessengerSkeleon />}
+          {isSuccess && users?.data?.length === 0 ? (
+            <p>No users to display</p>
+          ) : (
+            <></>
+          )}
+          {isSuccess &&
+            users &&
+            users?.data?.length &&
             users?.data?.map((user: IUserDetails, index: number) => {
               return (
                 <li
@@ -72,10 +78,7 @@ const Messenger = () => {
                   </div>
                 </li>
               );
-            })
-          ) : (
-            <p>No users to display</p>
-          )}
+            })}
         </ul>
       </div>
     </div>

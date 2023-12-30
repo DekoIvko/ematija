@@ -15,9 +15,12 @@ const AddComments = ({ item, onAddComment }: IProps) => {
 
   return (
     <div className="flex w-full">
-      <input className="w-full rounded-l p-1 text-slate-800" ref={newComment} />
+      <input
+        className="w-full rounded-l p-1 text-slate-800 focus:outline-none"
+        ref={newComment}
+      />
       <button
-        className="bg-white text-gray-600 rounded-r p-1 border"
+        className="bg-white text-gray-600 rounded-r py-1 px-2 border"
         onClick={(e) => onAddComment(e, item, newComment.current?.value)}
       >
         Add

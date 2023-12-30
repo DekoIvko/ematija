@@ -9,6 +9,7 @@ const withCommentsLogic = (
 ) => {
   const WithCommentsLogic = (props: React.PropsWithChildren<IProps | any>) => {
     const onClickComments = (comment: BaseSyntheticEvent) => {
+      console.log(comment);
       comment.target.setAttribute("style", "color: red");
     };
     return <WrappedComponent onClickComments={onClickComments} {...props} />;

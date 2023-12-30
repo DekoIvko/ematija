@@ -2,8 +2,8 @@ import { useState } from "react";
 import { ENavigationItems } from "../../enums/ENavigationItems";
 import { NavigationMenu } from "./NavigationMenu/NavigationMenu";
 import Messenger from "./Messenger/Messenger";
-import { useAppSelector } from "../../store/hooks";
 
+import { useAppSelector } from "../../store/hooks";
 import Feed from "./Feed/Feed";
 import Quotes from "./Quotes/Quotes";
 import Todos from "./Todos/Todos";

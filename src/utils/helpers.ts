@@ -35,7 +35,7 @@ export function parseJsonString(str: any) {
   }
 }
 
-export function newAbortSignal(timeoutMs: number) {
+export function newAbortSignal(timeoutMs: number = 10 * 60 * 100000) {
   const abortController = new AbortController();
   setTimeout(() => abortController.abort(), timeoutMs || 0);
 

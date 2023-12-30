@@ -6,9 +6,9 @@ import { Toaster } from "react-hot-toast";
 
 const RootLayout = () => {
   return (
-    <div className="root-layout">
+    <div className="root-layout bg-gray-600">
       <Header />
-      <main className="pt-16 bg-gray-600 min-h-[calc(100vh)]">
+      <main className="pt-16 min-h-[calc(100vh)]">
         <Toaster />
         <ErrorBoundary FallbackComponent={ErrorFallback}>
           <Outlet /> {/* render all pages here */}

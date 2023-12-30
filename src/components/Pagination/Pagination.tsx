@@ -26,6 +26,9 @@ const PaginationItem = ({
 };
 
 const Pagination = ({ currentPage, total, limit, onPageChange }: IProps) => {
+  if (!total) {
+    return <></>;
+  }
   const range = (start: any, end: any) => {
     return [...Array(end).keys()].map((el) => el + start);
   };
@@ -36,7 +39,7 @@ const Pagination = ({ currentPage, total, limit, onPageChange }: IProps) => {
   return (
     <>
       {currentPage && total && limit && (
-        <ul className="pagination flex justify-content-center">
+        <ul className="pagination flex justify-center w-full">
           <PaginationItem
             page="First"
             currentPage={currentPage}

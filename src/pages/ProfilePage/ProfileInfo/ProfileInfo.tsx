@@ -1,19 +1,16 @@
-import { IUserDetails } from "../../../interfaces/IUserDetails";
+import { useUserAuthContext } from "../../../context/UserAuthContext";
 
-interface IProps {
-  userDetails: IUserDetails;
-}
-
-const ProfileInfo = ({ userDetails }: IProps) => {
+const ProfileInfo = () => {
+  const userDetails = useUserAuthContext();
   return (
     <div>
       {" "}
       <div className="profile-name-edit flex flex-row align-self-center w-100 p-5 m-1 text-slate-200">
         <div className="profile-picture-name flex flex-row justify-content-between w-100">
           <div className="flex flex-row align-self-center w-70">
-            <img src={userDetails?.image} alt="Profile" />
+            <img src={userDetails?.user?.image} alt="Profile" />
             <div className="flex align-self-end ms-3">
-              <h2>{`${userDetails?.firstName} ${userDetails?.lastName}`}</h2>
+              <h2>{`${userDetails?.user?.firstName} ${userDetails?.user?.lastName}`}</h2>
             </div>
           </div>
           <div className="flex align-self-end">
