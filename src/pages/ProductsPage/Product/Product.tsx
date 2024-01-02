@@ -1,8 +1,6 @@
-// import { useContext } from "react";
 import { useParams } from "react-router";
 import { useQuery } from "@tanstack/react-query";
 import { GetProductService } from "../../../services/ProductsServices";
-// import { IStateContext, StateContext } from "../../../store/store";
 
 import "./Product.scss";
 
@@ -28,44 +26,45 @@ const Product = () => {
     >
       <div className="product-body flex flex-row p-4">
         <div className="images">
-          <img src={product?.data?.thumbnail} alt="" />
+          <img src={product?.data?.data.thumbnail} alt="" />
           <div className="images-small flex flex-row">
-            {product?.data?.images.map((img: string, index: number) => {
+            {product?.data?.data.images.map((img: string, index: number) => {
               return <img key={img + index} src={img} alt="" />;
             })}
           </div>
         </div>
         <div className="products-head p-4">
-          <h2>{product?.data?.title}</h2>
-          <h5>{product?.data?.brand}</h5>
+          <h2>{product?.data?.data.title}</h2>
+          <h5>{product?.data?.data.brand}</h5>
           <br />
           <div className="description">
-            <p>{product?.data?.description}</p>
+            <p>{product?.data?.data.description}</p>
           </div>
           <hr className="hr hr-blurry" />
           <div>
-            Category: <span>{product?.data?.category}</span>
+            Category: <span>{product?.data?.data.category}</span>
           </div>
           <div className="flex flex-row gap-2">
             <div>
-              Rating:<span> {product?.data?.rating}</span>
+              Rating:<span> {product?.data?.data.rating}</span>
             </div>
             <div>
-              Stock:<span> {product?.data?.stock}</span>
+              Stock:<span> {product?.data?.data.stock}</span>
             </div>
           </div>
           <br />
           <div className="price flex flex-col gap-2">
             <div className="flex flex-row gap-2 align-items-center">
               <span style={{ textDecoration: "line-through" }}>
-                {" " + product?.data?.price + "$"}
+                {" " + product?.data?.data.price + "$"}
               </span>
               Discount:{" "}
-              <span>{" " + product?.data?.discountPercentage + "%"}</span>
+              <span>{" " + product?.data?.data.discountPercentage + "%"}</span>
               Price:
               <span style={{ fontSize: "20px" }}>{` ${(
-                product?.data?.price -
-                product?.data?.price * (product?.data?.discountPercentage / 100)
+                product?.data?.data.price -
+                product?.data?.data.price *
+                  (product?.data?.data.discountPercentage / 100)
               ).toFixed(2)}  $`}</span>
             </div>
           </div>

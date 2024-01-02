@@ -1,39 +1,42 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { AxiosResponse } from "axios";
-import { IAddTodo, ITodos } from "../../../interfaces/ITodos";
-import { Lists, Loader, Pagination, StatusMessage } from "../../../components";
+import { IAddTodo } from "../../../interfaces/ITodos";
+import { Lists, Loader, Pagination } from "../../../components";
 import { useUserAuthContext } from "../../../context/UserAuthContext";
 
-import { CreateTodosService } from "../../../services/TodosService";
+import { useFetchQuery } from "../../../hooks/useFetchQuery";
+import {
+  CreateTodosService,
+  GetTodosByUserService,
+} from "../../../services/TodosService";
 import withCommentsLogic from "../../../hooks/withCommentsLogic";
-import { useFetchGet } from "../../../hooks/useFetchGet";
-import { appConfig } from "../../../appConfig";
 import AddTodo from "./AddTodo/AddTodo";
 import "./Todos.scss";
 
 // example with CUSTOM HOOK FETCH DATA ------->>
 const Todos = ({ onClickComments }: any) => {
   const user = useUserAuthContext();
-  const [todos, setTodos] = useState<ITodos[]>();
-  const [error, setError] = useState<Error>();
+
   const [loadingNewTodo, setLoadingNewTodo] = useState<boolean>(false);
   const [currentPage, setCurrentPage] = useState(1);
-  const { loading, apiError, apiData } = useFetchGet(
-    // custom hook
-    `${appConfig?.baseApiURL}/todos/user/${user?.user.id}`
-  );
+
   const [newTodo, setNewTodo] = useState<string>("");
   const [newTodoCompleted, setNewTodoCompleted] = useState<boolean>(false);
   const [showTodoCreateInputs, setShowTodoCreateInputs] =
     useState<boolean>(false);
 
-  useEffect(() => {
-    console.log(user);
-  }, [user]);
+  const { data, isError, error, isLoading } = useFetchQuery(
+    () => GetTodosByUserService(user.user.id.toString()),
+    "quotes"
+  );
 
-  useEffect(() => {
-    setTodos(apiData?.todos);
-  }, [apiData]);
+  if (isLoading) {
+    <Loader />;
+  }
+  if (isError) {
+    // showBoundary(error);
+    console.log(error);
+  }
 
   const createTodo = async () => {
     setLoadingNewTodo(true);
@@ -45,14 +48,14 @@ const Todos = ({ onClickComments }: any) => {
       };
       const responseNewTodo: AxiosResponse = await CreateTodosService(todo);
       if (responseNewTodo.status === 200) {
-        setTodos((prevArr) => [...prevArr!, responseNewTodo.data]);
+        // setTodos((prevArr) => [...prevArr!, responseNewTodo.data]);
         setShowTodoCreateInputs((prevVal) => (prevVal = !prevVal));
         setNewTodo("");
       } else {
-        setError(responseNewTodo?.data?.message);
+        // setError(responseNewTodo?.data?.message);
       }
     } catch (error: any) {
-      setError(error);
+      // setError(error);
     } finally {
       setLoadingNewTodo(false);
     }
@@ -73,13 +76,7 @@ const Todos = ({ onClickComments }: any) => {
         </button>
       </div>
       {loadingNewTodo && !error && <Loader />}
-      {!loading && error && (
-        <StatusMessage
-          from="add-new-todos"
-          status="error"
-          message={error.message}
-        />
-      )}
+
       {showTodoCreateInputs && !loadingNewTodo && (
         <AddTodo
           setNewTodo={setNewTodo}
@@ -89,21 +86,18 @@ const Todos = ({ onClickComments }: any) => {
           createTodo={createTodo}
         />
       )}
-      {loading && !apiError && <Loader />}
-      {!loading && apiError && (
-        <StatusMessage from="todos" status="error" message={apiError.message} />
-      )}
-      {!loading && !apiError && todos ? (
+
+      {data ? (
         <>
           <Lists
             type="todo"
-            data={todos}
+            data={data?.data}
             onClickItem={onClickComments}
             currentPage={currentPage}
           />
           <Pagination
             currentPage={currentPage}
-            total={todos?.length}
+            total={data?.data.length}
             limit={10}
             onPageChange={(page: any) => setCurrentPage(page)}
           />

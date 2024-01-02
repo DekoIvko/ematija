@@ -9,7 +9,6 @@ import useDebounceEffect from "../../hooks/useDebounceEffect";
 import {
   GetProductsFiltersService,
   GetProductCategoriesService,
-  GetProductsService,
 } from "../../services/ProductsServices";
 
 const ProductsPage = () => {
@@ -22,36 +21,26 @@ const ProductsPage = () => {
     category: "",
   });
 
-  const products = useQuery({
-    queryKey: ["products"],
-    queryFn: GetProductsService,
-  });
-
   const categories = useQuery({
     queryKey: ["categories"],
     queryFn: GetProductCategoriesService,
   });
 
-  const productsBySearch = useMutation({
+  const products = useMutation({
     mutationFn: GetProductsFiltersService,
     onSuccess: (result) => {
+      console.log("products ", result);
       queryClient.cancelQueries(["products"]);
       queryClient.setQueryData(["products"], result);
     },
   });
 
   useDebounceEffect(() => {
-    productsBySearch.mutateAsync(params);
+    products.mutateAsync(params);
   }, [params.category, params.search]);
 
-  if (products?.isLoading) {
-    return <Loader />;
-  }
-
-  if (products?.isError || productsBySearch?.isError || categories?.isError) {
-    showBoundary(
-      products?.error || productsBySearch?.error || categories?.error
-    );
+  if (products?.isError || categories?.isError) {
+    showBoundary(products?.error || categories?.error);
   }
 
   const onSearchProducts = async (name: string, value: string) => {
@@ -66,6 +55,7 @@ const ProductsPage = () => {
       />
 
       <div className="">
+        {products.isLoading && <Loader />}
         {products?.isSuccess && products?.data && (
           <>
             <ProductList data={products?.data} currentPage={currentPage} />

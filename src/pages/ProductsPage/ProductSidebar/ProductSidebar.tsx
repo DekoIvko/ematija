@@ -37,7 +37,7 @@ const ProductSidebar = ({ categories, onSearch }: IProps) => {
             <button
               type="button"
               className="btn btn-link m-0 p-0"
-              onClick={(e) => onSearch("category", "all")}
+              onClick={(e) => onSearch("category", "")}
             >
               All
             </button>

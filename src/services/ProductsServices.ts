@@ -29,7 +29,7 @@ export const GetProductService = async (idProduct: string) => {
         signal: newAbortSignal(),
       }
     );
-    return response.data;
+    return response;
   } catch (error: any) {
     if (axios.isAxiosError(error)) {
       Promise.reject(error);
@@ -71,7 +71,7 @@ export const GetProductsFiltersService = async (params: {
         signal: newAbortSignal(),
       }
     );
-    return response.data;
+    return response;
   } catch (error: any) {
     if (axios.isAxiosError(error)) {
       Promise.reject(error);

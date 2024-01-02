@@ -14,7 +14,7 @@ const HomePage = () => {
   const appSettings = useAppSelector((state) => state.appSettings);
 
   return (
-    <div className="container-fluid flex flex-row gap-2">
+    <div className="flex flex-row gap-2">
       <aside
         id="navigation-menu"
         className={`md:min-w-[250px] sm:min-w-[150px] m-2 rounded ${
@@ -25,7 +25,7 @@ const HomePage = () => {
       >
         <NavigationMenu page={page} setPage={setPage} />
       </aside>
-      <section id="section" className="w-full">
+      <section id="section" className="w-1/3 sm:w-1/2 md:w-2/3 lg:w-full">
         {page === ENavigationItems.feed ? (
           <Feed feedType="home-page" />
         ) : page === ENavigationItems.quotes ? (
