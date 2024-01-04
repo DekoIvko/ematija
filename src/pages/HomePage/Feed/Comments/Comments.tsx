@@ -3,7 +3,7 @@ import { IComments } from "../../../../interfaces/IComments";
 
 interface IProps {
   comments: IComments[];
-  onClickComments: any;
+  onClickComments: () => void;
 }
 
 const Comments = ({ comments, onClickComments }: IProps) => {

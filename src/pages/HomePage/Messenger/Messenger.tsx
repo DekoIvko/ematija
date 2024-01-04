@@ -1,18 +1,18 @@
 import { useState } from "react";
 import { GetMessengerUsersService } from "../../../services/UsersService";
-import { IUserDetails } from "../../../interfaces/IUserDetails";
 import { useFetchQuery } from "../../../hooks/useFetchQuery";
 import useDebounce from "../../../hooks/useDebounce";
 import { useErrorBoundary } from "react-error-boundary";
-import toast from "react-hot-toast";
-import MessengerSkeleon from "../../../skeletons/MessengerSkeleon";
+import MessengerSkeleton from "../../../skeletons/MessengerSkeleton";
+import { IUser } from "../../../interfaces/IUser";
+import { IoMdClose } from "react-icons/io";
 
-// react query refetch while typing
 const Messenger = () => {
   console.log("Component Messenger");
   const { showBoundary } = useErrorBoundary();
   const [inputSearch, setInputSearch] = useState("");
-  const debouncedFilter = useDebounce(inputSearch);
+  const debouncedFilter = useDebounce(inputSearch); // debounce while typing default is 500ms
+  const [usersChat, setUsersChat] = useState<IUser[]>([]);
 
   const {
     data: users,
@@ -33,9 +33,15 @@ const Messenger = () => {
     setInputSearch(e.target.value);
   };
 
-  const onMessengerUser = () => {
-    //write some logic here
-    toast("User is not available!");
+  const onMessengerUser = (user: IUser) => {
+    setUsersChat((prevArr) => [...prevArr, user]);
+  };
+
+  const removeUserChat = (user: IUser) => {
+    const removedUser = [...usersChat].filter(
+      (userArr) => userArr.id !== user.id
+    );
+    setUsersChat(removedUser);
   };
 
   return (
@@ -53,7 +59,7 @@ const Messenger = () => {
       </div>
       <div className="">
         <ul className="flex flex-col overflow-y-auto overflow-x-hidden max-h-[78vh]">
-          {isFetching && !users && <MessengerSkeleon />}
+          {isFetching && !users && <MessengerSkeleton />}
           {isSuccess && users?.data?.length === 0 ? (
             <p>No users to display</p>
           ) : (
@@ -62,13 +68,16 @@ const Messenger = () => {
           {isSuccess &&
             users &&
             users?.data?.length &&
-            users?.data?.map((user: IUserDetails, index: number) => {
+            users?.data?.map((user: IUser, index: number) => {
               return (
                 <li
                   key={user.email + index}
                   className="p-1 m-1 hover:bg-slate-700 cursor-pointer w-full rounded"
                 >
-                  <div className="flex flex-row " onClick={onMessengerUser}>
+                  <div
+                    className="flex flex-row "
+                    onClick={() => onMessengerUser(user)}
+                  >
                     <img
                       src={user?.image}
                       alt=""
@@ -80,6 +89,29 @@ const Messenger = () => {
               );
             })}
         </ul>
+      </div>
+      <div className="flex gap-2 absolute bottom-0 right-0">
+        {usersChat &&
+          usersChat.map((user) => {
+            return (
+              <div key={`${user.id}_${user.username}`}>
+                <div className="flex flex-row ">
+                  <img
+                    src={user?.image}
+                    alt=""
+                    className="max-w-[24px] mr-1 rounded-xl"
+                  />
+                  <div className="">{`${user?.firstName} ${user.lastName}`}</div>
+                  <div className="max-w-[150px] max-h-[350px]"></div>
+                  <IoMdClose
+                    size={20}
+                    onClick={() => removeUserChat(user)}
+                    className="cursor-pointer"
+                  />
+                </div>
+              </div>
+            );
+          })}
       </div>
     </div>
   );

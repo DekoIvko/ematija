@@ -11,6 +11,7 @@ import { AddPostService } from "../../../../services/PostsService";
 
 type Inputs = {
   postBody: string;
+  postTags: string;
 };
 
 const AddPost = () => {
@@ -31,26 +32,14 @@ const AddPost = () => {
 
   const handleOpen = () => setOpenModal((prevVal) => !prevVal);
 
-  const {
-    register,
-    handleSubmit,
-    watch,
-    setFocus,
-    formState: { errors },
-  } = useForm<Inputs>();
+  const { register, handleSubmit, setFocus } = useForm<Inputs>();
 
   const addPost = useMutation({
     mutationFn: AddPostService,
     onSuccess: async (result, variables) => {
-      const postsData: any = await queryClient.getQueryData(["posts"]);
-      const updatedPosts = [variables, ...postsData?.data];
-      // await
-      // postsData?.data?.unshift(variables);
-      console.log(postsData?.data);
-      console.log(updatedPosts);
-      queryClient.setQueryData(["posts"], { data: [...updatedPosts] });
-      toast.success("Success add post!");
+      await queryClient.refetchQueries(["posts"]);
       setOpenModal((prev) => (prev = false));
+      toast.success("Success add post!");
     },
   });
 
@@ -60,6 +49,17 @@ const AddPost = () => {
 
   const afterOpenModal = () => {
     setFocus("postBody");
+    setPost((prevObj) => ({ ...prevObj, body: "", tags: [] }));
+  };
+
+  const onAddTags = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    const {
+      target: { value },
+    } = e;
+    setPost((prevPost) => ({
+      ...prevPost,
+      tags: value.split(" "),
+    }));
   };
 
   return (
@@ -87,7 +87,9 @@ const AddPost = () => {
           <h2 className="text-xl w-full flex justify-center">Create a post</h2>
           <div
             className="absolute right-4 top-5 cursor-pointer p-2 rounded-full hover:bg-slate-600"
-            onClick={handleOpen}
+            onClick={() => {
+              handleOpen();
+            }}
           >
             <IoMdClose size={20} />
           </div>
@@ -95,14 +97,23 @@ const AddPost = () => {
 
         <form onSubmit={handleSubmit(onSubmit)}>
           <textarea
+            id="textarea-body"
             className="mt-1 mb-2 w-full h-36 bg-gray-400 text-slate-800 p-1 px-2 py-1 rounded overflow-hidden outline-none text-xl placeholder-slate-200"
             placeholder="What is on your mind?"
             {...register("postBody")}
-            value={post?.body}
+            value={post?.body || ""}
             onChange={(e) =>
               setPost((prevPost) => ({ ...prevPost, body: e.target.value }))
             }
           />
+          <textarea
+            className="mt-1 mb-2 w-full h-10 bg-gray-400 text-slate-800 p-1 px-2 py-1 rounded overflow-hidden outline-none text-xl placeholder-slate-200"
+            placeholder="What about tags?"
+            {...register("postTags")}
+            value={post.tags}
+            onChange={(e) => onAddTags(e)}
+          />
+
           <button
             type="submit"
             className="bg-red-500 hover:bg-red-800 text-white text-center p-2 rounded font-bold w-full mt-2"

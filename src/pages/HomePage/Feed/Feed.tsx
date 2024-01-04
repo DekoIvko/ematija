@@ -16,6 +16,7 @@ import {
 import { GetUsersService } from "../../../services/UsersService";
 import { useUserAuthContext } from "../../../context/UserAuthContext";
 import AddPost from "./AddPost/AddPost";
+import FeedsSkeleton from "../../../skeletons/FeedsSkeleton";
 
 interface IProps {
   feedType: string;
@@ -71,7 +72,7 @@ const Feed = ({ feedType }: IProps) => {
     users?.isSuccess
   ) {
     try {
-      console.log(posts.data);
+      // console.log(posts.data);
       if (posts?.data?.status === 200) {
         posts?.data?.data?.forEach((post: IPosts) => {
           setPostsWithCommentsAndUsers(post);
@@ -109,12 +110,9 @@ const Feed = ({ feedType }: IProps) => {
     );
   }
 
-  if (posts.isFetching || postsByUser.isFetching) {
-    return <Loader />;
-  }
-
   return (
     <>
+      {posts?.isFetching && <FeedsSkeleton />}
       {posts?.isSuccess || postsByUser?.isSuccess ? (
         <>
           <AddPost />

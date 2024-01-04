@@ -25,7 +25,7 @@ const HomePage = () => {
       >
         <NavigationMenu page={page} setPage={setPage} />
       </aside>
-      <section id="section" className="w-1/3 sm:w-1/2 md:w-2/3 lg:w-full">
+      <section id="section" className="w-1/2 sm:w-1/2 md:w-2/3 lg:w-full">
         {page === ENavigationItems.feed ? (
           <Feed feedType="home-page" />
         ) : page === ENavigationItems.quotes ? (
@@ -36,7 +36,7 @@ const HomePage = () => {
       </section>
       <aside
         id="messenger-users"
-        className={`md:min-w-[240px] sm:min-w-[140px] m-2 rounded ${
+        className={`max-w-[160px] md:min-w-[200px] lg:min-w-[220px] m-2 rounded ${
           appSettings.appTheme === "dark"
             ? "text-slate-200 bg-gray-800"
             : "text-slate-800 bg-gray-200"

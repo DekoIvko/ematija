@@ -1,18 +1,18 @@
 import { BaseSyntheticEvent } from "react";
 
 interface IProps {
-  onClickComments: Function;
+  onClickWrapped: Function;
 }
 
 const withCommentsLogic = (
   WrappedComponent: React.JSXElementConstructor<any>
 ) => {
   const WithCommentsLogic = (props: React.PropsWithChildren<IProps | any>) => {
-    const onClickComments = (comment: BaseSyntheticEvent) => {
-      console.log(comment);
+    const onClickWrapped = (comment: BaseSyntheticEvent) => {
+      // console.log(comment);
       comment.target.setAttribute("style", "color: red");
     };
-    return <WrappedComponent onClickComments={onClickComments} {...props} />;
+    return <WrappedComponent onClickComments={onClickWrapped} {...props} />;
   };
   return WithCommentsLogic;
 };

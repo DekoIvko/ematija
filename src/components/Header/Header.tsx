@@ -3,6 +3,7 @@ import mkFlag from "../../imgs/MKFlag.png";
 import { Link, NavLink, useLocation } from "react-router-dom";
 import { FaUserAlt } from "react-icons/fa";
 import { MdModeNight, MdOutlineModeNight } from "react-icons/md";
+import { IoNotifications } from "react-icons/io5";
 import { EHeaderNavItems } from "../../enums/EHeaderNavItems";
 import useRefreshToken from "../../hooks/useRefreshToken";
 import { useUserAuthContext } from "../../context/UserAuthContext";
@@ -23,6 +24,10 @@ const Header = () => {
 
   const handleShowMenu = () => {
     setShowMenu((prevObj) => !prevObj);
+  };
+
+  const onNotifications = () => {
+    console.log("notifications");
   };
 
   const onLogOut = () => {
@@ -51,7 +56,7 @@ const Header = () => {
             </a>
           </div>
         </div>
-        <nav className="w-full h-full">
+        <nav className="w-full h-full invisible md:visible lg:visible">
           <ul className="flex md:justify-center items-center gap-10 h-full">
             <li
               className={`flex items-center ${
@@ -124,8 +129,8 @@ const Header = () => {
             </li>
           </ul>
         </nav>
-        <div className="flex text-slate-600 px-2 w-min-[40px]">
-          <div className="flex m-1 w-12 h-12 items-center justify-center">
+        <div className="flex text-slate-600 pr-2">
+          <div className="flex w-12 h-12 items-center justify-start">
             {appSettings.appTheme === "dark" ? (
               <MdOutlineModeNight
                 className="w-6 h-6 cursor-pointer"
@@ -138,8 +143,14 @@ const Header = () => {
               />
             )}
           </div>
+          <div className="flex mx-1 w-12 h-12 items-center justify-center">
+            <IoNotifications
+              className="w-6 h-6 cursor-pointer"
+              onClick={onNotifications}
+            />
+          </div>
           <div
-            className="text-3xl cursor-pointer overflow-hidden drop-shadow-md"
+            className="text-3xl cursor-pointer overflow-hidden drop-shadow-md justify-end"
             onClick={handleShowMenu}
           >
             {userAuth?.user?.image ? (
@@ -149,7 +160,7 @@ const Header = () => {
                 className="w-12 h-12 rounded-full"
               />
             ) : (
-              <FaUserAlt />
+              <FaUserAlt width={12} height={12} style={{ marginTop: 10 }} />
             )}
           </div>
           {showMenu && (

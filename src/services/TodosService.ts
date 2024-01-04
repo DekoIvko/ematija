@@ -4,47 +4,41 @@ import { newAbortSignal } from "../utils/helpers";
 import { IAddTodo } from "../interfaces/ITodos";
 import { authHeader } from "./AuthHeader";
 
-export const GetTodosService = async () => {
+export const GetTodosService = async (userId?: string) => {
   try {
     const response = await axios.get(
-      `${appConfig.baseApiURL}/todos?limit=300`,
+      `${appConfig.localApiUrl}/todos?userId=${userId || ""}`,
       {
-        // headers: authHeader(),
+        headers: authHeader(),
         signal: newAbortSignal(),
       }
     );
     return response;
   } catch (error: any) {
-    return error;
-  }
-};
-
-export const GetTodosByUserService = async (userId: string) => {
-  try {
-    const response = await axios.get(
-      `${appConfig.baseApiURL}/todos/user/${userId}`,
-      {
-        // headers: authHeader(),
-        signal: newAbortSignal(),
-      }
-    );
-    return response;
-  } catch (error: any) {
-    return error;
+    if (axios.isAxiosError(error)) {
+      Promise.reject(error);
+    } else {
+      throw new Error(`${error}`);
+    }
   }
 };
 
 export const CreateTodosService = async (todo: IAddTodo) => {
   try {
     const response = await axios.post(
-      `${appConfig.baseApiURL}/todos/add`,
+      `${appConfig.localApiUrl}/todos/add`,
       todo,
       {
+        headers: authHeader(),
         signal: newAbortSignal(),
       }
     );
     return response;
   } catch (error: any) {
-    return error;
+    if (axios.isAxiosError(error)) {
+      Promise.reject(error);
+    } else {
+      throw new Error(`${error}`);
+    }
   }
 };

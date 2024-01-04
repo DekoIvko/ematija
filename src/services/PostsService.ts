@@ -45,7 +45,6 @@ export const GetUserPostsService = async (userId: string) => {
 
 export const AddPostService = async (post: IPosts) => {
   try {
-    console.log("AddPostService ", post);
     const response: AxiosResponse = await axios.post(
       `${appConfig.localApiUrl}/posts/add`,
       post,
@@ -87,6 +86,26 @@ export const RemovePostService = async (postId: string) => {
   try {
     const response: AxiosResponse = await axios.get(
       `${appConfig.localApiUrl}/posts/remove?postId=${postId}`,
+      {
+        headers: authHeader(),
+        signal: newAbortSignal(),
+      }
+    );
+    return response;
+  } catch (error: any) {
+    if (axios.isAxiosError(error)) {
+      Promise.reject(error);
+    } else {
+      throw new Error(`${error}`);
+    }
+  }
+};
+
+export const AddReactionsService = async (params: any) => {
+  try {
+    const response: AxiosResponse = await axios.post(
+      `${appConfig.localApiUrl}/posts/add-reaction`,
+      params,
       {
         headers: authHeader(),
         signal: newAbortSignal(),

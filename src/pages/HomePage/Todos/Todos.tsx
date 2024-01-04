@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { AxiosResponse } from "axios";
 import { IAddTodo } from "../../../interfaces/ITodos";
 import { Lists, Loader, Pagination } from "../../../components";
 import { useUserAuthContext } from "../../../context/UserAuthContext";
@@ -7,13 +6,11 @@ import { useUserAuthContext } from "../../../context/UserAuthContext";
 import { useFetchQuery } from "../../../hooks/useFetchQuery";
 import {
   CreateTodosService,
-  GetTodosByUserService,
+  GetTodosService,
 } from "../../../services/TodosService";
 import withCommentsLogic from "../../../hooks/withCommentsLogic";
 import AddTodo from "./AddTodo/AddTodo";
-import "./Todos.scss";
 
-// example with CUSTOM HOOK FETCH DATA ------->>
 const Todos = ({ onClickComments }: any) => {
   const user = useUserAuthContext();
 
@@ -26,8 +23,8 @@ const Todos = ({ onClickComments }: any) => {
     useState<boolean>(false);
 
   const { data, isError, error, isLoading } = useFetchQuery(
-    () => GetTodosByUserService(user.user.id.toString()),
-    "quotes"
+    () => GetTodosService(user.user.id.toString()),
+    "todos"
   );
 
   if (isLoading) {
@@ -46,7 +43,7 @@ const Todos = ({ onClickComments }: any) => {
         completed: newTodoCompleted,
         userId: user?.user.id,
       };
-      const responseNewTodo: AxiosResponse = await CreateTodosService(todo);
+      const responseNewTodo: any = await CreateTodosService(todo);
       if (responseNewTodo.status === 200) {
         // setTodos((prevArr) => [...prevArr!, responseNewTodo.data]);
         setShowTodoCreateInputs((prevVal) => (prevVal = !prevVal));
@@ -63,7 +60,7 @@ const Todos = ({ onClickComments }: any) => {
 
   return (
     <div className="todos flex flex-col">
-      <div className="add-todo-btn flex w-100 justify-content-center">
+      <div className="add-todo-btn flex w-full justify-center">
         <button
           type="button"
           className="btn btn-link text-decoration-none"

@@ -14,6 +14,11 @@ function App() {
         refetchOnWindowFocus: false,
         retry: 2,
         useErrorBoundary: true,
+        staleTime: 10 * (60 * 1000), // 10 mins
+        // In React Query, your data can be fresh or stale.
+        // staleTime is the length of time before your data becomes stale
+        cacheTime: 15 * (60 * 1000), // 15 mins
+        // cacheTime is the length of time before inactive data gets removed from the cache
       },
     },
   });
@@ -28,5 +33,4 @@ function App() {
     </Provider>
   );
 }
-console.log(App());
 export default App;

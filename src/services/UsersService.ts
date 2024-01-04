@@ -68,7 +68,11 @@ export const RegisterUserService = async (user: any) => {
     );
     return response.data;
   } catch (error: any) {
-    throw error;
+    if (axios.isAxiosError(error)) {
+      Promise.reject(error);
+    } else {
+      throw new Error(`${error}`);
+    }
   }
 };
 
@@ -83,6 +87,10 @@ export const LoginUserService = async (user: any) => {
     );
     return response.data;
   } catch (error: any) {
-    return error.response;
+    if (axios.isAxiosError(error)) {
+      Promise.reject(error);
+    } else {
+      throw new Error(`${error}`);
+    }
   }
 };

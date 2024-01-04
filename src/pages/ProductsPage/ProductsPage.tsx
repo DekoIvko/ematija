@@ -53,13 +53,11 @@ const ProductsPage = () => {
         categories={categories?.data}
         onSearch={onSearchProducts}
       />
-
       <div className="">
         {products.isLoading && <Loader />}
         {products?.isSuccess && products?.data && (
           <>
             <ProductList data={products?.data} currentPage={currentPage} />
-
             <Pagination
               currentPage={currentPage}
               total={products?.data?.data?.length}

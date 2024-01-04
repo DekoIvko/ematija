@@ -1,8 +1,6 @@
-import React from "react";
-
-const MessengerSkeleon = () => {
+const MessengerSkeleton = () => {
   return (
-    <>
+    <div className="animate-pulse">
       <li key={1} className="p-1 m-1  cursor-pointer w-full rounded">
         <div className="flex flex-row rounded">
           <img
@@ -48,8 +46,8 @@ const MessengerSkeleon = () => {
           <div className="bg-slate-400 w-full h-6"></div>
         </div>
       </li>
-    </>
+    </div>
   );
 };
 
-export default MessengerSkeleon;
+export default MessengerSkeleton;
