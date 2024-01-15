@@ -54,25 +54,6 @@ const LogInPage = () => {
     },
   });
 
-  const loginDummyUser = async () => {
-    // sign in with dummy user
-    try {
-      const authUser = {
-        firstName: "",
-        lastName: "",
-        image: "",
-        username: "atuny0",
-        password: "9uQFF1Lh",
-      };
-      await userAuth.setUser(authUser);
-      localStorage.setItem("ematija-user", JSON.stringify(authUser));
-      navigate("/home");
-    } catch (error: any) {
-      console.log(error);
-      toast.error(`${error?.data}`);
-    }
-  };
-
   const onSubmitBtn: SubmitHandler<Inputs> = async (data) => {
     try {
       const authUser = {
@@ -154,13 +135,6 @@ const LogInPage = () => {
                   type="submit"
                 >
                   Login
-                </button>
-                <button
-                  className="bg-red-500 hover:bg-red-800 text-white p-2 rounded font-bold"
-                  type="button"
-                  onClick={loginDummyUser}
-                >
-                  Log with dummy user
                 </button>
               </div>
             </div>

@@ -9,12 +9,17 @@ import { AddCommentService } from "../../../../services/CommentsService";
 import { IParamComment } from "../../../../interfaces/IParamComment";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useUserAuthContext } from "../../../../context/UserAuthContext";
+
 import {
   AddReactionsService,
   RemovePostService,
 } from "../../../../services/PostsService";
 import toast from "react-hot-toast";
-import { Reactions } from "../../../../utils/reacions";
+import { Reactions } from "../../../../utils/reactions";
+import { AddNotificationService } from "../../../../services/NotificationsService";
+import { INotifications } from "../../../../interfaces/INotifications";
+import { NotificationTypes } from "../../../../enums/ENotifications";
+// import { socket } from "../../../../socket";
 
 const Posts = ({ posts = [] }: any) => {
   // console.log("Components Posts ");
@@ -33,9 +38,12 @@ const Posts = ({ posts = [] }: any) => {
 
   const addReaction = useMutation({
     mutationFn: AddReactionsService,
-    onSuccess: async (result, variables) => {
-      await queryClient.refetchQueries(["posts"]);
-    },
+    onSuccess: async (result, variables) => {},
+  });
+
+  const addNotification = useMutation({
+    mutationFn: AddNotificationService,
+    onSuccess: (result, variables) => {},
   });
 
   const addComments = useMutation({
@@ -66,6 +74,9 @@ const Posts = ({ posts = [] }: any) => {
   if (addReaction?.isError) {
     toast.error(addReaction?.error!.toString() || "");
   }
+  if (addNotification?.isError) {
+    toast.error(addNotification?.error!.toString() || "");
+  }
 
   const onShowCommentSection = (
     e: React.MouseEvent<HTMLButtonElement>,
@@ -89,17 +100,29 @@ const Posts = ({ posts = [] }: any) => {
     try {
       e.preventDefault();
       const paramComment: IParamComment = {
+        id: 0,
         body: newComment,
         postId: post?.id,
         user: {
           id: user?.user.id,
           username: user?.user.username,
         },
-        tags: [],
-        reactions: [],
       };
 
-      await addComments.mutateAsync(paramComment);
+      const AddComment = await addComments.mutateAsync(paramComment);
+      console.log("AddComment ", AddComment);
+      if (AddComment) {
+        const paramNotification: INotifications = {
+          id: 0,
+          type: NotificationTypes.comments,
+          timestamp: new Date().toISOString(),
+          title: "New comment at your post",
+          body: newComment,
+          fromUserId: user?.user.id,
+          toUserId: post.userId,
+        };
+        await addNotification.mutateAsync(paramNotification);
+      }
     } catch (error: any) {
       toast.error(error.toString());
     }
@@ -117,7 +140,26 @@ const Posts = ({ posts = [] }: any) => {
       userId: user.user.id,
     };
     console.log(params);
-    await addReaction.mutateAsync(params);
+    const addedReaction = await addReaction.mutateAsync(params);
+    console.log(addedReaction);
+    if (
+      addedReaction?.status === 200 &&
+      addedReaction?.data.data.added === "added"
+    ) {
+      const paramNotification: INotifications = {
+        id: 0,
+        type: NotificationTypes.reactions,
+        timestamp: new Date().toISOString(),
+        title: "New reaction at your post",
+        body: reaction,
+        fromUserId: user.user.id,
+        toUserId: post.userId,
+      };
+      // socket.emit("notifications", paramNotification);
+      // await addNotification.mutateAsync(paramNotification);
+      // await queryClient.refetchQueries(["notifications"]);
+    }
+    await queryClient.refetchQueries(["posts"]);
   };
 
   return (

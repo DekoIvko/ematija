@@ -1,6 +1,7 @@
 import { Provider } from "react-redux";
 import Routes from "./Routes/Routes";
 import { store } from "./store/store";
+import buildProvidersTree from "./hooks/buildProvidersTree";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { AuthUserProvider } from "./context/UserAuthContext";
@@ -22,15 +23,19 @@ function App() {
       },
     },
   });
+
+  // use composition instead of providers hell
+  const ProvidersTree = buildProvidersTree([
+    [Provider, { store: store }],
+    [QueryClientProvider, { client: queryClient }],
+    [AuthUserProvider],
+  ]);
+
   return (
-    <Provider store={store}>
-      <QueryClientProvider client={queryClient}>
-        <AuthUserProvider>
-          <Routes />
-        </AuthUserProvider>
-        <ReactQueryDevtools initialIsOpen={false} />
-      </QueryClientProvider>
-    </Provider>
+    <ProvidersTree>
+      <Routes />
+      <ReactQueryDevtools initialIsOpen={false} />
+    </ProvidersTree>
   );
 }
 export default App;

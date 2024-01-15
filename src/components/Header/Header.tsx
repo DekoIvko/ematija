@@ -9,14 +9,16 @@ import useRefreshToken from "../../hooks/useRefreshToken";
 import { useUserAuthContext } from "../../context/UserAuthContext";
 import { useAppDispatch, useAppSelector } from "../../store/hooks";
 import { changeAppTheme } from "../../store/appSettingsSlice";
+import Notifications from "../Notifications/Notifications";
 
 const Header = () => {
-  const refreshToken = useRefreshToken();
-  const location = useLocation();
   const userAuth = useUserAuthContext();
-  const [showMenu, setShowMenu] = useState(false);
   const appSettings = useAppSelector((state) => state.appSettings);
+  const refreshToken = useRefreshToken();
   const dispatch = useAppDispatch();
+  const location = useLocation();
+  const [showMenu, setShowMenu] = useState(false);
+  const [notificationsShow, setNotificationsShow] = useState(false);
 
   const onChangeAppTheme = (theme: string) => {
     dispatch(changeAppTheme(theme));
@@ -26,11 +28,8 @@ const Header = () => {
     setShowMenu((prevObj) => !prevObj);
   };
 
-  const onNotifications = () => {
-    console.log("notifications");
-  };
-
   const onLogOut = () => {
+    // should i call api here /logout
     localStorage.removeItem("ematija-user");
     userAuth.setUser(null);
     window.location.reload();
@@ -146,9 +145,12 @@ const Header = () => {
           <div className="flex mx-1 w-12 h-12 items-center justify-center">
             <IoNotifications
               className="w-6 h-6 cursor-pointer"
-              onClick={onNotifications}
+              onClick={() =>
+                setNotificationsShow((prevVal) => (prevVal = !prevVal))
+              }
             />
           </div>
+          {notificationsShow && <Notifications />}
           <div
             className="text-3xl cursor-pointer overflow-hidden drop-shadow-md justify-end"
             onClick={handleShowMenu}

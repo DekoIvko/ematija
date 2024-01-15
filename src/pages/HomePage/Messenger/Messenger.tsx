@@ -6,9 +6,12 @@ import { useErrorBoundary } from "react-error-boundary";
 import MessengerSkeleton from "../../../skeletons/MessengerSkeleton";
 import { IUser } from "../../../interfaces/IUser";
 import { IoMdClose } from "react-icons/io";
+import { useUserAuthContext } from "../../../context/UserAuthContext";
 
 const Messenger = () => {
   console.log("Component Messenger");
+  const loggedUser = useUserAuthContext();
+
   const { showBoundary } = useErrorBoundary();
   const [inputSearch, setInputSearch] = useState("");
   const debouncedFilter = useDebounce(inputSearch); // debounce while typing default is 500ms
@@ -68,26 +71,28 @@ const Messenger = () => {
           {isSuccess &&
             users &&
             users?.data?.length &&
-            users?.data?.map((user: IUser, index: number) => {
-              return (
-                <li
-                  key={user.email + index}
-                  className="p-1 m-1 hover:bg-slate-700 cursor-pointer w-full rounded"
-                >
-                  <div
-                    className="flex flex-row "
-                    onClick={() => onMessengerUser(user)}
+            users?.data
+              ?.filter((user: IUser) => user.id !== loggedUser?.user.id)
+              ?.map((user: IUser, index: number) => {
+                return (
+                  <li
+                    key={user.email + index}
+                    className="p-1 m-1 hover:bg-slate-700 cursor-pointer w-full rounded"
                   >
-                    <img
-                      src={user?.image}
-                      alt=""
-                      className="max-w-[24px] mr-1 rounded-xl"
-                    />
-                    <div className="">{`${user?.firstName} ${user.lastName}`}</div>
-                  </div>
-                </li>
-              );
-            })}
+                    <div
+                      className="flex flex-row "
+                      onClick={() => onMessengerUser(user)}
+                    >
+                      <img
+                        src={user?.image}
+                        alt=""
+                        className="max-w-[24px] mr-1 rounded-xl"
+                      />
+                      <div className="">{`${user?.firstName} ${user.lastName}`}</div>
+                    </div>
+                  </li>
+                );
+              })}
         </ul>
       </div>
       <div className="flex gap-2 absolute bottom-0 right-0">
