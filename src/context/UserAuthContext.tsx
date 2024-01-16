@@ -37,6 +37,7 @@ export const AuthUserProvider = ({ children }: Props) => {
     if (Date.now() > decoded?.exp! * 1000) {
       return false;
     }
+
     return true;
   };
 

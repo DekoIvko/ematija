@@ -42,6 +42,8 @@ const LogInPage = () => {
         await userAuth.setUser(result?.data);
         cookies.set("token", result?.data.accessToken);
         localStorage.setItem("ematija-user", JSON.stringify(result?.data)); // add user in local storage
+        // socket.connect(); // connection with socket.io
+        // socket.emit("newUser", result?.data); // send new user in socket
         toast.success(result?.message);
         navigate(from, { replace: true }); // if redirect to login page go back to previous page
       } else {

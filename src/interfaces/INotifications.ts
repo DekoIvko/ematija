@@ -6,4 +6,5 @@ export interface INotifications {
   timestamp: string;
   title: string;
   body: string;
+  fullName: string;
 }

@@ -19,7 +19,7 @@ import { Reactions } from "../../../../utils/reactions";
 import { AddNotificationService } from "../../../../services/NotificationsService";
 import { INotifications } from "../../../../interfaces/INotifications";
 import { NotificationTypes } from "../../../../enums/ENotifications";
-// import { socket } from "../../../../socket";
+import socket from "../../../../socket";
 
 const Posts = ({ posts = [] }: any) => {
   // console.log("Components Posts ");
@@ -120,6 +120,7 @@ const Posts = ({ posts = [] }: any) => {
           body: newComment,
           fromUserId: user?.user.id,
           toUserId: post.userId,
+          fullName: user.user.firstName + " " + user.user.lastName,
         };
         await addNotification.mutateAsync(paramNotification);
       }
@@ -154,10 +155,11 @@ const Posts = ({ posts = [] }: any) => {
         body: reaction,
         fromUserId: user.user.id,
         toUserId: post.userId,
+        fullName: user.user.firstName + " " + user.user.lastName,
       };
-      // socket.emit("notifications", paramNotification);
-      // await addNotification.mutateAsync(paramNotification);
-      // await queryClient.refetchQueries(["notifications"]);
+      socket.emit("notifications", paramNotification);
+      await addNotification.mutateAsync(paramNotification);
+      await queryClient.refetchQueries(["notifications"]);
     }
     await queryClient.refetchQueries(["posts"]);
   };

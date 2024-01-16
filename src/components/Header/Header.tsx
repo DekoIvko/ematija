@@ -10,6 +10,7 @@ import { useUserAuthContext } from "../../context/UserAuthContext";
 import { useAppDispatch, useAppSelector } from "../../store/hooks";
 import { changeAppTheme } from "../../store/appSettingsSlice";
 import Notifications from "../Notifications/Notifications";
+import socket from "../../socket";
 
 const Header = () => {
   const userAuth = useUserAuthContext();
@@ -32,6 +33,7 @@ const Header = () => {
     // should i call api here /logout
     localStorage.removeItem("ematija-user");
     userAuth.setUser(null);
+    socket.disconnect();
     window.location.reload();
   };
 

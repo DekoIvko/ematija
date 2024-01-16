@@ -5,8 +5,14 @@ import buildProvidersTree from "./hooks/buildProvidersTree";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { AuthUserProvider } from "./context/UserAuthContext";
+import { useEffect } from "react";
+import socket from "./socket";
 
 import "./App.css";
+
+const userLocalStorage = JSON.parse(
+  window.localStorage.getItem("ematija-user")!
+);
 
 function App() {
   const queryClient = new QueryClient({
@@ -30,6 +36,15 @@ function App() {
     [QueryClientProvider, { client: queryClient }],
     [AuthUserProvider],
   ]);
+
+  useEffect(() => {
+    if (!socket.connected) socket.connect();
+    socket.emit("newUser", userLocalStorage);
+
+    return () => {
+      socket.disconnect();
+    };
+  }, []);
 
   return (
     <ProvidersTree>
