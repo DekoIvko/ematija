@@ -110,11 +110,10 @@ const Posts = ({ posts = [] }: any) => {
       };
 
       const AddComment = await addComments.mutateAsync(paramComment);
-      console.log("AddComment ", AddComment);
       if (AddComment) {
         const paramNotification: INotifications = {
           id: 0,
-          type: NotificationTypes.comments,
+          type: NotificationTypes.comment,
           timestamp: new Date().toISOString(),
           title: "New comment at your post",
           body: newComment,
@@ -122,7 +121,9 @@ const Posts = ({ posts = [] }: any) => {
           toUserId: post.userId,
           fullName: user.user.firstName + " " + user.user.lastName,
         };
+        socket.emit("notifications", paramNotification);
         await addNotification.mutateAsync(paramNotification);
+        // await queryClient.refetchQueries(["notifications"]); // need to check this
       }
     } catch (error: any) {
       toast.error(error.toString());
@@ -140,16 +141,14 @@ const Posts = ({ posts = [] }: any) => {
       reaction: reaction,
       userId: user.user.id,
     };
-    console.log(params);
     const addedReaction = await addReaction.mutateAsync(params);
-    console.log(addedReaction);
     if (
       addedReaction?.status === 200 &&
       addedReaction?.data.data.added === "added"
     ) {
       const paramNotification: INotifications = {
         id: 0,
-        type: NotificationTypes.reactions,
+        type: NotificationTypes.reaction,
         timestamp: new Date().toISOString(),
         title: "New reaction at your post",
         body: reaction,
@@ -159,7 +158,7 @@ const Posts = ({ posts = [] }: any) => {
       };
       socket.emit("notifications", paramNotification);
       await addNotification.mutateAsync(paramNotification);
-      await queryClient.refetchQueries(["notifications"]);
+      // await queryClient.refetchQueries(["notifications"]); // need to check this
     }
     await queryClient.refetchQueries(["posts"]);
   };

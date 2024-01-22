@@ -4,16 +4,17 @@ import { newAbortSignal } from "../utils/helpers";
 import { IParamMessage } from "../interfaces/IParamMessage";
 import { authHeader } from "./AuthHeader";
 
-export const GetAllMessagesService = async () => {
+export const AddMessageService = async (message: IParamMessage) => {
   try {
-    const response: AxiosResponse = await axios.get(
-      `${appConfig.localApiUrl}/messages`,
+    const response: AxiosResponse = await axios.post(
+      `${appConfig.localApiUrl}/messages/add`,
+      message,
       {
         headers: authHeader(),
         signal: newAbortSignal(),
       }
     );
-    return response;
+    return response.data;
   } catch (error: any) {
     if (axios.isAxiosError(error)) {
       Promise.reject(error);
@@ -23,11 +24,14 @@ export const GetAllMessagesService = async () => {
   }
 };
 
-export const AddMessageService = async (message: IParamMessage) => {
+export const CheckChatIdService = async (senders: {
+  senderIdOne: number;
+  senderIdTwo: number;
+}) => {
   try {
     const response: AxiosResponse = await axios.post(
-      `${appConfig.localApiUrl}/messages/add`,
-      message,
+      `${appConfig.localApiUrl}/messages/chat`,
+      senders,
       {
         headers: authHeader(),
         signal: newAbortSignal(),

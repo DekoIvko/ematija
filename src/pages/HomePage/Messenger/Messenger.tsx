@@ -1,12 +1,16 @@
 import { useState } from "react";
-import { GetMessengerUsersService } from "../../../services/UsersService";
 import { useFetchQuery } from "../../../hooks/useFetchQuery";
 import useDebounce from "../../../hooks/useDebounce";
+import { useUserAuthContext } from "../../../context/UserAuthContext";
 import { useErrorBoundary } from "react-error-boundary";
 import MessengerSkeleton from "../../../skeletons/MessengerSkeleton";
 import { IUser } from "../../../interfaces/IUser";
-import { IoMdClose } from "react-icons/io";
-import { useUserAuthContext } from "../../../context/UserAuthContext";
+
+import Messages from "../../../components/Messages/Messages";
+import { GetMessengerUsersService } from "../../../services/UsersService";
+import { useMutation } from "@tanstack/react-query";
+import { CheckChatIdService } from "../../../services/MessagesService";
+import { IChat } from "../../../interfaces/IChat";
 
 const Messenger = () => {
   console.log("Component Messenger");
@@ -15,7 +19,7 @@ const Messenger = () => {
   const { showBoundary } = useErrorBoundary();
   const [inputSearch, setInputSearch] = useState("");
   const debouncedFilter = useDebounce(inputSearch); // debounce while typing default is 500ms
-  const [usersChat, setUsersChat] = useState<IUser[]>([]);
+  const [usersChat, setUsersChat] = useState<IChat[]>([]);
 
   const {
     data: users,
@@ -28,6 +32,14 @@ const Messenger = () => {
     `messenger ${debouncedFilter}`
   );
 
+  const getChat = useMutation({
+    mutationFn: CheckChatIdService,
+    onSuccess: (result, variables) => {
+      console.log(result, variables);
+      setUsersChat((prevArr) => [...prevArr, result]);
+    },
+  });
+
   if (isError) {
     showBoundary(error);
   }
@@ -37,14 +49,29 @@ const Messenger = () => {
   };
 
   const onMessengerUser = (user: IUser) => {
-    setUsersChat((prevArr) => [...prevArr, user]);
+    getChat.mutate({
+      senderIdOne: loggedUser.user.id,
+      senderIdTwo: user.id,
+    });
   };
 
-  const removeUserChat = (user: IUser) => {
-    const removedUser = [...usersChat].filter(
-      (userArr) => userArr.id !== user.id
+  const removeUserChat = (chat: IChat) => {
+    const removedChat = [...usersChat].filter(
+      (chatArr) => chatArr.id !== chat.id
     );
-    setUsersChat(removedUser);
+    setUsersChat(removedChat);
+  };
+
+  const sendFormMessage = async (e: any) => {
+    e.preventDefault();
+    // const param = {
+    //   chatId: Number,
+    //   senderId: Number,
+    //   timestamp: String,
+    //   message: String,
+    // };
+
+    // setMessage("");
   };
 
   return (
@@ -95,28 +122,12 @@ const Messenger = () => {
               })}
         </ul>
       </div>
-      <div className="flex gap-2 absolute bottom-0 right-0">
-        {usersChat &&
-          usersChat.map((user) => {
-            return (
-              <div key={`${user.id}_${user.username}`}>
-                <div className="flex flex-row ">
-                  <img
-                    src={user?.image}
-                    alt=""
-                    className="max-w-[24px] mr-1 rounded-xl"
-                  />
-                  <div className="">{`${user?.firstName} ${user.lastName}`}</div>
-                  <div className="max-w-[150px] max-h-[350px]"></div>
-                  <IoMdClose
-                    size={20}
-                    onClick={() => removeUserChat(user)}
-                    className="cursor-pointer"
-                  />
-                </div>
-              </div>
-            );
-          })}
+      <div className="flex gap-2 fixed bottom-0 right-0 h-80 mr-1">
+        <Messages
+          usersChat={usersChat}
+          sendFormMessage={sendFormMessage}
+          removeUserChat={removeUserChat}
+        />
       </div>
     </div>
   );

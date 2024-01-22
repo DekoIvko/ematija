@@ -1,6 +1,6 @@
 export enum NotificationTypes {
-  comments = "comments",
-  reactions = "reactions",
-  buyYourProducts = "buyYourProducts",
+  comment = "comment",
+  reaction = "reaction",
+  buyYourProduct = "buyYourProduct",
   newQuote = "newQuote",
 }

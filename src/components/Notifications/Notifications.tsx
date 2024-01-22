@@ -3,6 +3,7 @@ import { useFetchQuery } from "../../hooks/useFetchQuery";
 import { INotifications } from "../../interfaces/INotifications";
 import { GetAllNotificationsService } from "../../services/NotificationsService";
 import { useAppSelector } from "../../store/hooks";
+import Loader from "../Loader/Loader";
 
 const Notifications = () => {
   const user = useUserAuthContext();
@@ -14,7 +15,7 @@ const Notifications = () => {
   );
 
   if (isLoading) {
-    // <Loader />;
+    <Loader />;
   }
   if (isError) {
     console.log(error);
@@ -33,13 +34,20 @@ const Notifications = () => {
           data?.data.map((notify: INotifications) => {
             return (
               <div
-                className={`p-1 my-1 shadow text-sm rounded cursor-pointer ${
+                key={notify?.id}
+                className={`flex flex-col p-1 my-1 shadow text-sm rounded cursor-pointer ${
                   appSettings.appTheme === "dark"
                     ? "text-slate-200 bg-gray-500"
                     : "text-slate-800 bg-gray-400"
                 }`}
               >
-                <span>{notify.title}</span>
+                <span>{notify?.title}</span>
+                <span>
+                  {notify.type}: {notify?.body}
+                </span>
+                <span>
+                  time: {new Date(notify?.timestamp).toISOString().slice(0, 10)}
+                </span>
               </div>
             );
           })}
