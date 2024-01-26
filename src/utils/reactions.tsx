@@ -3,7 +3,7 @@ import { BsEmojiHeartEyes } from "react-icons/bs";
 import { FaRegLaughBeam } from "react-icons/fa";
 import { BsEmojiAngry } from "react-icons/bs";
 
-export const Reactions = [
+export const reactions = [
   {
     description: "like",
     icon: <AiTwotoneLike style={{ width: 22, height: 22 }} />,

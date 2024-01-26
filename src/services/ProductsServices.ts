@@ -26,6 +26,7 @@ export const GetProductService = async (idProduct: string) => {
     const response = await axios.get(
       `${appConfig.baseApiURL}/products/${idProduct}`,
       {
+        withCredentials: false,
         signal: newAbortSignal(),
       }
     );

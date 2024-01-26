@@ -1,7 +1,7 @@
 export interface IParamMessage {
-  id: number;
+  id?: number;
   chatId: number;
   senderId: number;
   timestamp: string;
-  text: string;
+  message: string;
 }

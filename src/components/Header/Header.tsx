@@ -9,8 +9,8 @@ import useRefreshToken from "../../hooks/useRefreshToken";
 import { useUserAuthContext } from "../../context/UserAuthContext";
 import { useAppDispatch, useAppSelector } from "../../store/hooks";
 import { changeAppTheme } from "../../store/appSettingsSlice";
-import Notifications from "../Notifications/Notifications";
 import socket from "../../socket";
+import Notifications from "../Notifications/Notifications";
 
 const Header = () => {
   const userAuth = useUserAuthContext();
@@ -52,7 +52,7 @@ const Header = () => {
       <div className="flex items-center h-full">
         <div className="header-context">
           <div className="company-logo p-1 w-16 h-16">
-            <a href="/home" className="">
+            <a href="/home" className="" title="Macedonija">
               <img src={mkFlag} alt="Macedonian flag" className="w-full" />
             </a>
           </div>
@@ -136,11 +136,13 @@ const Header = () => {
               <MdOutlineModeNight
                 className="w-6 h-6 cursor-pointer"
                 onClick={() => onChangeAppTheme("light")}
+                title="App theme"
               />
             ) : (
               <MdModeNight
                 className="w-6 h-6 cursor-pointer"
                 onClick={() => onChangeAppTheme("dark")}
+                title="App theme"
               />
             )}
           </div>
@@ -150,12 +152,14 @@ const Header = () => {
               onClick={() =>
                 setNotificationsShow((prevVal) => (prevVal = !prevVal))
               }
+              title="Notifications"
             />
           </div>
           {notificationsShow && <Notifications />}
           <div
             className="text-3xl cursor-pointer overflow-hidden drop-shadow-md justify-end"
             onClick={handleShowMenu}
+            title="Menu"
           >
             {userAuth?.user?.image ? (
               <img

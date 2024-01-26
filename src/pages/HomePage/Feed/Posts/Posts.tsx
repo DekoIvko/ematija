@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { IPosts } from "../../../../interfaces/IPosts";
 import Comments from "../Comments/Comments";
 import { IoMdClose } from "react-icons/io";
-import { Loader, Pagination } from "../../../../components";
+import { Loader, Pagination, Reactions } from "../../../../components";
 import { useAppSelector } from "../../../../store/hooks";
 import AddComments from "../AddComments/AddComments";
 import { AddCommentService } from "../../../../services/CommentsService";
@@ -15,7 +15,6 @@ import {
   RemovePostService,
 } from "../../../../services/PostsService";
 import toast from "react-hot-toast";
-import { Reactions } from "../../../../utils/reactions";
 import { AddNotificationService } from "../../../../services/NotificationsService";
 import { INotifications } from "../../../../interfaces/INotifications";
 import { NotificationTypes } from "../../../../enums/ENotifications";
@@ -161,6 +160,13 @@ const Posts = ({ posts = [] }: any) => {
       // await queryClient.refetchQueries(["notifications"]); // need to check this
     }
     await queryClient.refetchQueries(["posts"]);
+    // queryClient.setQueryData(["posts"], (posts: any) => { this is try to not refetch
+    //   posts.data?.map((postMap: any) => {
+    //     if (postMap.id === post.id) {
+    //       console.log(postMap);
+    //     }
+    //   });
+    // });
   };
 
   return (
@@ -201,22 +207,7 @@ const Posts = ({ posts = [] }: any) => {
                 </div>
                 <div className="w-full bg-gray-700 h-[2px]"></div>
                 <div className="flex gap-4 p-1 w-full m-2">
-                  {Reactions.map((reaction) => {
-                    return (
-                      <span
-                        className="cursor-pointer"
-                        key={reaction.description}
-                        onClick={() =>
-                          onPostReactions(post, reaction.description)
-                        }
-                        onMouseEnter={() => {
-                          return <span>{reaction.description}</span>;
-                        }}
-                      >
-                        {reaction.icon}
-                      </span>
-                    );
-                  })}
+                  <Reactions post={post} onPostReactions={onPostReactions} />
                 </div>
                 <div className="w-full bg-gray-700 h-[2px]"></div>
                 <div className="flex flex-row gap-3  p-1">

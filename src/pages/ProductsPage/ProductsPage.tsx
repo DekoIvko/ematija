@@ -12,7 +12,7 @@ import {
 } from "../../services/ProductsServices";
 
 const ProductsPage = () => {
-  console.log("Component Products");
+  console.log("Component ProductsPage");
   const { showBoundary } = useErrorBoundary();
   const queryClient = useQueryClient();
   const [currentPage, setCurrentPage] = useState(1);
@@ -29,8 +29,6 @@ const ProductsPage = () => {
   const products = useMutation({
     mutationFn: GetProductsFiltersService,
     onSuccess: (result) => {
-      console.log("products ", result);
-      queryClient.cancelQueries(["products"]);
       queryClient.setQueryData(["products"], result);
     },
   });

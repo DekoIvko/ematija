@@ -1,4 +1,5 @@
 import { IComments } from "./IComments";
+import { IReactions } from "./IReactions";
 import { IUserDetails } from "./IUserDetails";
 
 export interface IPosts {
@@ -8,7 +9,7 @@ export interface IPosts {
   body: string;
   userId: number;
   tags: Array<string>;
-  reactions: Array<string>;
+  reactions: Array<IReactions>;
   comments: IComments[];
   showCommentSection: boolean;
   user?: IUserDetails;

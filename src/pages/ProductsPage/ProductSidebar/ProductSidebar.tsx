@@ -1,4 +1,6 @@
+import { useNavigate } from "react-router";
 import { useAppSelector } from "../../../store/hooks";
+import { AiOutlineShoppingCart } from "react-icons/ai";
 
 interface IProps {
   categories: string[];
@@ -7,6 +9,7 @@ interface IProps {
 
 const ProductSidebar = ({ categories, onSearch }: IProps) => {
   const appSettings = useAppSelector((state) => state.appSettings);
+  const navigate = useNavigate();
 
   return (
     <div
@@ -18,7 +21,17 @@ const ProductSidebar = ({ categories, onSearch }: IProps) => {
     >
       <nav className="">
         <ul className="flex flex-col gap-2 w-full ">
-          <h1 className="text-2xl">Filters</h1>
+          <div className="flex justify-between">
+            <h1 className="text-2xl">Filters</h1>
+            <AiOutlineShoppingCart
+              size={26}
+              className="cursor-pointer"
+              title="Shopping Cart"
+              onClick={() => {
+                navigate("shopping-cart");
+              }}
+            />
+          </div>
           <li
             className="list-group-item"
             onChange={(event: React.ChangeEvent<HTMLLIElement>) =>

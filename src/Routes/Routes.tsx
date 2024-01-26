@@ -28,6 +28,9 @@ const LazySignUpPage = React.lazy(
 const LazyProductPage = React.lazy(
   () => import("../pages/ProductsPage/Product/Product")
 );
+const LazyShoppingCartPage = React.lazy(
+  () => import("../pages/ProductsPage/ShoppingCart/ShoppingCart")
+);
 const LazyNewProductPage = React.lazy(
   () => import("../pages/ProductsPage/NewProductPage/NewProductPage")
 );
@@ -94,6 +97,15 @@ const router = createBrowserRouter(
             element={
               <Suspense fallback={<Loader />}>
                 <LazyProductsPage />
+              </Suspense>
+            }
+          />
+          ShoppingCart
+          <Route
+            path="shopping-cart"
+            element={
+              <Suspense fallback={<Loader />}>
+                <LazyShoppingCartPage />
               </Suspense>
             }
           />

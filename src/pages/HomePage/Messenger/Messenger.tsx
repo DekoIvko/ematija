@@ -5,10 +5,14 @@ import { useUserAuthContext } from "../../../context/UserAuthContext";
 import { useErrorBoundary } from "react-error-boundary";
 import MessengerSkeleton from "../../../skeletons/MessengerSkeleton";
 import { IUser } from "../../../interfaces/IUser";
+import { Messages } from "../../../components";
 
-import Messages from "../../../components/Messages/Messages";
 import { GetMessengerUsersService } from "../../../services/UsersService";
-import { useMutation } from "@tanstack/react-query";
+import {
+  QueryClient,
+  useMutation,
+  useQueryClient,
+} from "@tanstack/react-query";
 import { CheckChatIdService } from "../../../services/MessagesService";
 import { IChat } from "../../../interfaces/IChat";
 
@@ -17,6 +21,7 @@ const Messenger = () => {
   const loggedUser = useUserAuthContext();
 
   const { showBoundary } = useErrorBoundary();
+  const queryClient = useQueryClient();
   const [inputSearch, setInputSearch] = useState("");
   const debouncedFilter = useDebounce(inputSearch); // debounce while typing default is 500ms
   const [usersChat, setUsersChat] = useState<IChat[]>([]);
@@ -37,6 +42,9 @@ const Messenger = () => {
     onSuccess: (result, variables) => {
       console.log(result, variables);
       setUsersChat((prevArr) => [...prevArr, result]);
+      queryClient.setQueryData(["chats", result.id], {
+        result,
+      });
     },
   });
 
@@ -60,18 +68,6 @@ const Messenger = () => {
       (chatArr) => chatArr.id !== chat.id
     );
     setUsersChat(removedChat);
-  };
-
-  const sendFormMessage = async (e: any) => {
-    e.preventDefault();
-    // const param = {
-    //   chatId: Number,
-    //   senderId: Number,
-    //   timestamp: String,
-    //   message: String,
-    // };
-
-    // setMessage("");
   };
 
   return (
@@ -123,11 +119,7 @@ const Messenger = () => {
         </ul>
       </div>
       <div className="flex gap-2 fixed bottom-0 right-0 h-80 mr-1">
-        <Messages
-          usersChat={usersChat}
-          sendFormMessage={sendFormMessage}
-          removeUserChat={removeUserChat}
-        />
+        <Messages usersChat={usersChat} removeUserChat={removeUserChat} />
       </div>
     </div>
   );

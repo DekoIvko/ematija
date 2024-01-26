@@ -2,7 +2,7 @@ export interface IProducts {
   brand: string;
   category: string;
   description: string;
-  discountPercentage?: number;
+  discountPercentage: number;
   id: number;
   images?: [];
   price: number;
