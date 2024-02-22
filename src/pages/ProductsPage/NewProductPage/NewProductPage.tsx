@@ -1,7 +1,7 @@
-import { useState } from "react";
+// import { useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { BiSolidCloudUpload } from "react-icons/bi";
-import { IProducts } from "../../../interfaces/IProducts";
+// import { IProducts } from "../../../interfaces/IProducts";
 import {
   AddNewProductsService,
   GetProductCategoriesService,
@@ -9,42 +9,39 @@ import {
 
 import "./NewProductPage.scss";
 import { imageToBase64 } from "../../../utils/helpers";
+import { Controller, useForm } from "react-hook-form";
+import { INewProductFormFields } from "../../../interfaces/INewProductFormFields";
 
-interface ErrorValidate {
-  title: boolean;
-  category: boolean;
-  brand: boolean;
-  price: boolean;
-  stock: boolean;
-  description: boolean;
-  rating: boolean;
-}
 
+const productsParams: INewProductFormFields = {
+  id: 1,
+  title: "",
+  category: "smartphones",
+  brand: "",
+  description: "",
+  price: 0,
+  rating: 0,
+  stock: 0,
+  discountPercentage: 10,
+  images: [],
+  thumbnail: "",
+  address: {
+    city: 'Skopje',
+    address: 'Partizanska',
+    phone: '070 388 833'
+  }
+};
+
+// react-hook-form da go naprais i logiranjeto!!!!! mnogu vazno!!!!!
 const NewProductModal = () => {
-  const queryClient = useQueryClient();
-  const [productsParams, setProductsParams] = useState<IProducts>({
-    id: 1,
-    title: "",
-    category: "smartphones",
-    brand: "",
-    description: "",
-    price: 0,
-    rating: 0,
-    stock: 0,
-    discountPercentage: 10,
-    images: [],
-    thumbnail: "",
+  // const queryClient = useQueryClient();
+  const form =  useForm<INewProductFormFields>({
+    defaultValues: productsParams // set default values
   });
 
-  const [validateForm, setValidateForm] = useState<ErrorValidate>({
-    title: false,
-    category: false,
-    brand: false,
-    price: false,
-    stock: false,
-    description: false,
-    rating: false,
-  });
+  const { register, control, handleSubmit, formState } = form;
+
+ const { errors } = formState;
 
   const categories = useQuery({
     queryKey: ["categories"],
@@ -62,114 +59,19 @@ const NewProductModal = () => {
     },
   });
 
-  const validation = () => {
-    let validate = true;
-    if (!productsParams.title) {
-      validate = false;
-      setValidateForm((prevObj: ErrorValidate) => ({
-        ...prevObj,
-        title: true,
-      }));
-    } else {
-      setValidateForm((prevObj: ErrorValidate) => ({
-        ...prevObj,
-        title: false,
-      }));
-    }
-
-    if (!productsParams.category) {
-      validate = false;
-      setValidateForm((prevObj: ErrorValidate) => ({
-        ...prevObj,
-        category: true,
-      }));
-    } else {
-      setValidateForm((prevObj: ErrorValidate) => ({
-        ...prevObj,
-        category: false,
-      }));
-    }
-
-    if (!productsParams.brand) {
-      validate = false;
-      setValidateForm((prevObj: ErrorValidate) => ({
-        ...prevObj,
-        brand: true,
-      }));
-    } else {
-      setValidateForm((prevObj: ErrorValidate) => ({
-        ...prevObj,
-        brand: false,
-      }));
-    }
-
-    if (!productsParams.price || productsParams.price <= 0) {
-      validate = false;
-      setValidateForm((prevObj: ErrorValidate) => ({
-        ...prevObj,
-        price: true,
-      }));
-    } else {
-      setValidateForm((prevObj: ErrorValidate) => ({
-        ...prevObj,
-        price: false,
-      }));
-    }
-
-    if (!productsParams.stock || productsParams.stock <= 0) {
-      validate = false;
-      setValidateForm((prevObj: ErrorValidate) => ({
-        ...prevObj,
-        stock: true,
-      }));
-    } else {
-      setValidateForm((prevObj: ErrorValidate) => ({
-        ...prevObj,
-        stock: false,
-      }));
-    }
-
-    if (
-      !productsParams.description ||
-      productsParams.description.length === 0
-    ) {
-      validate = false;
-      setValidateForm((prevObj: ErrorValidate) => ({
-        ...prevObj,
-        description: true,
-      }));
-    } else {
-      setValidateForm((prevObj: ErrorValidate) => ({
-        ...prevObj,
-        description: false,
-      }));
-    }
-
-    return validate;
-  };
-
-  const onAddProducts = (e: React.MouseEvent<HTMLButtonElement>) => {
-    e.preventDefault();
+  const onAddProducts = (data: INewProductFormFields) => {
     // if (validation()) {
-    addNewProducts.mutateAsync(productsParams);
+    // addNewProducts.mutateAsync(data); // tuka tipovite nesto se bunat
     // }
-  };
-
-  const handleOnChange = (e: any) => {
-    // add category
-    const { name, value } = e.target;
-    setProductsParams((prevObj: IProducts) => ({
-      ...prevObj,
-      [name]: value,
-    }));
   };
 
   const handleUploadImage = async (e: any) => {
     const imageBase = await imageToBase64(e.target.files[0]);
-    setProductsParams((prevObj: IProducts) => ({
-      ...prevObj,
-      thumbnail: imageBase?.toString(),
-    }));
+    // ova tuka treba da go naprais slikata sstais vo formata
+    // setProductsParams((prevObj: IProducts) => ({
+    //   ...prevObj,
+    //   thumbnail: imageBase?.toString(),
+    // }));
   };
 
   return (
@@ -177,19 +79,17 @@ const NewProductModal = () => {
       <div className="flex justify-center py-4">
         <h2 className="text-2xl text-white">New product</h2>
       </div>{" "}
-      <form
+      <form onSubmit={handleSubmit(onAddProducts)}
         action=""
         className="w-full flex flex-col max-w-lg m-auto bg-white rounded p-4"
       >
-        {validateForm.category && (
-          <span className="error-validate">Please fill the category</span>
-        )}
+        <Controller name="category" render={({field}) => (
+
         <select
-          name="category"
           id="category"
-          className="bg-slate-200 p-1  "
-          onChange={handleOnChange}
-        >
+          className="bg-slate-200 p-1 "
+          {...register('category')}
+          >
           {categories?.data?.map((category: any, index: number) => {
             return (
               <option key={`${category}_${index}_`} value={category}>
@@ -198,6 +98,9 @@ const NewProductModal = () => {
             );
           })}
         </select>
+        )}>
+
+          </Controller>
 
         <label htmlFor="image" className="my-1">
           Image
@@ -222,80 +125,86 @@ const NewProductModal = () => {
             />
           </div>
         </label>
+{/* nested object in react-hook-form teeessttt */}
+<Controller name="address-city" render={({field}) => (
 
-        {validateForm.title && (
-          <span className="error-validate">Please fill the title</span>
-        )}
+        // <label className="my-1" id="address-city" htmlFor="address-city">
+        //   Title
+        // </label>
+        <input
+          id="address-city"
+          // name="address-city"
+          className="bg-slate-200 p-1 my-1"
+          value={field.value}
+          {...register("address.city")} />
+)}>
+
+
+          </Controller>
 
         <label className="my-1" id="product-title" htmlFor="product-title">
           Title
         </label>
         <input
-          name="title"
           id="product-title"
           className="bg-slate-200 p-1 my-1"
-          onChange={handleOnChange}
-        />
-
-        {validateForm.brand && (
-          <span className="error-validate">Please fill the brand</span>
-        )}
+          {...register("title", { required: {value: true, message: 'Title is required!'} })} />
+          <p>{errors.title?.message}</p> 
+          {/* treba tuka naprais crveno da prikazuva kako error message */}
 
         <label className="my-1" htmlFor="product-brand">
           Brand
         </label>
         <input
           id="product-brand"
-          name="brand"
           className="bg-slate-200 p-1 my-1 "
-          onChange={handleOnChange}
+          {...register('brand', {required: {value: true, message: 'Brand is required!'}})}
         />
+        <p>{errors.brand?.message}</p>
+        {/* treba tuka naprais crveno da prikazuva kako error message */}
 
-        {validateForm.price && (
+        {/* {validateForm.price && (
           <span className="error-validate">Please fill the price</span>
-        )}
+        )} */}
 
         <label>Price</label>
         <input
           type="number"
-          name="price"
+          {...register('price')}
           className="bg-slate-200 p-1 my-1 "
-          onChange={handleOnChange}
         />
-
+{/* 
         {validateForm.stock && (
           <span className="error-validate">Please fill the stock</span>
-        )}
+        )} */}
 
         <label className="my-1" htmlFor="product-stock">
           Stock/ how many
         </label>
         <input
           id="product-stock"
-          name="sock"
           type="number"
           className="bg-slate-200 p-1 my-1 "
-          onChange={handleOnChange}
+          {...register('stock')}
         />
 
-        {validateForm.rating && (
+        {/* {validateForm.rating && (
           <span className="error-validate">Please fill the rating</span>
-        )}
+        )} */}
 
         <label className="my-1" htmlFor="product-rating">
           Rating
         </label>
         <input
           id="product-rating"
-          name="rating"
           type="number"
           className="bg-slate-200 p-1 my-1 "
-          onChange={handleOnChange}
+          {...register('rating')}
         />
 
-        {validateForm.description && (
+        {/* {validateForm.description && (
           <span className="error-validate">Please fill the description</span>
-        )}
+        )} */}
 
         <label className="my-1" htmlFor="product-description">
           Description
@@ -303,13 +212,15 @@ const NewProductModal = () => {
         <input
           id="product-description"
           className="bg-slate-200 p-1 my-1 "
-          name="description"
-          onChange={handleOnChange}
+          {...register('description')}
+          // name="description"
+          // onChange={handleOnChange}
         />
 
         <button
           className="p-2 mt-4 bg-red-400 hover:bg-red-600 rounded text-white font-medium font-bold"
-          onClick={(e) => onAddProducts(e)}
+          // onClick={(e) => onAddProducts(e)}
+          type="submit"
         >
           Save Changes
         </button>
